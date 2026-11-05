@@ -292,7 +292,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光，只能听脚步声</strong>找人。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
@@ -339,8 +339,8 @@
           </div>
           <p class="diffnote" id="diffNote">困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。</p>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
-          <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
-          <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推向哪边枪口立刻转到哪边——秒转，松开停火）· 声纳、换武器、声音、暂停都在画面下方的按钮区，不挡画面</p>
+          <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换武器（手枪 / 小刀 / 乒乓球拍 / 十字飞镖）</p>
+          <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推向哪边枪口立刻转到哪边——秒转，松开停火）· 声纳、换武器（四件轮换）、声音、暂停都在画面下方的按钮区，不挡画面</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -385,8 +385,10 @@
               <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆——<b>推的方向就是瞄准方向，枪口立刻转过去（秒转）</b>，不再按推幅慢慢转、也不看推多远。手机上<b>瞄准和开火是同一个摇杆</b>：推过死区就一边瞄准一边自动开火，摇杆回正或松手就停火，不再有单独的开火按钮</li>
               <li>认出自己：你的角色头顶始终顶着一个<b>红色倒三角</b>，只有你有、机器人没有；借眼换到对手视角时，靠它一眼找回自己的身体</li>
               <li>声纳：<kbd>E</kbd> 或点画面下方控制区的「声纳」按钮，冷却 6 秒；按钮上会直接显示冷却读秒</li>
-              <li>切换武器：<kbd>R</kbd> 或点画面下方控制区的「换武器」按钮，在手枪和小刀之间切换；换弹是自动的（打空后 0.9 秒）。声纳、换武器、声音、暂停、全屏都放在画面外的下方控制区，不挡地图</li>
+              <li>切换武器：<kbd>R</kbd> 或点画面下方控制区的「换武器」按钮，在手枪、小刀、乒乓球拍、十字飞镖四件之间轮换；换弹是自动的（打空后按各武器自己的速度换，手枪 0.9 秒、乒乓球拍 0.6 秒、十字飞镖 0.55 秒）。声纳、换武器、声音、暂停、全屏都放在画面外的下方控制区，不挡地图</li>
               <li>小刀：近身一击必杀，完全无声；用同样的开火操作挥刀</li>
+              <li>乒乓球拍：每次挥拍打出一颗乒乓球，70 点伤害；弹匣只有 2 发；每次击发，你头顶会冒出小字「王之爆冲」，只有你自己看得见</li>
+              <li>十字飞镖：攻速很快，每次攻击扇形甩出 3 枚飞镖，每枚 35 点伤害；持镖时看不见其他人开火的光，只能听附近的脚步声</li>
               <li>暂停：<kbd>Esc</kbd></li>
             </ul>
           </div>
@@ -400,6 +402,8 @@
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
+              <li><b>乒乓球拍 · 王之爆冲</b>：一拍一颗乒乓球，<b>70 点伤害</b>（两拍带走一个满血对手）；弹匣只有 <b>2 发</b>，但换弹只要 <b>0.6 秒，比手枪快</b>。每次击发，你头顶会飘出小字<b>「王之爆冲」——只有你自己看得见</b>，机器人不会用球拍，也永远看不到这行字。拍子的响声和一圈小闪光仍会暴露你的位置，只是范围比枪小。</li>
+              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖本身无声无光、不会暴露你。唯一的坏处：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在，瞄准吸附也同样把他们当作看不见；你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。想重新用光找人，切回别的武器即可。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
               <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆的秒转，推个大概方向，剩下的交给吸附修。</li>
               <li><b>子弹吸附（仅手机端）</b>：手机上开枪后，子弹在飞行中还会再修一次——如果弹道大致指向一个<b>当前看得见</b>的对手（约 30° 以内、640 以内、中间没墙），子弹会朝他<b>轻轻拐弯</b>，正在拐弯的子弹会泛青光。它只是拐弯、不瞬移、不锁死，偏得太远照样打空；对手变回看不见就立刻不再拐。和上面的瞄准吸附是两层一起生效：开枪前修枪口、开枪后修弹道。电脑端没有子弹吸附，子弹全程笔直；机器人的子弹也没有。</li>
@@ -451,6 +455,9 @@
             <tr><td>困难版（开始界面选）</td><td>死亡后击杀数清零 · 机器人正式难度</td></tr>
             <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
+            <tr><td>乒乓球拍</td><td>伤害 70 · 弹匣 2 发 · 换弹 0.6 秒（比手枪快）· 射速 0.5 秒一拍 · 击发时头顶小字「王之爆冲」（仅自己可见）</td></tr>
+            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 持镖看不见他人开火的光，只能听脚步声</td></tr>
+            <tr><td>武器切换</td><td>R / 「换武器」在手枪 → 小刀 → 乒乓球拍 → 十字飞镖之间轮换 · 机器人只用手枪和小刀</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 不锁死 · 看不见即消失 · 电脑：夹角约 24° 内轻度吸附 · 手机（加强）：夹角约 50° 内、距离更远、吸附更快更强</td></tr>
@@ -610,6 +617,8 @@
         else if (name === "unswap") tone(1180, 0.25, "sine", 0.09, 340);
         else if (name === "ping") tone(1240, 0.5, "sine", 0.10, 620);
         else if (name === "reload") tone(440, 0.06, "square", 0.05);
+        else if (name === "paddle") { noiseBurst(0.05, 0.16); tone(330, 0.06, "square", 0.06, 120); }
+        else if (name === "dart") tone(760, 0.06, "sine", 0.05, 240);
       }
 
       /* ---------------- state ---------------- */
@@ -620,6 +629,7 @@
       var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [], slashes = [];
       var swapT = 0, swapCd = 0, swapTarget = null, pingT = 0, pingCd = 0;
       var assistTarget = null, prevRawAim = null;
+      var stepT = 0; // footstep-audio timer for the dart holder
       var stats = { shots: 0, hits: 0, kills: 0, knifeKills: 0, deaths: 0, swaps: 0 };
       var winnerIsPlayer = false;
 
@@ -650,7 +660,7 @@
         return {
           name: name, color: color, x: x, y: y, spawnX: x, spawnY: y, r: 14,
           angle: 0, hp: 100, maxHp: 100, alive: true, respawnT: 0,
-          fireCd: rand(0.2, 0.6), reloadT: 0, mag: 12, lastHurtT: -99,
+          fireCd: rand(0.2, 0.6), reloadT: 0, reloadDur: 0.9, mags: { gun: 12, paddle: 2, dart: 9 }, lastHurtT: -99,
           score: 0, deaths: 0, matchKills: 0, matchKnife: 0, isPlayer: !!isPlayer,
           weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
           moving: false,
@@ -727,7 +737,7 @@
         var tm = $("timer");
         tm.textContent = fmtTime(remain);
         tm.classList.toggle("low", remain <= 10.5);
-        $("weaponName").textContent = player.weapon === "knife" ? "小 刀" : "手 枪";
+        $("weaponName").textContent = { gun: "手 枪", knife: "小 刀", paddle: "乒 乓 球 拍", dart: "十 字 飞 镖" }[player.weapon] || "手 枪";
         updateBoard();
         var pct = player.hp / player.maxHp;
         if (player.alive && pct < 0.4) {
@@ -735,7 +745,10 @@
           $("lowhp").style.opacity = (lo * (0.72 + 0.28 * Math.sin(matchT * 6))).toFixed(2);
         } else $("lowhp").style.opacity = 0;
         if (player.weapon === "knife") { $("ammoN").textContent = "刀"; $("ammoL").textContent = "小刀 · 无声一击"; }
-        else { $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mag; $("ammoL").textContent = "弹药 · 打空自动换弹"; }
+        else {
+          $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mags[player.weapon];
+          $("ammoL").textContent = { gun: "弹药 · 打空自动换弹", paddle: "乒乓球 · 仅 2 发 · 换弹快", dart: "飞镖 · 一次三枚扇形 · 换弹快" }[player.weapon];
+        }
         // sonar status lives on the control-bar button itself (outside the
         // game screen) — no more floating "声纳就绪" text over the map
         var pb = $("btnPingTouch");
@@ -833,11 +846,29 @@
       $("btnSwapTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); touchMode = true; document.body.classList.add("touch"); lastSwapTouch = Date.now(); if (state === "playing") switchWeapon(player); }, { passive: false });
       $("btnSwapTouch").addEventListener("click", function () { if (Date.now() - lastSwapTouch > 500 && state === "playing") switchWeapon(player); });
       /* ---------------- combat ---------------- */
-      function startReload(e) { if (e.reloadT <= 0 && e.mag < 12) { e.reloadT = 0.9; if (e.isPlayer) sfx("reload", true); } }
-      function switchWeapon(e) {
-        if (!e || !e.alive || state !== "playing") return;
-        e.weapon = e.weapon === "gun" ? "knife" : "gun";
-        if (e.weapon === "knife") {
+      /* projectile weapons. The knife is melee and lives outside this table.
+         paddle: 乒乓球拍 — one ping-pong ball per swing, 70 damage, only 2
+           balls before a reload, but the reload (0.6s) beats the pistol's.
+         dart: 十字飞镖 — very fast, throws a fan of 3 darts per attack (each
+           35 damage), fast reload; its holder cannot see the light other
+           people's shots make (see render / isVisibleToPlayer) and instead
+           only hears footsteps (see the footstep cue in update). */
+      var WEAPONS = {
+        gun: { magSize: 12, reload: 0.9, dmg: 34, speed: 780 },
+        paddle: { magSize: 2, reload: 0.6, dmg: 70, speed: 640 },
+        dart: { magSize: 9, reload: 0.55, dmg: 35, speed: 760 }
+      };
+      var WEAPON_ORDER = ["gun", "knife", "paddle", "dart"];
+      function startReload(e) {
+        var ws = WEAPONS[e.weapon];
+        if (!ws || e.reloadT > 0 || e.mags[e.weapon] >= ws.magSize) return;
+        e.reloadT = ws.reload; e.reloadDur = ws.reload;
+        if (e.isPlayer) sfx("reload", true);
+      }
+      function setWeapon(e, w) {
+        if (!e || e.weapon === w) return;
+        e.weapon = w; e.reloadT = 0; // switching cancels any reload in progress
+        if (w === "knife") {
           // drawing the knife: everyone sees you for 0.3s, and you see no one
           e.revealT = 0.3; e.blindT = 0.3;
           if (e.isPlayer) {
@@ -847,7 +878,32 @@
             }
           }
         }
-        if (e.isPlayer) updateHUD();
+        if (e.isPlayer) {
+          if (w === "paddle") feed("乒乓球拍在手——一拍 70 伤，只有 2 发，换弹快");
+          else if (w === "dart") feed("十字飞镖在手——看不见别人开火的光了，只能听脚步声");
+          updateHUD();
+        }
+      }
+      function switchWeapon(e) {
+        if (!e || !e.alive || state !== "playing") return;
+        if (e.isPlayer) {
+          // R / 换武器 cycles all four weapons for the player
+          setWeapon(e, WEAPON_ORDER[(WEAPON_ORDER.indexOf(e.weapon) + 1) % WEAPON_ORDER.length]);
+        } else {
+          // bots keep the original gun <-> knife toggle, nothing else changes
+          setWeapon(e, e.weapon === "gun" ? "knife" : "gun");
+        }
+      }
+      // a loud shot gives the shooter away to everyone nearby with LOS
+      function alertOthers(e, range) {
+        var ents = allEnts(), i, o;
+        for (i = 0; i < ents.length; i++) {
+          o = ents[i];
+          if (o === e || !o.alive || o.isPlayer) continue;
+          if (dist(o.x, o.y, e.x, e.y) < range && !losBlocked(o.x, o.y, e.x, e.y)) {
+            o.knownX = e.x; o.knownY = e.y; o.knownT = time; o.knownEnt = e;
+          }
+        }
       }
       function attack(e) { if (e.weapon === "knife") tryKnife(e); else tryFire(e); }
       function tryKnife(e) {
@@ -871,26 +927,54 @@
         }
       }
       function tryFire(e) {
-        if (!e.alive || e.weapon !== "gun" || e.fireCd > 0 || e.reloadT > 0) return;
-        if (e.mag <= 0) { startReload(e); return; }
-        e.mag--; e.fireCd = e.isPlayer ? 0.22 : (difficulty === "easy" ? rand(0.72, 1.05) : rand(0.42, 0.62));
+        if (!e.alive || e.fireCd > 0 || e.reloadT > 0) return;
+        var w = e.weapon, ws = WEAPONS[w];
+        if (!ws) return; // the knife never comes through here
+        if (e.mags[w] <= 0) { startReload(e); return; }
         var mx = e.x + Math.cos(e.angle) * 20, my = e.y + Math.sin(e.angle) * 20;
-        bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * 780, vy: Math.sin(e.angle) * 780, owner: e, life: 1.1, mag: !!(e.isPlayer && touchMode), magOn: false });
-        flashes.push({ x: mx, y: my, r: 160, t: 0.9, max: 0.9 });
-        ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true });
-        if (e.isPlayer) stats.shots++;
-        var nearP = dist(e.x, e.y, player.x, player.y) < 330;
-        sfx("shoot", e.isPlayer || nearP);
-        // everyone nearby with LOS "hears/sees" the shooter
-        var ents = allEnts(), i, o;
-        for (i = 0; i < ents.length; i++) {
-          o = ents[i];
-          if (o === e || !o.alive || o.isPlayer) continue;
-          if (dist(o.x, o.y, e.x, e.y) < 430 && !losBlocked(o.x, o.y, e.x, e.y)) {
-            o.knownX = e.x; o.knownY = e.y; o.knownT = time; o.knownEnt = e;
+        var magFlag = !!(e.isPlayer && touchMode);
+        if (w === "dart") {
+          // 十字飞镖: one attack throws a fan of 3 darts (fewer if the pouch
+          // is nearly empty). Thrown, not fired: no muzzle flash, no loud
+          // ripple, nobody is alerted — but see the light-blindness downside.
+          var n = Math.min(3, e.mags.dart), di, da2;
+          e.mags.dart -= n;
+          e.fireCd = 0.13;
+          for (di = 0; di < n; di++) {
+            da2 = e.angle + (di - (n - 1) / 2) * 0.17;
+            bullets.push({ x: mx, y: my, vx: Math.cos(da2) * ws.speed, vy: Math.sin(da2) * ws.speed, owner: e, life: 1.0, dmg: ws.dmg, kind: "dart", mag: magFlag, magOn: false });
           }
+          if (e.isPlayer) { stats.shots += n; sfx("dart", true); }
+        } else if (w === "paddle") {
+          // 乒乓球拍: one ball per swing, 70 damage. The smack is loud and
+          // pops a small flash — it still gives you away, just less than a gun.
+          e.mags.paddle--;
+          e.fireCd = 0.5;
+          bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * ws.speed, vy: Math.sin(e.angle) * ws.speed, owner: e, life: 1.3, dmg: ws.dmg, kind: "ball", mag: magFlag, magOn: false });
+          flashes.push({ x: mx, y: my, r: 110, t: 0.55, max: 0.55, owner: e });
+          ripples.push({ x: e.x, y: e.y, r: 8, max: 44, t: 0.35, maxT: 0.35, loud: true });
+          if (e.isPlayer) {
+            stats.shots++;
+            // 「王之爆冲」: a small flourish only the player ever sees — it is
+            // pushed only for the player's own swings, and bots never hold
+            // the paddle, so nobody else's screen could ever show it.
+            floaters.push({ x: e.x, y: e.y - 36, t: 0.8, txt: "王之爆冲", color: "#ffd166", small: true });
+            sfx("paddle", true);
+          }
+          alertOthers(e, 380);
+        } else {
+          // handgun: exactly the original behaviour
+          e.mags.gun--;
+          e.fireCd = e.isPlayer ? 0.22 : (difficulty === "easy" ? rand(0.72, 1.05) : rand(0.42, 0.62));
+          bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * ws.speed, vy: Math.sin(e.angle) * ws.speed, owner: e, life: 1.1, dmg: ws.dmg, kind: "bullet", mag: magFlag, magOn: false });
+          flashes.push({ x: mx, y: my, r: 160, t: 0.9, max: 0.9, owner: e });
+          ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true });
+          if (e.isPlayer) stats.shots++;
+          var nearP = dist(e.x, e.y, player.x, player.y) < 330;
+          sfx("shoot", e.isPlayer || nearP);
+          alertOthers(e, 430);
         }
-        if (e.mag === 0) startReload(e);
+        if (e.mags[w] === 0) startReload(e);
       }
       function startSwap(bot) {
         swapTarget = bot; swapT = 3; stats.swaps++;
@@ -1038,12 +1122,18 @@
           if (b === swapTarget) return true;
           if (dist(swapTarget.x, swapTarget.y, b.x, b.y) <= 128) return true;
         }
+        // holding the 十字飞镖, other people's firing light doesn't count:
+        // a bot lit only by someone else's flash or a passing enemy bullet
+        // is, to you, still invisible — exactly as the render shows.
+        var noFL = player.weapon === "dart";
         var i, f, k;
         for (i = 0; i < flashes.length; i++) {
           f = flashes[i]; k = f.t / f.max;
+          if (noFL && f.owner && f.owner !== player) continue;
           if (dist(f.x, f.y, b.x, b.y) <= f.r * (0.55 + 0.45 * k)) return true;
         }
         for (i = 0; i < bullets.length; i++) {
+          if (noFL && bullets[i].owner !== player) continue;
           if (dist(bullets[i].x, bullets[i].y, b.x, b.y) <= 44) return true;
         }
         return false;
@@ -1154,6 +1244,23 @@
           b.moving = Math.abs(b._mvx || 0) + Math.abs(b._mvy || 0) > 5;
           moveEntity(b, (b._mvx || 0) * dt, (b._mvy || 0) * dt);
         }
+        // 十字飞镖's trade: while you hold the darts you cannot see the light
+        // of other people's shots — but you CAN hear their footsteps. Audio
+        // only: a soft periodic thud from the nearest moving bot within
+        // earshot, louder as they get closer. Nothing is drawn for it, so
+        // the "walking leaves no visual sound cue" rule still holds.
+        stepT -= dt;
+        if (p.alive && p.weapon === "dart" && stepT <= 0) {
+          stepT = 0.32;
+          var nearStep = 1e9, si2, sb2;
+          for (si2 = 0; si2 < bots.length; si2++) {
+            sb2 = bots[si2];
+            if (!sb2.alive || !sb2.moving) continue;
+            var sd2 = dist(p.x, p.y, sb2.x, sb2.y);
+            if (sd2 < nearStep) nearStep = sd2;
+          }
+          if (nearStep < 340) noiseBurst(0.05, clamp(0.10 * (1 - nearStep / 340) + 0.015, 0.015, 0.11));
+        }
         // shared entity timers
         var ents = allEnts();
         for (i = 0; i < ents.length; i++) {
@@ -1163,11 +1270,11 @@
           if (e.blindT > 0) e.blindT -= dt;
           if (e.invulnT > 0) e.invulnT -= dt;
           if (e.swingCd > 0) e.swingCd -= dt;
-          if (e.reloadT > 0) { e.reloadT -= dt; if (e.reloadT <= 0) e.mag = 12; }
+          if (e.reloadT > 0) { e.reloadT -= dt; if (e.reloadT <= 0 && WEAPONS[e.weapon]) e.mags[e.weapon] = WEAPONS[e.weapon].magSize; }
           if (!e.alive) {
             e.respawnT -= dt;
             if (e.respawnT <= 0) {
-              e.alive = true; e.hp = e.maxHp; e.mag = 12;
+              e.alive = true; e.hp = e.maxHp; e.mags = { gun: 12, paddle: 2, dart: 9 };
               e.weapon = "gun"; e.invulnT = 0.2; e.revealT = 0; e.blindT = 0; e.swingCd = 0;
               var placed = false, rt, rx, ry, oi, oe;
               for (rt = 0; rt < 24 && !placed; rt++) {
@@ -1235,9 +1342,10 @@
               var v = ents[j];
               if (v === bl.owner || !v.alive || v.invulnT > 0) continue;
               if (dist(bl.x, bl.y, v.x, v.y) < v.r + 3) {
-                v.hp -= 34; v.lastHurtT = time;
+                var dmg = bl.dmg || 34;
+                v.hp -= dmg; v.lastHurtT = time;
                 for (k = 0; k < 5; k++) sparks.push({ x: bl.x, y: bl.y, vx: rand(-140, 140), vy: rand(-140, 140), t: 0.3, color: v.color });
-                floaters.push({ x: v.x, y: v.y - 22, t: 0.7, txt: "-34", color: "#ffe9c4" });
+                floaters.push({ x: v.x, y: v.y - 22, t: 0.7, txt: "-" + dmg, color: "#ffe9c4" });
                 onHit(bl.owner, v);
                 if (v.hp <= 0) kill(v, bl.owner);
                 dead = true; break;
@@ -1289,13 +1397,30 @@
           ctx.fillStyle = "#262b3a"; ctx.fillRect(w.x, w.y, w.w, w.h);
           ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(w.x, w.y, w.w, 3);
         }
-        // bullets (under darkness they'll glow through their own light)
+        // projectiles (under darkness they'll glow through their own light)
         for (i = 0; i < bullets.length; i++) {
           var bl = bullets[i];
-          // a magnetised bullet (mobile bullet assist actively bending) glows teal
-          ctx.strokeStyle = bl.magOn ? "rgba(45,212,191,0.9)" : "rgba(255,214,150,0.85)"; ctx.lineWidth = 2.5;
-          ctx.beginPath(); ctx.moveTo(bl.x - bl.vx * 0.018, bl.y - bl.vy * 0.018); ctx.lineTo(bl.x, bl.y); ctx.stroke();
-          ctx.fillStyle = bl.magOn ? "#d9fff8" : "#fff3d6"; ctx.beginPath(); ctx.arc(bl.x, bl.y, 2.6, 0, 6.2832); ctx.fill();
+          if (bl.kind === "ball") {
+            // ping-pong ball: a plain white-orange sphere, no tracer line
+            ctx.fillStyle = bl.magOn ? "#d9fff8" : "#fff6e8";
+            ctx.beginPath(); ctx.arc(bl.x, bl.y, 4.6, 0, 6.2832); ctx.fill();
+            ctx.strokeStyle = bl.magOn ? "rgba(45,212,191,0.9)" : "rgba(255,159,67,0.85)"; ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.arc(bl.x, bl.y, 4.6, 0, 6.2832); ctx.stroke();
+          } else if (bl.kind === "dart") {
+            // cross dart: a small four-point star spinning as it flies
+            ctx.save(); ctx.translate(bl.x, bl.y); ctx.rotate(time * 16 + bl.x * 0.05);
+            ctx.fillStyle = bl.magOn ? "#d9fff8" : "#e6edf5";
+            ctx.beginPath();
+            ctx.moveTo(6.5, 0); ctx.lineTo(1.8, -1.8); ctx.lineTo(0, -6.5); ctx.lineTo(-1.8, -1.8);
+            ctx.lineTo(-6.5, 0); ctx.lineTo(-1.8, 1.8); ctx.lineTo(0, 6.5); ctx.lineTo(1.8, 1.8);
+            ctx.closePath(); ctx.fill();
+            ctx.restore();
+          } else {
+            // a magnetised bullet (mobile bullet assist actively bending) glows teal
+            ctx.strokeStyle = bl.magOn ? "rgba(45,212,191,0.9)" : "rgba(255,214,150,0.85)"; ctx.lineWidth = 2.5;
+            ctx.beginPath(); ctx.moveTo(bl.x - bl.vx * 0.018, bl.y - bl.vy * 0.018); ctx.lineTo(bl.x, bl.y); ctx.stroke();
+            ctx.fillStyle = bl.magOn ? "#d9fff8" : "#fff3d6"; ctx.beginPath(); ctx.arc(bl.x, bl.y, 2.6, 0, 6.2832); ctx.fill();
+          }
         }
         // entities
         for (i = 0; i < ents.length; i++) {
@@ -1307,6 +1432,17 @@
           if (e.weapon === "knife") {
             ctx.fillStyle = "#dfe6ee"; ctx.beginPath(); ctx.moveTo(8, -2); ctx.lineTo(30, 0); ctx.lineTo(8, 3.4); ctx.closePath(); ctx.fill();
             ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(2, -2.4, 7, 4.8);
+          } else if (e.weapon === "paddle") {
+            // ping-pong paddle in hand: short handle + round red face
+            ctx.fillStyle = "#8a5a2b"; ctx.fillRect(4, -2.2, 9, 4.4);
+            ctx.fillStyle = "#d8402e"; ctx.beginPath(); ctx.arc(19, 0, 8.5, 0, 6.2832); ctx.fill();
+            ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.arc(19, 0, 8.5, 0, 6.2832); ctx.lineWidth = 1.4; ctx.strokeStyle = "#7e1f14"; ctx.stroke();
+          } else if (e.weapon === "dart") {
+            // cross dart pinched in hand: a small silver four-point star
+            ctx.fillStyle = "#cfd8e3";
+            ctx.beginPath(); ctx.moveTo(22, 0); ctx.lineTo(13, -3); ctx.lineTo(15, 0); ctx.lineTo(13, 3); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(15, -7); ctx.lineTo(17, -1.6); ctx.lineTo(19, -7); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(15, 7); ctx.lineTo(17, 1.6); ctx.lineTo(19, 7); ctx.closePath(); ctx.fill();
           } else {
             ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(6, -3.4, 17, 6.8);
             ctx.fillStyle = "#e8e2d2"; ctx.fillRect(19, -2.2, 6, 4.4);
@@ -1346,11 +1482,22 @@
           }
         }
         if (!blinded) {
+          // 十字飞镖 downside: while the player holds the darts, the light
+          // from OTHER people's shots — their muzzle flashes and the glow of
+          // their projectiles — never reaches the player's eyes. Event light
+          // with no shooter attached (kills, respawns) and the player's own
+          // shots still show. Bots are unaffected: this is the player's view.
+          var noForeignLight = player && player.alive && player.weapon === "dart";
           for (i = 0; i < flashes.length; i++) {
             var f = flashes[i], k = f.t / f.max;
+            if (noForeignLight && f.owner && f.owner !== player) continue;
             lightHole(f.x, f.y, f.r * (0.55 + 0.45 * k), 0.35 + 0.63 * k);
           }
-          for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 34, 0.6);
+          for (i = 0; i < bullets.length; i++) {
+            var bl3 = bullets[i];
+            if (noForeignLight && bl3.owner !== player) continue;
+            lightHole(bl3.x, bl3.y, bl3.kind === "bullet" ? 34 : 24, 0.6);
+          }
           if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
           for (i = 0; i < ents.length; i++) { if (ents[i].alive && !ents[i].isPlayer && ents[i].revealT > 0) lightHole(ents[i].x, ents[i].y, 76, 0.92); }
         }
@@ -1358,10 +1505,12 @@
         ctx.drawImage(dark, 0, 0);
         ctx.setTransform(vs, 0, 0, vs, vx, vy);
 
-        // warm glow of flashes (additive tint)
+        // warm glow of flashes (additive tint) — same dart rule: other
+        // people's firing light is invisible to the dart holder
         ctx.globalCompositeOperation = "lighter";
         for (i = 0; i < flashes.length; i++) {
           var f2 = flashes[i], kk = f2.t / f2.max;
+          if (player && player.weapon === "dart" && f2.owner && f2.owner !== player) continue;
           var g2 = ctx.createRadialGradient(f2.x, f2.y, 0, f2.x, f2.y, f2.r * 0.8);
           g2.addColorStop(0, "rgba(255,166,60," + 0.20 * kk + ")");
           g2.addColorStop(1, "rgba(255,166,60,0)");
@@ -1438,10 +1587,10 @@
           ctx.strokeStyle = "rgba(255,235,230,0.85)"; ctx.lineWidth = 1.2;
           ctx.stroke();
         }
-        // floaters
-        ctx.font = "700 13px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+        // floaters (damage numbers, and the paddle's small 「王之爆冲」)
         for (i = 0; i < floaters.length; i++) {
           var fl = floaters[i];
+          ctx.font = "700 " + (fl.small ? 10.5 : 13) + "px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
           ctx.globalAlpha = clamp(fl.t * 1.8, 0, 1); ctx.fillStyle = fl.color;
           ctx.fillText(fl.txt, fl.x, fl.y); ctx.globalAlpha = 1;
         }
@@ -1468,7 +1617,7 @@
         // reload indicator over player
         if (player && player.alive && player.reloadT > 0) {
           ctx.strokeStyle = "rgba(255,233,196,0.9)"; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.arc(player.x, player.y, 21, -1.57, -1.57 + 6.2832 * (1 - player.reloadT / 0.9)); ctx.stroke();
+          ctx.beginPath(); ctx.arc(player.x, player.y, 21, -1.57, -1.57 + 6.2832 * (1 - player.reloadT / (player.reloadDur || 0.9))); ctx.stroke();
         }
         ctx.setTransform(1, 0, 0, 1, 0, 0);
       }
