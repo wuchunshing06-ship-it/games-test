@@ -305,6 +305,13 @@
         .ctlbtn { padding: 8px 14px; font-size: 13px; }
         #menuOverlay p.intro { display: block; font-size: 12.5px; line-height: 1.65; }
         .wrap section, .wrap footer { margin-left: 16px; margin-right: 16px; }
+        /* narrow screens: the params values are long single lines with
+           nowrap on desktop — let them wrap instead of pushing the page
+           sideways, and tighten the career table so all six columns fit */
+        table.params td:last-child { white-space: normal; }
+        table.params td { overflow-wrap: break-word; }
+        table.career { font-size: 12.5px; }
+        table.career th, table.career td { padding-left: 3px; padding-right: 3px; }
       }
     </style>
   </head>
@@ -361,7 +368,7 @@
             <button type="button" id="wpGun" class="sel"><span class="wn">手枪</span><span class="wd">均衡可靠：34 点伤害、3 枪带走一人，弹匣 12 发、换弹 0.9 秒。开枪的闪光照亮周围——也把你暴露给所有人。</span></button>
             <button type="button" id="wpKnife"><span class="wn">小刀</span><span class="wd">无声、一击必杀，但只能贴身挥砍。切出小刀的 0.3 秒里所有人都看得见你、你却看不见任何人；熬过去就能悄悄摸人。</span></button>
             <button type="button" id="wpPaddle"><span class="wn">乒乓球拍</span><span class="wd">一拍一颗乒乓球，70 点伤害、两拍带走满血。弹匣只有 2 发，但换弹 0.6 秒比手枪快；击发时头顶冒出小字「王之爆冲」，只有你自己看得见。拍声和小闪光仍会暴露位置。</span></button>
-            <button type="button" id="wpDart"><span class="wn">十字飞镖</span><span class="wd">攻速极快（0.13 秒一次），一次扇形甩出 3 枚、每枚 35 点伤害，弹匣 9 枚、换弹 0.55 秒，甩镖无声无光不暴露。代价：持镖时看不见别人开火的光、连别人切换小刀的显形也看不见，只能听脚步声；不能借眼，也没有任何辅助瞄准或子弹吸附，全靠手感。例外：用飞镖击杀后，尸体位置会借眼给你看 1.5 秒。持镖时黑暗里能看清所有障碍物，不会撞墙迷路。</span></button>
+            <button type="button" id="wpDart"><span class="wn">十字飞镖</span><span class="wd">攻速极快（0.13 秒一次），一次扇形甩出 3 枚、每枚 35 点伤害，弹匣 9 枚、换弹 0.55 秒，甩镖时有枪口闪光——和开枪一样照亮周围、暴露你的位置。代价：持镖时看不见别人开火的光、连别人切换小刀的显形也看不见，只能听脚步声；不能借眼，也没有任何辅助瞄准或子弹吸附，全靠手感。例外：用飞镖击杀后，尸体位置会借眼给你看 1.5 秒。持镖时黑暗里能看清所有障碍物，不会撞墙迷路。</span></button>
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换武器（手枪 / 小刀 / 乒乓球拍 / 十字飞镖）</p>
@@ -429,7 +436,7 @@
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
               <li><b>乒乓球拍 · 王之爆冲</b>：一拍一颗乒乓球，<b>70 点伤害</b>（两拍带走一个满血对手）；弹匣只有 <b>2 发</b>，但换弹只要 <b>0.6 秒，比手枪快</b>。每次击发，你头顶会飘出小字<b>「王之爆冲」——只有你自己看得见</b>，机器人不会用球拍，也永远看不到这行字。拍子的响声和一圈小闪光仍会暴露你的位置，只是范围比枪小。</li>
-              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖本身无声无光、不会暴露你。坏处一串：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在；<b>连别人切换小刀时的显形也看不见</b>，拔刀的红圈和亮光对你都不存在；<b>持镖时不能借眼</b>——你命中别人、或别人命中你，都不会触发视野互换（局内切到飞镖，也会立刻结束正在进行的借眼）；而且<b>飞镖没有任何辅助</b>：瞄准吸附和手机端的子弹吸附对飞镖全部关闭，全靠你自己的手感。你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。唯一的例外：<b>用飞镖击杀对手后，尸体的位置会借眼给你看 1.5 秒</b>——视野跳到他倒下的地方，确认击杀点、看清尸体周围，再切回你自己的身体。作为补偿，<b>持镖时所有障碍物在黑暗里都看得清</b>——整张地图的墙体和边界会淡淡地浮现出来，走位、绕掩体不用摸黑；但这只照亮地形，人和光仍然看不见。想重新用光找人，切回别的武器即可。</li>
+              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖时<b>有枪口闪光，和开枪一样</b>：闪光照亮你周围一圈（约 160 px、0.9 秒），也把你的位置暴露给所有人——镖本身在飞行中不发光、不留光轨，只有穿过已经被照亮的区域时才看得见。坏处一串：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在；<b>连别人切换小刀时的显形也看不见</b>，拔刀的红圈和亮光对你都不存在；<b>持镖时不能借眼</b>——你命中别人、或别人命中你，都不会触发视野互换（局内切到飞镖，也会立刻结束正在进行的借眼）；而且<b>飞镖没有任何辅助</b>：瞄准吸附和手机端的子弹吸附对飞镖全部关闭，全靠你自己的手感。你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。唯一的例外：<b>用飞镖击杀对手后，尸体的位置会借眼给你看 1.5 秒</b>——视野跳到他倒下的地方，确认击杀点、看清尸体周围，再切回你自己的身体。作为补偿，<b>持镖时所有障碍物在黑暗里都看得清</b>——整张地图的墙体和边界会淡淡地浮现出来，走位、绕掩体不用摸黑；但这只照亮地形，人和光仍然看不见。想重新用光找人，切回别的武器即可。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
               <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆的秒转，推个大概方向，剩下的交给吸附修。<b>持十字飞镖时例外：飞镖没有任何辅助瞄准，电脑和手机都一样。</b></li>
               <li><b>子弹吸附（仅手机端）</b>：手机上开枪后，子弹在飞行中还会再修一次——如果弹道大致指向一个<b>当前看得见</b>的对手（约 30° 以内、640 以内、中间没墙），子弹会朝他<b>轻轻拐弯</b>，正在拐弯的子弹会泛青光。它只是拐弯、不瞬移、不锁死，偏得太远照样打空；对手变回看不见就立刻不再拐。和上面的瞄准吸附是两层一起生效：开枪前修枪口、开枪后修弹道。电脑端没有子弹吸附，子弹全程笔直；机器人的子弹也没有。<b>飞镖不吸附：甩出的镖全程笔直，持镖时两层辅助都关闭。</b></li>
@@ -482,7 +489,7 @@
             <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>乒乓球拍</td><td>伤害 70 · 弹匣 2 发 · 换弹 0.6 秒（比手枪快）· 射速 0.5 秒一拍 · 击发时头顶小字「王之爆冲」（仅自己可见）</td></tr>
-            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 持镖看不见他人开火的光、也看不见他人拔刀显形，只能听脚步声 · 持镖时不能借眼，击杀后尸体借眼 1.5 秒 · 无辅助瞄准、无子弹吸附 · 持镖时障碍物在黑暗中可见</td></tr>
+            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 甩镖有枪口闪光（同手枪：约 160 px / 0.9 秒，会暴露位置）、无声纹 · 镖飞行中不发光不留光轨（只在已被照亮处可见）· 持镖看不见他人开火的光、也看不见他人拔刀显形，只能听脚步声 · 持镖时不能借眼，击杀后尸体借眼 1.5 秒 · 无辅助瞄准、无子弹吸附 · 持镖时障碍物在黑暗中可见</td></tr>
             <tr><td>开局武器</td><td>开始界面可选（界面附四件武器说明）· 重生后回到手枪</td></tr>
             <tr><td>武器切换</td><td>R / 「换武器」在手枪 → 小刀 → 乒乓球拍 → 十字飞镖之间轮换 · 机器人只用手枪和小刀</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
@@ -972,8 +979,12 @@
         var magFlag = !!(e.isPlayer && touchMode && w !== "dart");
         if (w === "dart") {
           // 十字飞镖: one attack throws a fan of 3 darts (fewer if the pouch
-          // is nearly empty). Thrown, not fired: no muzzle flash, no loud
-          // ripple, nobody is alerted — but see the light-blindness downside.
+          // is nearly empty). Throwing DOES pop a muzzle flash, exactly like
+          // the gun (same 160px / 0.9s flash): it lights the thrower up and
+          // gives their position away to everyone in earshot — the same
+          // tradeoff as firing the pistol. The darts themselves still emit
+          // no light in flight (the darkness render gives them no light
+          // hole, unlike bullets) — but see the light-blindness downside.
           var n = Math.min(3, e.mags.dart), di, da2;
           e.mags.dart -= n;
           e.fireCd = 0.13;
@@ -981,7 +992,9 @@
             da2 = e.angle + (di - (n - 1) / 2) * 0.17;
             bullets.push({ x: mx, y: my, vx: Math.cos(da2) * ws.speed, vy: Math.sin(da2) * ws.speed, owner: e, life: 1.0, dmg: ws.dmg, kind: "dart", mag: magFlag, magOn: false });
           }
+          flashes.push({ x: mx, y: my, r: 160, t: 0.9, max: 0.9, owner: e });
           if (e.isPlayer) { stats.shots += n; sfx("dart", true); }
+          alertOthers(e, 430);
         } else if (w === "paddle") {
           // 乒乓球拍: one ball per swing, 70 damage. The smack is loud and
           // pops a small flash — it still gives you away, just less than a gun.
@@ -1192,6 +1205,9 @@
           if (dist(f.x, f.y, b.x, b.y) <= f.r * (0.55 + 0.45 * k)) return true;
         }
         for (i = 0; i < bullets.length; i++) {
+          // a passing dart lights nothing up (it emits no light — see the
+          // darkness render), so it can never make its target "visible"
+          if (bullets[i].kind === "dart") continue;
           if (noFL && bullets[i].owner !== player) continue;
           if (dist(bullets[i].x, bullets[i].y, b.x, b.y) <= 44) return true;
         }
@@ -1557,6 +1573,14 @@
           }
           for (i = 0; i < bullets.length; i++) {
             var bl3 = bullets[i];
+            // 十字飞镖 emits NO light of its own: unlike a bullet (or the
+            // ping-pong ball) it punches no hole in the darkness as it
+            // flies, so throwing one never lights up the thrower or draws
+            // a glowing tracer path like gunfire does. A dart is drawn
+            // under the darkness like a person: it only becomes visible
+            // while crossing an area already lit by something else (your
+            // own micro-light just after the throw, a flash, sonar…).
+            if (bl3.kind === "dart") continue;
             if (noForeignLight && bl3.owner !== player) continue;
             lightHole(bl3.x, bl3.y, bl3.kind === "bullet" ? 34 : 24, 0.6);
           }
