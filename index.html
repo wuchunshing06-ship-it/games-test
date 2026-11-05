@@ -75,7 +75,7 @@
       .ammo .l { font-size: 11px; letter-spacing: .14em; opacity: .7; }
       .pingcd { position: absolute; left: 14px; bottom: 12px; color: #f3ead8; font-size: 12px; opacity: .9; }
       .pingcd b { color: var(--teal-bright); }
-      .feed { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); text-align: center; width: 70%; }
+      .feed { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); text-align: center; width: 70%; }
       .feed div { color: #ffe9c4; font-size: 13px; text-shadow: 0 1px 8px #000; opacity: 0; transition: opacity .3s; margin-bottom: 3px; }
       .feed div.show { opacity: 1; }
       .banner {
@@ -90,6 +90,19 @@
       .centermsg { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); text-align: center; color: #ffe9c4; opacity: 0; transition: opacity .2s; width: 90%; }
       .centermsg.on { opacity: 1; }
       .centermsg .t { font-family: "Noto Serif SC", serif; font-size: clamp(22px, 4vw, 36px); font-weight: 900; letter-spacing: .14em; text-shadow: 0 2px 16px #000; }
+      .timer { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); color: #f3ead8; font-size: 30px; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: .06em; text-shadow: 0 2px 10px #000; }
+      .timer.low { color: #ff7a6b; }
+      .board { margin-top: 10px; background: rgba(0,0,0,.38); border: 1px solid rgba(255,255,255,.14); border-radius: 8px; padding: 7px 10px; min-width: 150px; }
+      .board .bt { font-size: 10.5px; letter-spacing: .22em; opacity: .7; margin-bottom: 3px; }
+      .board .row { display: flex; justify-content: space-between; gap: 14px; font-size: 12.5px; line-height: 1.65; font-variant-numeric: tabular-nums; color: #e8e2d2; }
+      .board .row .rk { opacity: .55; margin-right: 6px; }
+      .board .row.me { color: var(--amber-bright); font-weight: 700; }
+      .board .row.dead { opacity: .45; }
+      .knifebanner { position: absolute; top: 21%; left: 50%; transform: translateX(-50%); text-align: center; width: 92%; opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 3; }
+      .knifebanner.on { opacity: 1; }
+      .knifebanner .t { font-size: clamp(15px, 2.4vw, 21px); font-weight: 900; letter-spacing: .08em; color: #ffd9d2; text-shadow: 0 0 18px rgba(194,64,46,.85), 0 2px 8px #000; }
+      .lowhp { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 3; background: radial-gradient(ellipse at center, rgba(194,30,20,0) 52%, rgba(194,30,20,.6) 100%); }
+      #btnSwapTouch { bottom: 126px; border-color: rgba(255,180,84,.6); color: #ffe9c4; background: rgba(196,123,18,.22); }
 
       /* overlays */
       .overlay {
@@ -117,7 +130,10 @@
         .banner { top: 33%; width: 88%; }
         .banner .s { font-size: 11.5px; }
         .banner .bar { width: 150px; }
-        .feed { top: 40px; width: 62%; }
+        .feed { top: 78px; width: 62%; }
+        .timer { font-size: 22px; top: 4px; }
+        .board { min-width: 118px; padding: 5px 8px; margin-top: 7px; }
+        .board .row { font-size: 11px; line-height: 1.55; }
         .feed div { font-size: 11px; }
         .topbtns { top: 44px; }
       }
@@ -208,7 +224,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，先拿 5 杀获胜</strong>。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜；被杀后击杀数清零</strong>。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
 
       <div class="stage" id="stage" data-state="menu">
         <canvas id="cv" width="960" height="600"></canvas>
@@ -218,21 +234,25 @@
             <div class="who">你 · 暗行者</div>
             <div class="hpbar"><i id="hpfill" style="width:100%"></i></div>
             <div class="hp-num"><span id="hpnum">100</span> HP · 击杀 <span id="mykills">0</span></div>
+            <div class="board" id="board"></div>
           </div>
           <div class="tr">
-            <div class="score-big"><span id="scoreMe">0</span> : <span id="scoreFoe">0</span></div>
-            <div class="score-sub">先到 5 杀 · 用时 <span id="clock">0:00</span></div>
+            <div class="score-big" id="weaponName">手 枪</div>
+            <div class="score-sub">按 <b>R</b> 切换武器</div>
           </div>
+          <div class="timer" id="timer">2:00</div>
           <div class="feed" id="feed"></div>
           <div class="banner" id="banner">
             <div class="t">借 眼</div>
             <div class="s" id="bannerSub">你正通过对手的眼睛看世界——你的身体还在原地</div>
             <div class="bar"><i id="bannerBar" style="width:100%"></i></div>
           </div>
+          <div class="knifebanner" id="knifebanner"><div class="t" id="knifebannerT"></div></div>
           <div class="centermsg" id="centermsg"><div class="t" id="centermsgT"></div></div>
           <div class="pingcd" id="pingcd">声纳 <b>E</b> · 就绪</div>
-          <div class="ammo"><div class="n" id="ammoN">12</div><div class="l">弹药 · R 换弹</div></div>
+          <div class="ammo"><div class="n" id="ammoN">12</div><div class="l" id="ammoL">弹药 · 打空自动换弹</div></div>
         </div>
+        <div class="lowhp" id="lowhp"></div>
 
         <div class="topbtns">
           <button id="btnSound" type="button">声音：开</button>
@@ -242,6 +262,7 @@
         <div class="stick" id="stickMove"><div class="nub"></div></div>
         <div class="stick" id="stickAim"><div class="nub"></div></div>
         <button class="touchbtn" id="btnPingTouch" type="button">声纳</button>
+        <button class="touchbtn" id="btnSwapTouch" type="button">换武器</button>
 
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
@@ -252,8 +273,8 @@
             <button type="button" id="diffNorm" class="sel">正式难度</button>
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
-          <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳</p>
-          <p class="hint hint-touch">手机：左摇杆移动 · 右摇杆瞄准开火</p>
+          <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
+          <p class="hint hint-touch">手机：左摇杆移动 · 右摇杆瞄准开火 · 「换武器」切小刀</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -264,7 +285,7 @@
 
         <div class="overlay hidden" id="overOverlay">
           <h2 id="overTitle" style="font-size:34px;">胜利</h2>
-          <div class="tag" id="overSub">你先拿到了 5 杀</div>
+          <div class="tag" id="overSub">你先拿到了 10 杀</div>
           <div class="stats">
             <div><div class="v" id="stKill">0</div><div class="k">击杀</div></div>
             <div><div class="v" id="stDeath">0</div><div class="k">死亡</div></div>
@@ -285,16 +306,19 @@
               <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机用左摇杆</li>
               <li>瞄准开火：鼠标指向、点击或按住左键；手机用右摇杆（推出即开火）</li>
               <li>声纳：<kbd>E</kbd> 或点「声纳」按钮，冷却 6 秒</li>
-              <li>换弹：<kbd>R</kbd>，打空也会自动换弹（0.9 秒）</li>
+              <li>切换武器：<kbd>R</kbd> 或手机「换武器」按钮，在手枪和小刀之间切换；换弹是自动的（打空后 0.9 秒）</li>
+              <li>小刀：近身一击必杀，完全无声；用同样的开火操作挥刀</li>
               <li>暂停：<kbd>Esc</kbd></li>
             </ul>
           </div>
           <div class="card">
-            <h4><span class="dot" style="background:var(--teal-bright)"></span>三条核心规则</h4>
+            <h4><span class="dot" style="background:var(--teal-bright)"></span>核心规则</h4>
             <ul>
+              <li><b>限时冲榜</b>：一局 2 分钟（屏幕正上方倒计时），先到 10 杀直接获胜；时间到则按当前击杀数排名，第一名获胜。<b>被杀后击杀数清零</b>，榜首随时可能易主——左上角击杀榜实时更新。</li>
               <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮一大片区域——包括开枪者本人。远处看到闪光，就等于知道了枪手的位置。</li>
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
+              <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
             </ul>
           </div>
         </div>
@@ -323,7 +347,10 @@
             <tr><td>子弹伤害 / 击杀所需命中</td><td>34 / 3 枪</td></tr>
             <tr><td>弹匣 / 换弹时间 / 射速</td><td>12 发 / 0.9 秒 / 0.22 秒一发</td></tr>
             <tr><td>声纳冷却 / 现形时间</td><td>6 秒 / 1 秒</td></tr>
-            <tr><td>对手数量 / 获胜条件</td><td>3 个 AI / 先到 5 杀</td></tr>
+            <tr><td>对手数量 / 获胜条件</td><td>3 个 AI / 先到 10 杀，或 2 分钟到时击杀第一</td></tr>
+            <tr><td>对局时长 / 死亡惩罚</td><td>2 分钟 / 击杀数清零</td></tr>
+            <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
+            <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后 12 HP/秒</td></tr>
           </table>
         </div>
@@ -420,8 +447,9 @@
       /* ---------------- state ---------------- */
       var state = "menu"; // menu | playing | paused | over
       var difficulty = "normal";
+      var MATCH_LEN = 120, WIN_KILLS = 10;
       var time = 0, matchT = 0, lastTs = 0;
-      var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [];
+      var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [], slashes = [];
       var swapT = 0, swapCd = 0, swapTarget = null, pingT = 0, pingCd = 0;
       var stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
       var winnerIsPlayer = false;
@@ -431,7 +459,8 @@
           name: name, color: color, x: x, y: y, spawnX: x, spawnY: y, r: 14,
           angle: 0, hp: 100, maxHp: 100, alive: true, respawnT: 0,
           fireCd: rand(0.2, 0.6), reloadT: 0, mag: 12, lastHurtT: -99,
-          score: 0, isPlayer: !!isPlayer,
+          score: 0, deaths: 0, isPlayer: !!isPlayer,
+          weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
           thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
           knownX: 0, knownY: 0, knownT: -99, knownEnt: null, strafe: Math.random() < 0.5 ? 1 : -1, strafeT: rand(1, 2.4)
         };
@@ -446,8 +475,11 @@
           makeEnt("雾行", "#4ecdc4", 876, 516, false),
           makeEnt("夜枭", "#c77dff", 84, 84, false)
         ];
-        bullets = []; flashes = []; ripples = []; sparks = []; floaters = [];
+        bullets = []; flashes = []; ripples = []; sparks = []; floaters = []; slashes = [];
         swapT = 0; swapCd = 0; swapTarget = null; pingT = 0; pingCd = 0; matchT = 0;
+        boardKey = ""; kbT = 0;
+        $("knifebanner").classList.remove("on");
+        $("lowhp").style.opacity = 0;
         stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
         feedClear();
       }
@@ -465,17 +497,45 @@
       function feedClear() { feedBox.innerHTML = ""; }
       var cmT = 0;
       function centerMsg(t) { $("centermsgT").textContent = t; $("centermsg").classList.add("on"); cmT = 1.1; }
+      var kbT = 0;
+      function showKnifeBanner(killer, victim) {
+        $("knifebannerT").textContent = "「" + killer.name + "」用小刀击杀了「" + victim.name + "」";
+        $("knifebanner").classList.add("on"); kbT = 2.4;
+      }
+      function cmpRank(a, b) { return (b.score - a.score) || (a.deaths - b.deaths); }
+      var boardKey = "";
+      function updateBoard() {
+        var sorted = allEnts().slice().sort(cmpRank);
+        var key = "", i, e;
+        for (i = 0; i < sorted.length; i++) key += sorted[i].name + ":" + sorted[i].score + (sorted[i].alive ? 1 : 0) + "|";
+        if (key === boardKey) return;
+        boardKey = key;
+        var html = "<div class='bt'>击 杀 榜</div>";
+        for (i = 0; i < sorted.length; i++) {
+          e = sorted[i];
+          html += "<div class='row" + (e.isPlayer ? " me" : "") + (e.alive ? "" : " dead") + "'><span><span class='rk'>" + (i + 1) + "</span>" + e.name + "</span><span>" + e.score + " 杀</span></div>";
+        }
+        $("board").innerHTML = html;
+      }
       function updateHUD() {
         if (!player) return;
         $("hpfill").style.width = clamp(player.hp / player.maxHp * 100, 0, 100) + "%";
         $("hpfill").style.background = player.hp <= 30 ? "#ff6b5e" : "var(--amber-bright)";
         $("hpnum").textContent = Math.max(0, Math.ceil(player.hp));
         $("mykills").textContent = player.score;
-        $("scoreMe").textContent = player.score;
-        var best = 0, i; for (i = 0; i < bots.length; i++) best = Math.max(best, bots[i].score);
-        $("scoreFoe").textContent = best;
-        $("clock").textContent = fmtTime(matchT);
-        $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mag;
+        var remain = Math.max(0, MATCH_LEN - matchT);
+        var tm = $("timer");
+        tm.textContent = fmtTime(remain);
+        tm.classList.toggle("low", remain <= 10.5);
+        $("weaponName").textContent = player.weapon === "knife" ? "小 刀" : "手 枪";
+        updateBoard();
+        var pct = player.hp / player.maxHp;
+        if (player.alive && pct < 0.4) {
+          var lo = (0.4 - pct) / 0.4;
+          $("lowhp").style.opacity = (lo * (0.72 + 0.28 * Math.sin(matchT * 6))).toFixed(2);
+        } else $("lowhp").style.opacity = 0;
+        if (player.weapon === "knife") { $("ammoN").textContent = "刀"; $("ammoL").textContent = "小刀 · 无声一击"; }
+        else { $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mag; $("ammoL").textContent = "弹药 · 打空自动换弹"; }
         var pc = $("pingcd");
         if (pingCd > 0) pc.innerHTML = "声纳冷却 · " + pingCd.toFixed(1) + "s";
         else pc.innerHTML = "声纳 <b>E</b> · 就绪";
@@ -486,6 +546,7 @@
           $("bannerBar").style.width = (swapT / 3 * 100) + "%";
         } else bn.classList.remove("on");
         if (cmT > 0) { cmT -= 1 / 60; if (cmT <= 0) $("centermsg").classList.remove("on"); }
+        if (kbT > 0) { kbT -= 1 / 60; if (kbT <= 0) $("knifebanner").classList.remove("on"); }
       }
 
       /* ---------------- input ---------------- */
@@ -495,7 +556,7 @@
         if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].indexOf(e.key.toLowerCase()) >= 0) e.preventDefault();
         if (e.key === "Escape" && state === "playing") pauseGame();
         if ((e.key.toLowerCase() === "e") && state === "playing") doPing();
-        if (e.key.toLowerCase() === "r" && state === "playing" && player.reloadT <= 0 && player.mag < 12) startReload(player);
+        if (e.key.toLowerCase() === "r" && state === "playing" && !e.repeat) switchWeapon(player);
       });
       window.addEventListener("keyup", function (e) { keys[e.key.toLowerCase()] = false; });
       function canvasPos(cx, cy) {
@@ -548,11 +609,50 @@
       cv.addEventListener("touchend", touchEnd); cv.addEventListener("touchcancel", touchEnd);
       $("btnPingTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); if (state === "playing") doPing(); }, { passive: false });
       $("btnPingTouch").addEventListener("click", function () { if (state === "playing") doPing(); });
+      var lastSwapTouch = 0;
+      $("btnSwapTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); lastSwapTouch = Date.now(); if (state === "playing") switchWeapon(player); }, { passive: false });
+      $("btnSwapTouch").addEventListener("click", function () { if (Date.now() - lastSwapTouch > 500 && state === "playing") switchWeapon(player); });
 
       /* ---------------- combat ---------------- */
       function startReload(e) { if (e.reloadT <= 0 && e.mag < 12) { e.reloadT = 0.9; if (e.isPlayer) sfx("reload", true); } }
+      function switchWeapon(e) {
+        if (!e || !e.alive || state !== "playing") return;
+        e.weapon = e.weapon === "gun" ? "knife" : "gun";
+        if (e.weapon === "knife") {
+          // drawing the knife: everyone sees you for 0.3s, and you see no one
+          e.revealT = 0.3; e.blindT = 0.3;
+          if (e.isPlayer) {
+            for (var i = 0; i < bots.length; i++) {
+              var b = bots[i];
+              b.knownX = e.x; b.knownY = e.y; b.knownT = time; b.knownEnt = e;
+            }
+          }
+        }
+        if (e.isPlayer) updateHUD();
+      }
+      function attack(e) { if (e.weapon === "knife") tryKnife(e); else tryFire(e); }
+      function tryKnife(e) {
+        if (!e.alive || e.swingCd > 0) return;
+        e.swingCd = 0.45;
+        slashes.push({ x: e.x, y: e.y, angle: e.angle, t: 0.18, max: 0.18 });
+        // silent: no flash, no ripple, no sound — but a kill is announced to everyone
+        var ents = allEnts(), i, v;
+        for (i = 0; i < ents.length; i++) {
+          v = ents[i];
+          if (v === e || !v.alive || v.invulnT > 0) continue;
+          if (dist(e.x, e.y, v.x, v.y) > 58) continue;
+          var da = Math.atan2(v.y - e.y, v.x - e.x) - e.angle;
+          while (da > 3.1416) da -= 6.2832;
+          while (da < -3.1416) da += 6.2832;
+          if (Math.abs(da) > 1.15) continue;
+          if (losBlocked(e.x, e.y, v.x, v.y)) continue;
+          v.lastHurtT = time;
+          kill(v, e, "knife");
+          break;
+        }
+      }
       function tryFire(e) {
-        if (!e.alive || e.fireCd > 0 || e.reloadT > 0) return;
+        if (!e.alive || e.weapon !== "gun" || e.fireCd > 0 || e.reloadT > 0) return;
         if (e.mag <= 0) { startReload(e); return; }
         e.mag--; e.fireCd = e.isPlayer ? 0.22 : rand(0.42, 0.62);
         var mx = e.x + Math.cos(e.angle) * 20, my = e.y + Math.sin(e.angle) * 20;
@@ -590,16 +690,18 @@
         if (!shooter.isPlayer && victim.isPlayer) bot = shooter;
         if (bot && swapT <= 0 && swapCd <= 0 && victim.alive) startSwap(bot);
       }
-      function kill(victim, killer) {
+      function kill(victim, killer, how) {
         victim.alive = false; victim.respawnT = 1.6; victim.hp = 0;
+        victim.score = 0; victim.deaths++;
         killer.score++;
         flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
         for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
         if (swapTarget === victim && swapT > 0) endSwap(true);
-        if (killer.isPlayer) { feed("你击杀了「" + victim.name + "」 · " + killer.score + " / 5"); sfx("kill", true); }
-        else if (victim.isPlayer) { stats.deaths++; feed("你被「" + killer.name + "」击杀"); centerMsg("你 被 击 杀"); }
+        if (how === "knife") showKnifeBanner(killer, victim);
+        if (killer.isPlayer) { stats.kills++; feed("你击杀了「" + victim.name + "」 · 当前 " + killer.score + " 杀"); sfx("kill", true); }
+        else if (victim.isPlayer) { stats.deaths++; feed("你被「" + killer.name + "」击杀，击杀数已清零"); centerMsg("你 被 击 杀"); }
         else feed("「" + killer.name + "」击杀了「" + victim.name + "」");
-        if (killer.score >= 5) endMatch(killer.isPlayer, killer);
+        if (killer.score >= WIN_KILLS) endMatch(killer.isPlayer, killer, "kills");
       }
       function doPing() {
         if (pingCd > 0 || !player.alive) return;
@@ -621,7 +723,7 @@
         for (i = 0; i < ents.length; i++) {
           o = ents[i];
           if (o === b || !o.alive) continue;
-          if (dist(b.x, b.y, o.x, o.y) < 95) { b.knownX = o.x; b.knownY = o.y; b.knownT = time; b.knownEnt = o; }
+          if (b.blindT <= 0 && dist(b.x, b.y, o.x, o.y) < 95) { b.knownX = o.x; b.knownY = o.y; b.knownT = time; b.knownEnt = o; }
         }
         if (b.thinkT > 0) return;
         b.thinkT = 0.12;
@@ -635,21 +737,32 @@
           var gx = fresh ? t.x : b.knownX, gy = fresh ? t.y : b.knownY;
           var d = dist(b.x, b.y, gx, gy);
           b.strafeT -= 0.12; if (b.strafeT <= 0) { b.strafe = -b.strafe; b.strafeT = rand(0.9, 2.2); }
-          var want = confused ? 200 : 215;
-          var radial = d > want + 26 ? 1 : (d < want - 46 ? -1 : 0);
           var ax = (gx - b.x) / (d || 1), ay = (gy - b.y) / (d || 1);
-          tx = (ax * radial + -ay * b.strafe * 0.75) * speed;
-          ty = (ay * radial + ax * b.strafe * 0.75) * speed;
           b.angle = Math.atan2(t.y - b.y, t.x - b.x);
-          var spread = (difficulty === "easy" ? 0.16 : 0.085) + (confused ? 0.30 : 0) + (fresh ? 0 : 0.08);
-          if (d < 440 && !losBlocked(b.x, b.y, t.x, t.y)) {
-            var realAngle = b.angle;
-            b.angle += rand(-spread, spread);
-            tryFire(b);
-            b.angle = realAngle;
+          if (b.weapon === "gun" && b.blindT <= 0 && d < 115 && Math.random() < 0.10) switchWeapon(b);
+          if (b.weapon === "knife") {
+            b.knifeNoSee = 0;
+            tx = ax * speed; ty = ay * speed;
+            if (d < 56) tryKnife(b);
+          } else {
+            var want = confused ? 200 : 215;
+            var radial = d > want + 26 ? 1 : (d < want - 46 ? -1 : 0);
+            tx = (ax * radial + -ay * b.strafe * 0.75) * speed;
+            ty = (ay * radial + ax * b.strafe * 0.75) * speed;
+            var spread = (difficulty === "easy" ? 0.16 : 0.085) + (confused ? 0.30 : 0) + (fresh ? 0 : 0.08);
+            if (d < 440 && b.blindT <= 0 && !losBlocked(b.x, b.y, t.x, t.y)) {
+              var realAngle = b.angle;
+              b.angle += rand(-spread, spread);
+              tryFire(b);
+              b.angle = realAngle;
+            }
+            if (confused) { tx *= 0.55; ty *= 0.55; }
           }
-          if (confused) { tx *= 0.55; ty *= 0.55; }
         } else {
+          if (b.weapon === "knife") {
+            b.knifeNoSee += 0.12;
+            if (b.knifeNoSee > 1.2) { b.knifeNoSee = 0; switchWeapon(b); }
+          }
           if (!b.hasWander || dist(b.x, b.y, b.wanderX, b.wanderY) < 24) {
             for (var tries = 0; tries < 8; tries++) {
               var wx = rand(50, W - 50), wy = rand(50, H - 50);
@@ -667,6 +780,11 @@
       /* ---------------- update ---------------- */
       function update(dt) {
         time += dt; matchT += dt;
+        if (matchT >= MATCH_LEN) {
+          var rk = allEnts().slice().sort(cmpRank);
+          endMatch(rk[0] === player, rk[0], "time");
+          return;
+        }
         if (swapT > 0) { swapT -= dt; if (swapT <= 0) endSwap(false); }
         else if (swapCd > 0) swapCd -= dt;
         if (pingT > 0) pingT -= dt;
@@ -685,12 +803,18 @@
           moveEntity(p, mvx * 218 * dt, mvy * 218 * dt);
           if (aimJoy.id !== null && (Math.abs(aimJoy.dx) > 0.18 || Math.abs(aimJoy.dy) > 0.18)) {
             p.angle = Math.atan2(aimJoy.dy, aimJoy.dx);
-            tryFire(p);
+            attack(p);
           } else if (aimJoy.id === null) {
             p.angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-            if (mouse.down) tryFire(p);
+            if (mouse.down) attack(p);
           }
-          if (keys[" "]) tryFire(p);
+          if (keys[" "]) attack(p);
+          if (p.revealT > 0) {
+            for (var ri = 0; ri < bots.length; ri++) {
+              var rb = bots[ri];
+              rb.knownX = p.x; rb.knownY = p.y; rb.knownT = time; rb.knownEnt = p;
+            }
+          }
         }
         // bots
         for (var i = 0; i < bots.length; i++) {
@@ -704,13 +828,30 @@
         for (i = 0; i < ents.length; i++) {
           var e = ents[i];
           if (e.fireCd > 0) e.fireCd -= dt;
+          if (e.revealT > 0) e.revealT -= dt;
+          if (e.blindT > 0) e.blindT -= dt;
+          if (e.invulnT > 0) e.invulnT -= dt;
+          if (e.swingCd > 0) e.swingCd -= dt;
           if (e.reloadT > 0) { e.reloadT -= dt; if (e.reloadT <= 0) e.mag = 12; }
           if (!e.alive) {
             e.respawnT -= dt;
             if (e.respawnT <= 0) {
-              e.alive = true; e.hp = e.maxHp; e.x = e.spawnX; e.y = e.spawnY; e.mag = 12;
+              e.alive = true; e.hp = e.maxHp; e.mag = 12;
+              e.weapon = "gun"; e.invulnT = 0.2; e.revealT = 0; e.blindT = 0; e.swingCd = 0;
+              var placed = false, rt, rx, ry, oi, oe;
+              for (rt = 0; rt < 24 && !placed; rt++) {
+                rx = rand(40, W - 40); ry = rand(40, H - 40);
+                if (inWall(rx, ry, 22)) continue;
+                placed = true;
+                for (oi = 0; oi < ents.length; oi++) {
+                  oe = ents[oi];
+                  if (oe !== e && oe.alive && dist(rx, ry, oe.x, oe.y) < 130) { placed = false; break; }
+                }
+                if (placed) { e.x = rx; e.y = ry; }
+              }
+              if (!placed) { e.x = e.spawnX; e.y = e.spawnY; }
               flashes.push({ x: e.x, y: e.y, r: 130, t: 0.5, max: 0.5 });
-              if (e.isPlayer) centerMsg("重 新 入 场");
+              if (e.isPlayer) centerMsg("重 新 入 场 · 手 枪 在 手");
             }
           } else if (time - e.lastHurtT > 5 && e.hp < e.maxHp) {
             e.hp = Math.min(e.maxHp, e.hp + 12 * dt);
@@ -729,7 +870,7 @@
             }
             for (var j = 0; j < ents.length; j++) {
               var v = ents[j];
-              if (v === bl.owner || !v.alive) continue;
+              if (v === bl.owner || !v.alive || v.invulnT > 0) continue;
               if (dist(bl.x, bl.y, v.x, v.y) < v.r + 3) {
                 v.hp -= 34; v.lastHurtT = time;
                 for (k = 0; k < 5; k++) sparks.push({ x: bl.x, y: bl.y, vx: rand(-140, 140), vy: rand(-140, 140), t: 0.3, color: v.color });
@@ -747,6 +888,7 @@
         for (i = ripples.length - 1; i >= 0; i--) { var rp = ripples[i]; rp.t -= dt; rp.r += (rp.max - rp.r) * dt * 5.2; if (rp.t <= 0) ripples.splice(i, 1); }
         for (i = sparks.length - 1; i >= 0; i--) { var sp = sparks[i]; sp.t -= dt; sp.x += sp.vx * dt; sp.y += sp.vy * dt; sp.vx *= 0.92; sp.vy *= 0.92; if (sp.t <= 0) sparks.splice(i, 1); }
         for (i = floaters.length - 1; i >= 0; i--) { floaters[i].t -= dt; floaters[i].y -= 26 * dt; if (floaters[i].t <= 0) floaters.splice(i, 1); }
+        for (i = slashes.length - 1; i >= 0; i--) { slashes[i].t -= dt; if (slashes[i].t <= 0) slashes.splice(i, 1); }
         updateHUD();
       }
       /* ---------------- render ---------------- */
@@ -794,8 +936,13 @@
           ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.angle);
           ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.arc(2, 3, e.r, 0, 6.2832); ctx.fill();
           ctx.fillStyle = e.color; ctx.beginPath(); ctx.arc(0, 0, e.r, 0, 6.2832); ctx.fill();
-          ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(6, -3.4, 17, 6.8);
-          ctx.fillStyle = "#e8e2d2"; ctx.fillRect(19, -2.2, 6, 4.4);
+          if (e.weapon === "knife") {
+            ctx.fillStyle = "#dfe6ee"; ctx.beginPath(); ctx.moveTo(8, -2); ctx.lineTo(30, 0); ctx.lineTo(8, 3.4); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(2, -2.4, 7, 4.8);
+          } else {
+            ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(6, -3.4, 17, 6.8);
+            ctx.fillStyle = "#e8e2d2"; ctx.fillRect(19, -2.2, 6, 4.4);
+          }
           ctx.restore();
           ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.arc(e.x - 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.arc(e.x + 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.fill();
           if (e.hp < e.maxHp) {
@@ -817,20 +964,26 @@
         dctx.clearRect(0, 0, W, H);
         dctx.fillStyle = "rgba(2,3,7,0.972)"; dctx.fillRect(0, 0, W, H);
         dctx.globalCompositeOperation = "destination-out";
+        var blinded = player && player.blindT > 0;
         if (player && player.alive) {
-          if (swapT > 0 && swapTarget && swapTarget.alive) {
+          if (blinded) {
+            lightHole(player.x, player.y, 46, 0.5);
+          } else if (swapT > 0 && swapTarget && swapTarget.alive) {
             lightHole(swapTarget.x, swapTarget.y, 128, 0.97);
             lightHole(player.x, player.y, 28, 0.55);
           } else {
             lightHole(player.x, player.y, 66, 0.62);
           }
         }
-        for (i = 0; i < flashes.length; i++) {
-          var f = flashes[i], k = f.t / f.max;
-          lightHole(f.x, f.y, f.r * (0.55 + 0.45 * k), 0.35 + 0.63 * k);
+        if (!blinded) {
+          for (i = 0; i < flashes.length; i++) {
+            var f = flashes[i], k = f.t / f.max;
+            lightHole(f.x, f.y, f.r * (0.55 + 0.45 * k), 0.35 + 0.63 * k);
+          }
+          for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 42, 0.75);
+          if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
+          for (i = 0; i < ents.length; i++) { if (ents[i].alive && !ents[i].isPlayer && ents[i].revealT > 0) lightHole(ents[i].x, ents[i].y, 76, 0.92); }
         }
-        for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 42, 0.75);
-        if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
         ctx.drawImage(dark, 0, 0);
 
         // warm glow of flashes (additive tint)
@@ -858,6 +1011,28 @@
             ctx.strokeStyle = "rgba(45,212,191," + 0.75 * pingT + ")"; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6 + (1 - pingT) * 10, 0, 6.2832); ctx.stroke();
           }
+        }
+        // knife-draw reveal outlines + spawn shield
+        for (i = 0; i < ents.length; i++) {
+          e = ents[i]; if (!e.alive) continue;
+          if (e.revealT > 0) {
+            ctx.strokeStyle = e.isPlayer ? "rgba(255,90,70,0.95)" : "rgba(255,220,150,0.95)"; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6, 0, 6.2832); ctx.stroke();
+            if (e.isPlayer) {
+              ctx.font = "700 11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+              ctx.fillStyle = "rgba(255,120,100,0.95)"; ctx.fillText("已暴露！", e.x, e.y - 32);
+            }
+          }
+          if (e.invulnT > 0) {
+            ctx.strokeStyle = "rgba(240,248,255,0.8)"; ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 9, 0, 6.2832); ctx.stroke();
+          }
+        }
+        // knife slash arcs
+        for (i = 0; i < slashes.length; i++) {
+          var sl = slashes[i], sa = clamp(sl.t / sl.max, 0, 1);
+          ctx.strokeStyle = "rgba(235,242,250," + 0.85 * sa + ")"; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(sl.x, sl.y, 40, sl.angle - 0.9, sl.angle + 0.9); ctx.stroke();
         }
         // eye-swap link + outlines
         if (swapT > 0 && swapTarget && swapTarget.alive && player.alive) {
@@ -903,19 +1078,21 @@
       }
 
       /* ---------------- flow ---------------- */
-      function endMatch(won, champ) {
+      function endMatch(won, champ, reason) {
         if (state !== "playing") return;
         state = "over"; winnerIsPlayer = won; stage.dataset.state = "over";
-        stats.kills = player.score;
         $("overTitle").textContent = won ? "胜 利" : "败 北";
-        $("overSub").textContent = won ? "你先拿到了 5 杀" : "「" + champ.name + "」先拿到了 5 杀";
-        $("stKill").textContent = player.score;
+        if (reason === "time") $("overSub").textContent = "时间到——" + (won ? "你以 " + champ.score + " 杀登顶击杀榜" : "「" + champ.name + "」以 " + champ.score + " 杀登顶击杀榜");
+        else $("overSub").textContent = won ? "你先拿到了 10 杀" : "「" + champ.name + "」先拿到了 10 杀";
+        $("stKill").textContent = stats.kills;
         $("stDeath").textContent = stats.deaths;
         $("stAcc").textContent = stats.shots ? Math.round(stats.hits / stats.shots * 100) + "%" : "—";
         $("stSwap").textContent = stats.swaps;
         $("stTime").textContent = fmtTime(matchT);
         $("overOverlay").classList.remove("hidden");
         $("banner").classList.remove("on");
+        $("lowhp").style.opacity = 0;
+        $("knifebanner").classList.remove("on");
       }
       function startGame() {
         ac(); resetMatch();
@@ -923,7 +1100,7 @@
         $("menuOverlay").classList.add("hidden");
         $("overOverlay").classList.add("hidden");
         $("pauseOverlay").classList.add("hidden");
-        feed("对局开始——先拿 5 杀获胜。黑暗里，开枪即暴露。");
+        feed("对局开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。");
         updateHUD();
       }
       function pauseGame() {
