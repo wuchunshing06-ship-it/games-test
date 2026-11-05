@@ -371,7 +371,7 @@
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
-              <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——且他就在你瞄准方向约 24° 以内，瞄准方向会每帧朝他<b>小幅靠拢</b>，准星变青表示正在吸附。力度很轻：不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。手机上同样生效——配上右摇杆的推幅转向，不用拼精确枪法，推个大概方向再靠吸附修就行。</li>
+              <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆更快的推幅转向，推个大概方向，剩下的交给吸附修。</li>
               <li><b>红色倒三角是你的专属标记</b>：它只出现在你自己头顶、始终跟着你走，黑暗里和借眼期间都看得见；机器人头顶没有。它和借眼时指向自己身体的提示可以同时存在，一个是头顶标记、一个是借眼期间的额外指引，不冲突。</li>
             </ul>
           </div>
@@ -406,8 +406,8 @@
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
-            <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 瞄准夹角约 24° 内 · 轻度吸附不锁死 · 看不见即消失</td></tr>
-            <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火 · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
+            <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 不锁死 · 看不见即消失 · 电脑：夹角约 24° 内轻度吸附 · 手机（加强）：夹角约 50° 内、距离更远、吸附更快更强</td></tr>
+            <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（转向已加快） · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
@@ -919,32 +919,42 @@
         }
         return false;
       }
-      var ASSIST_CONE = 0.42;   // ~24 degrees either side of the current aim
+      var ASSIST_CONE = 0.42;   // PC: ~24 degrees either side of the current aim
       var ASSIST_RANGE = 480;
-      function applyAimAssist(raw, dt) {
+      var ASSIST_CONE_M = 0.85; // mobile: ~49 degrees — wider catch, thumb aim is coarse
+      var ASSIST_RANGE_M = 620;
+      function applyAimAssist(raw, dt, mobile) {
         assistTarget = null;
         var turnRate = prevRawAim === null ? 0 : Math.abs(angDiff(raw, prevRawAim)) / Math.max(dt, 0.001);
         prevRawAim = raw;
         if (!player || !player.alive || player.blindT > 0) return raw;
+        var cone = mobile ? ASSIST_CONE_M : ASSIST_CONE;
+        var range = mobile ? ASSIST_RANGE_M : ASSIST_RANGE;
         var best = null, bestDist = 1e9, i, b, d, ta;
         for (i = 0; i < bots.length; i++) {
           b = bots[i];
           if (!isVisibleToPlayer(b)) continue; // invisible this frame = no pull at all
           d = dist(player.x, player.y, b.x, b.y);
-          if (d > ASSIST_RANGE || d < 1) continue;
+          if (d > range || d < 1) continue;
           ta = Math.atan2(b.y - player.y, b.x - player.x);
-          if (Math.abs(angDiff(ta, raw)) > ASSIST_CONE) continue; // too far off-axis: no pull
+          if (Math.abs(angDiff(ta, raw)) > cone) continue; // too far off-axis: no pull
           if (d < bestDist) { bestDist = d; best = b; }
         }
         if (!best) return raw;
         // a deliberate fast swing of the aim overrides the magnet completely
-        var scale = clamp(1 - Math.max(0, turnRate - 1.4) / 2.2, 0, 1);
+        // (on mobile the fade starts later and is gentler, so stick turns
+        // don't fight the stronger pull)
+        var fadeStart = mobile ? 3.2 : 1.4, fadeSpan = mobile ? 3.0 : 2.2;
+        var scale = clamp(1 - Math.max(0, turnRate - fadeStart) / fadeSpan, 0, 1);
         if (scale <= 0) return raw;
         var diff = angDiff(Math.atan2(best.y - player.y, best.x - player.x), raw);
-        // light magnetism: close only a small fraction of the gap per frame,
-        // with a hard cap on assist turn speed — it never snaps or locks on
-        var step = diff * (1 - Math.exp(-4.2 * dt)) * scale;
-        var maxStep = 1.5 * dt * scale;
+        // magnetism: close a fraction of the gap per frame, with a hard cap
+        // on assist turn speed — it never snaps or locks on. Mobile pulls
+        // much harder and faster than PC (test build: keep phones playable).
+        var rate = mobile ? 10 : 4.2;
+        var cap = mobile ? 5.0 : 1.5;
+        var step = diff * (1 - Math.exp(-rate * dt)) * scale;
+        var maxStep = cap * dt * scale;
         if (step > maxStep) step = maxStep; else if (step < -maxStep) step = -maxStep;
         assistTarget = best;
         return raw + step;
@@ -986,10 +996,12 @@
             var am = Math.sqrt(aimJoy.dx * aimJoy.dx + aimJoy.dy * aimJoy.dy);
             if (aimJoy.id !== null && am > 0.2) {
               var ta = Math.atan2(aimJoy.dy, aimJoy.dx);
-              var maxTurn = (2.4 + 8.5 * am) * dt;
+              // mobile-only: faster stick turning (base and full-push speed
+              // both raised) so the aim keeps up with a thumb swipe
+              var maxTurn = (3.6 + 12 * am) * dt;
               var df = angDiff(ta, p.angle);
               var stp = df > maxTurn ? maxTurn : (df < -maxTurn ? -maxTurn : df);
-              p.angle = applyAimAssist(p.angle + stp, dt);
+              p.angle = applyAimAssist(p.angle + stp, dt, true);
               attack(p);
             } else {
               assistTarget = null; prevRawAim = p.angle;
