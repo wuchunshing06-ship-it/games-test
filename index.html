@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>《暗眼》试玩版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f1ea;
+        --ink: #1c1a16;
+        --ink-soft: #57534a;
+        --card: #fffdf8;
+        --line: #ddd5c4;
+        --amber: #c47b12;
+        --amber-bright: #ffb454;
+        --teal: #0e8078;
+        --teal-bright: #2dd4bf;
+        --danger: #c2402e;
+        --frame: #07080c;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c0d10;
+          --ink: #ece7db;
+          --ink-soft: #a49c8c;
+          --card: #15161a;
+          --line: #2b2c31;
+          --amber: #ffb454;
+          --teal: #2dd4bf;
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 56px; }
+      .lede { font-size: 15px; line-height: 1.75; color: var(--ink-soft); max-width: 46em; margin: 4px 0 16px; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- game frame ---------- */
+      .stage {
+        position: relative;
+        background: var(--frame);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 18px 50px rgba(0,0,0,.35);
+        aspect-ratio: 8 / 5;
+        max-height: 78vh;
+        margin: 0 auto;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .stage canvas { display: block; width: 100%; height: 100%; }
+      .hud { position: absolute; inset: 0; pointer-events: none; font-family: "Noto Sans SC", sans-serif; }
+      .hud .tl { position: absolute; top: 12px; left: 14px; color: #f3ead8; }
+      .hud .tr { position: absolute; top: 12px; right: 14px; text-align: right; color: #f3ead8; }
+      .hud .who { font-size: 12px; letter-spacing: .12em; opacity: .75; }
+      .hpbar { width: 168px; height: 9px; background: rgba(255,255,255,.14); border-radius: 99px; margin-top: 5px; overflow: hidden; }
+      .hpbar i { display: block; height: 100%; background: var(--amber-bright); border-radius: 99px; transition: width .15s; }
+      .hp-num { font-size: 12px; margin-top: 4px; opacity: .85; font-variant-numeric: tabular-nums; }
+      .score-big { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.1; }
+      .score-sub { font-size: 12px; opacity: .75; margin-top: 2px; }
+      .ammo { position: absolute; right: 14px; bottom: 12px; text-align: right; color: #f3ead8; }
+      .ammo .n { font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; }
+      .ammo .l { font-size: 11px; letter-spacing: .14em; opacity: .7; }
+      .pingcd { position: absolute; left: 14px; bottom: 12px; color: #f3ead8; font-size: 12px; opacity: .9; }
+      .pingcd b { color: var(--teal-bright); }
+      .feed { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); text-align: center; width: 70%; }
+      .feed div { color: #ffe9c4; font-size: 13px; text-shadow: 0 1px 8px #000; opacity: 0; transition: opacity .3s; margin-bottom: 3px; }
+      .feed div.show { opacity: 1; }
+      .banner {
+        position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+        text-align: center; color: #eafffa; opacity: 0; transition: opacity .18s; width: 92%;
+      }
+      .banner.on { opacity: 1; }
+      .banner .t { font-family: "Noto Serif SC", serif; font-weight: 900; font-size: clamp(19px, 3.4vw, 30px); letter-spacing: .18em; text-shadow: 0 0 22px rgba(45,212,191,.65), 0 2px 10px #000; }
+      .banner .s { font-size: 13px; margin-top: 5px; opacity: .92; text-shadow: 0 1px 6px #000; }
+      .banner .bar { width: 210px; height: 4px; background: rgba(255,255,255,.18); border-radius: 99px; margin: 9px auto 0; overflow: hidden; }
+      .banner .bar i { display: block; height: 100%; background: var(--teal-bright); }
+      .centermsg { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); text-align: center; color: #ffe9c4; opacity: 0; transition: opacity .2s; width: 90%; }
+      .centermsg.on { opacity: 1; }
+      .centermsg .t { font-family: "Noto Serif SC", serif; font-size: clamp(22px, 4vw, 36px); font-weight: 900; letter-spacing: .14em; text-shadow: 0 2px 16px #000; }
+
+      /* overlays */
+      .overlay {
+        position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center;
+        background: rgba(4,5,8,.86); color: #f3ead8; text-align: center; padding: 22px; z-index: 5;
+        overflow-y: auto;
+      }
+      .overlay > * { flex: none; }
+      @media (max-width: 720px) {
+        .overlay { padding: 10px 14px; }
+        .overlay h2 { font-size: 24px !important; letter-spacing: .24em; text-indent: .24em; }
+        .overlay .tag { font-size: 9.5px; margin-top: 5px; }
+        .overlay p { font-size: 12px; line-height: 1.6; margin: 8px 0 2px; }
+        #menuOverlay p.intro { display: none; }
+        .overlay .diff { margin-top: 8px; }
+        .overlay .diff button { padding: 6px 14px; font-size: 12px; }
+        .overlay .btn { margin-top: 10px; padding: 10px 28px; font-size: 14px; }
+        .overlay .btn.ghost { padding: 8px 20px; margin-top: 8px; font-size: 13px; }
+        .overlay p.hint { font-size: 11px; margin-top: 9px; }
+        .overlay .stats { gap: 12px; margin-top: 6px; }
+        .overlay .stats .v { font-size: 17px; }
+        .overlay .stats .k { font-size: 10px; }
+        .hud .hpbar { width: 110px; }
+        .hud .score-big { font-size: 17px; }
+        .banner { top: 33%; width: 88%; }
+        .banner .s { font-size: 11.5px; }
+        .banner .bar { width: 150px; }
+        .feed { top: 40px; width: 62%; }
+        .feed div { font-size: 11px; }
+        .topbtns { top: 44px; }
+      }
+      /* menu / result states: HUD steps aside so layers never collide */
+      .stage[data-state="menu"] .hud, .stage[data-state="over"] .hud { display: none; }
+      .stage[data-state="menu"] .topbtns, .stage[data-state="over"] .topbtns { display: none; }
+      .overlay p.hint { font-size: 12.5px; margin-top: 14px; }
+      .hint-touch { display: none; }
+      @media (pointer: coarse) {
+        .hint-pc { display: none; }
+        .hint-touch { display: block; }
+      }
+      .overlay.hidden { display: none; }
+      .overlay h2 { font-family: "Noto Serif SC", serif; font-size: clamp(34px, 6vw, 54px); margin: 0; letter-spacing: .3em; font-weight: 900; text-indent: .3em; }
+      .overlay .tag { color: var(--amber-bright); letter-spacing: .34em; font-size: 12px; margin-top: 10px; text-indent: .34em; }
+      .overlay p { max-width: 34em; line-height: 1.8; font-size: 14px; color: #cfc7b4; margin: 16px 0 4px; }
+      .overlay p b { color: #fff; }
+      .btn {
+        pointer-events: auto; cursor: pointer; border: none; border-radius: 10px;
+        background: var(--amber-bright); color: #221503; font-family: inherit; font-weight: 900;
+        font-size: 16px; padding: 13px 38px; margin-top: 20px; letter-spacing: .1em;
+      }
+      .btn:active { transform: translateY(1px); }
+      .btn.ghost { background: transparent; color: #f3ead8; border: 1px solid rgba(255,255,255,.35); font-size: 14px; padding: 10px 24px; }
+      .diff { display: flex; gap: 8px; margin-top: 18px; }
+      .diff button {
+        pointer-events: auto; cursor: pointer; font-family: inherit; font-size: 13px; padding: 8px 18px;
+        border-radius: 99px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #cfc7b4;
+      }
+      .diff button.sel { background: rgba(45,212,191,.16); border-color: var(--teal-bright); color: #eafffa; }
+      .stats { display: flex; gap: 26px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+      .stats div { text-align: center; }
+      .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
+      .stats .k { font-size: 11px; letter-spacing: .16em; opacity: .65; margin-top: 2px; }
+
+      /* touch controls */
+      .stick { position: absolute; width: 108px; height: 108px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.28); background: rgba(255,255,255,.05); display: none; z-index: 4; pointer-events: none; }
+      .stick .nub { position: absolute; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.32); left: 31px; top: 31px; }
+      .touchbtn {
+        position: absolute; z-index: 4; display: none; pointer-events: auto; cursor: pointer;
+        border: 1px solid rgba(45,212,191,.55); color: #c9fff5; background: rgba(14,128,120,.22);
+        font-family: inherit; font-size: 13px; font-weight: 700; border-radius: 99px; padding: 10px 16px;
+        right: 16px; bottom: 74px;
+      }
+      body.touch .stick.armed { display: block; }
+      body.touch .touchbtn { display: block; }
+      .topbtns { position: absolute; top: 52px; right: 14px; display: flex; gap: 8px; z-index: 6; }
+      .topbtns button {
+        pointer-events: auto; cursor: pointer; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35);
+        color: #f3ead8; border-radius: 8px; font-family: inherit; font-size: 12px; padding: 5px 11px;
+      }
+
+      /* ---------- below the game ---------- */
+      section { margin-top: 34px; }
+      h3 { font-family: "Noto Serif SC", serif; font-size: 21px; margin: 0 0 12px; letter-spacing: .04em; }
+      .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+      .card h4 { margin: 0 0 10px; font-size: 15px; }
+      .card h4 .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; }
+      .card p, .card li { font-size: 14px; line-height: 1.8; color: var(--ink-soft); }
+      .card ul { margin: 0; padding-left: 1.15em; }
+      .card p { margin: 0; }
+      kbd {
+        font-family: ui-monospace, Menlo, monospace; font-size: 12px; background: var(--bg);
+        border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--ink);
+      }
+      table.params { width: 100%; border-collapse: collapse; font-size: 14px; }
+      table.params td { padding: 7px 4px; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
+      table.params td:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 700; white-space: nowrap; }
+      table.params tr:last-child td { border-bottom: none; }
+      .eval-list { list-style: none; margin: 0; padding: 0; counter-reset: ev; }
+      .eval-list li { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; line-height: 1.75; }
+      .eval-list li:last-child { border-bottom: none; }
+      .eval-list .no {
+        counter-increment: ev; flex: none; width: 27px; height: 27px; border-radius: 50%;
+        border: 1.5px solid var(--amber); color: var(--amber); font-weight: 900; font-size: 13px;
+        display: flex; align-items: center; justify-content: center; margin-top: 2px;
+      }
+      .eval-list .no::before { content: counter(ev); }
+      .eval-list b { color: var(--ink); }
+      .eval-list span { color: var(--ink-soft); }
+      footer { margin-top: 36px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.8; border-top: 1px solid var(--line); padding-top: 14px; }
+      @media (prefers-reduced-motion: reduce) {
+        .hpbar i, .feed div, .banner, .centermsg { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，先拿 5 杀获胜</strong>。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。</p>
+
+      <div class="stage" id="stage" data-state="menu">
+        <canvas id="cv" width="960" height="600"></canvas>
+
+        <div class="hud">
+          <div class="tl">
+            <div class="who">你 · 暗行者</div>
+            <div class="hpbar"><i id="hpfill" style="width:100%"></i></div>
+            <div class="hp-num"><span id="hpnum">100</span> HP · 击杀 <span id="mykills">0</span></div>
+          </div>
+          <div class="tr">
+            <div class="score-big"><span id="scoreMe">0</span> : <span id="scoreFoe">0</span></div>
+            <div class="score-sub">先到 5 杀 · 用时 <span id="clock">0:00</span></div>
+          </div>
+          <div class="feed" id="feed"></div>
+          <div class="banner" id="banner">
+            <div class="t">借 眼</div>
+            <div class="s" id="bannerSub">你正通过对手的眼睛看世界——你的身体还在原地</div>
+            <div class="bar"><i id="bannerBar" style="width:100%"></i></div>
+          </div>
+          <div class="centermsg" id="centermsg"><div class="t" id="centermsgT"></div></div>
+          <div class="pingcd" id="pingcd">声纳 <b>E</b> · 就绪</div>
+          <div class="ammo"><div class="n" id="ammoN">12</div><div class="l">弹药 · R 换弹</div></div>
+        </div>
+
+        <div class="topbtns">
+          <button id="btnSound" type="button">声音：开</button>
+          <button id="btnPause" type="button">暂停</button>
+        </div>
+
+        <div class="stick" id="stickMove"><div class="nub"></div></div>
+        <div class="stick" id="stickAim"><div class="nub"></div></div>
+        <button class="touchbtn" id="btnPingTouch" type="button">声纳</button>
+
+        <div class="overlay" id="menuOverlay">
+          <h2>暗 眼</h2>
+          <div class="tag">开 枪 即 暴 露 · 命 中 即 借 眼</div>
+          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。</p>
+          <div class="diff">
+            <button type="button" id="diffEasy">练习难度</button>
+            <button type="button" id="diffNorm" class="sel">正式难度</button>
+          </div>
+          <button class="btn" id="btnStart" type="button">开始试玩</button>
+          <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳</p>
+          <p class="hint hint-touch">手机：左摇杆移动 · 右摇杆瞄准开火</p>
+        </div>
+
+        <div class="overlay hidden" id="pauseOverlay">
+          <h2 style="font-size:30px;">已暂停</h2>
+          <button class="btn" id="btnResume" type="button">继续</button>
+          <button class="btn ghost" id="btnRestart2" type="button">重新开始</button>
+        </div>
+
+        <div class="overlay hidden" id="overOverlay">
+          <h2 id="overTitle" style="font-size:34px;">胜利</h2>
+          <div class="tag" id="overSub">你先拿到了 5 杀</div>
+          <div class="stats">
+            <div><div class="v" id="stKill">0</div><div class="k">击杀</div></div>
+            <div><div class="v" id="stDeath">0</div><div class="k">死亡</div></div>
+            <div><div class="v" id="stAcc">0%</div><div class="k">命中率</div></div>
+            <div><div class="v" id="stSwap">0</div><div class="k">借眼次数</div></div>
+            <div><div class="v" id="stTime">0:00</div><div class="k">用时</div></div>
+          </div>
+          <button class="btn" id="btnAgain" type="button">再来一局</button>
+        </div>
+      </div>
+
+      <section>
+        <h3>怎么玩</h3>
+        <div class="cols">
+          <div class="card">
+            <h4><span class="dot" style="background:var(--amber-bright)"></span>操作</h4>
+            <ul>
+              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机用左摇杆</li>
+              <li>瞄准开火：鼠标指向、点击或按住左键；手机用右摇杆（推出即开火）</li>
+              <li>声纳：<kbd>E</kbd> 或点「声纳」按钮，冷却 6 秒</li>
+              <li>换弹：<kbd>R</kbd>，打空也会自动换弹（0.9 秒）</li>
+              <li>暂停：<kbd>Esc</kbd></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4><span class="dot" style="background:var(--teal-bright)"></span>三条核心规则</h4>
+            <ul>
+              <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮一大片区域——包括开枪者本人。远处看到闪光，就等于知道了枪手的位置。</li>
+              <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
+              <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>试玩时请重点感受这四件事</h3>
+        <div class="card">
+          <ol class="eval-list">
+            <li><span class="no"></span><div><b>开枪前的犹豫够不够强？</b><span> 黑暗里每次扣扳机都应该是一次赌博：如果开枪毫无心理负担，《一瞬》的紧张感就没立住。</span></div></li>
+            <li><span class="no"></span><div><b>借眼的 3 秒是惊喜还是混乱？</b><span> 视野突然跳到对手身上时，你是觉得“原来他在这”，还是完全找不到自己了？描边、横幅和切回过渡够不够帮你定位？</span></div></li>
+            <li><span class="no"></span><div><b>借眼有没有改变你的打法？</b><span> 理想状态是你会为了“看一眼”而主动打中对手，而不是只想着打死他——开枪的目的变了，融合才算成立。</span></div></li>
+            <li><span class="no"></span><div><b>声纳够不够你活下去？</b><span> 走动已经不显示声纹了，不开枪、不借眼的时候只能靠声纳找人：6 秒冷却、1 秒现形，是刚好够用，还是会觉得太瞎、太被动？</span></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <h3>这一版的数值（方便你评价时对照）</h3>
+        <div class="card">
+          <table class="params">
+            <tr><td>借眼持续时间 / 结束后冷却</td><td>3 秒 / 5 秒</td></tr>
+            <tr><td>枪口闪光照亮半径 / 衰减</td><td>约 215 px / 0.9 秒</td></tr>
+            <tr><td>自身微光半径（平时 / 借眼时）</td><td>64 px / 26 px</td></tr>
+            <tr><td>借眼时对方的视野半径</td><td>120 px</td></tr>
+            <tr><td>子弹伤害 / 击杀所需命中</td><td>34 / 3 枪</td></tr>
+            <tr><td>弹匣 / 换弹时间 / 射速</td><td>12 发 / 0.9 秒 / 0.22 秒一发</td></tr>
+            <tr><td>声纳冷却 / 现形时间</td><td>6 秒 / 1 秒</td></tr>
+            <tr><td>对手数量 / 获胜条件</td><td>3 个 AI / 先到 5 杀</td></tr>
+            <tr><td>脱战回血</td><td>5 秒未受击后 12 HP/秒</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <footer>试玩说明：这是为验证核心循环做的单人网页原型，对手是 AI 机器人，不是真人对战。数值都是第一版基线，你玩完觉得哪条不对——借眼太长、闪光太亮、机器人太强——直接告诉我，我按你的反馈调下一版。</footer>
+    </div>
+
+    <script>
+    (function () {
+      "use strict";
+      var W = 960, H = 600;
+      var cv = document.getElementById("cv");
+      var ctx = cv.getContext("2d");
+      var dark = document.createElement("canvas"); dark.width = W; dark.height = H;
+      var dctx = dark.getContext("2d");
+      var stage = document.getElementById("stage");
+
+      /* ---------------- utils ---------------- */
+      function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+      function dist(x1, y1, x2, y2) { var dx = x2 - x1, dy = y2 - y1; return Math.sqrt(dx * dx + dy * dy); }
+      function rand(a, b) { return a + Math.random() * (b - a); }
+      function fmtTime(s) { s = Math.floor(s); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
+
+      var WALLS = [
+        { x: 150, y: 118, w: 130, h: 26 }, { x: 680, y: 118, w: 130, h: 26 },
+        { x: 150, y: 456, w: 130, h: 26 }, { x: 680, y: 456, w: 130, h: 26 },
+        { x: 428, y: 254, w: 104, h: 92 },
+        { x: 298, y: 196, w: 26, h: 92 }, { x: 636, y: 312, w: 26, h: 92 },
+        { x: 386, y: 84, w: 188, h: 22 }, { x: 386, y: 494, w: 188, h: 22 },
+        { x: 60, y: 282, w: 84, h: 22 }, { x: 816, y: 296, w: 84, h: 22 }
+      ];
+      function inWall(x, y, r) {
+        if (x < r || x > W - r || y < r || y > H - r) return true;
+        for (var i = 0; i < WALLS.length; i++) {
+          var w = WALLS[i];
+          if (x > w.x - r && x < w.x + w.w + r && y > w.y - r && y < w.y + w.h + r) return true;
+        }
+        return false;
+      }
+      function moveEntity(e, dx, dy) {
+        var nx = e.x + dx;
+        if (!inWall(nx, e.y, e.r)) e.x = nx;
+        var ny = e.y + dy;
+        if (!inWall(e.x, ny, e.r)) e.y = ny;
+      }
+      function losBlocked(x1, y1, x2, y2) {
+        var d = dist(x1, y1, x2, y2), steps = Math.ceil(d / 14), i, t, x, y, j, w;
+        for (i = 1; i < steps; i++) {
+          t = i / steps; x = x1 + (x2 - x1) * t; y = y1 + (y2 - y1) * t;
+          for (j = 0; j < WALLS.length; j++) {
+            w = WALLS[j];
+            if (x > w.x && x < w.x + w.w && y > w.y && y < w.y + w.h) return true;
+          }
+        }
+        return false;
+      }
+
+      /* ---------------- audio ---------------- */
+      var AC = null, muted = false;
+      function ac() {
+        if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
+        if (AC && AC.state === "suspended") AC.resume();
+        return AC;
+      }
+      function tone(freq, dur, type, vol, slideTo) {
+        if (muted) return; var a = ac(); if (!a) return;
+        var o = a.createOscillator(), g = a.createGain(), t = a.currentTime;
+        o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+        if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+        g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur);
+      }
+      function noiseBurst(dur, vol) {
+        if (muted) return; var a = ac(); if (!a) return;
+        var len = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0), i;
+        for (i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        var src = a.createBufferSource(); src.buffer = buf;
+        var g = a.createGain(); g.gain.value = vol;
+        var f = a.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400;
+        src.connect(f); f.connect(g); g.connect(a.destination); src.start();
+      }
+      function sfx(name, near) {
+        if (name === "shoot") { noiseBurst(0.09, near ? 0.20 : 0.07); tone(190, 0.07, "square", near ? 0.05 : 0.015, 60); }
+        else if (name === "hit") tone(880, 0.08, "sine", 0.12);
+        else if (name === "hurt") tone(220, 0.12, "sawtooth", 0.08, 110);
+        else if (name === "kill") { tone(660, 0.1, "sine", 0.12); setTimeout(function () { tone(990, 0.14, "sine", 0.12); }, 80); }
+        else if (name === "swap") tone(320, 0.35, "sine", 0.13, 1180);
+        else if (name === "unswap") tone(1180, 0.25, "sine", 0.09, 340);
+        else if (name === "ping") tone(1240, 0.5, "sine", 0.10, 620);
+        else if (name === "reload") tone(440, 0.06, "square", 0.05);
+      }
+
+      /* ---------------- state ---------------- */
+      var state = "menu"; // menu | playing | paused | over
+      var difficulty = "normal";
+      var time = 0, matchT = 0, lastTs = 0;
+      var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [];
+      var swapT = 0, swapCd = 0, swapTarget = null, pingT = 0, pingCd = 0;
+      var stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
+      var winnerIsPlayer = false;
+
+      function makeEnt(name, color, x, y, isPlayer) {
+        return {
+          name: name, color: color, x: x, y: y, spawnX: x, spawnY: y, r: 14,
+          angle: 0, hp: 100, maxHp: 100, alive: true, respawnT: 0,
+          fireCd: rand(0.2, 0.6), reloadT: 0, mag: 12, lastHurtT: -99,
+          score: 0, isPlayer: !!isPlayer,
+          thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
+          knownX: 0, knownY: 0, knownT: -99, knownEnt: null, strafe: Math.random() < 0.5 ? 1 : -1, strafeT: rand(1, 2.4)
+        };
+      }
+      var player, bots = [];
+      function allEnts() { return [player].concat(bots); }
+      function resetMatch() {
+        player = makeEnt("你", "#ffb454", 84, 516, true);
+        if (difficulty === "easy") player.maxHp = player.hp = 120;
+        bots = [
+          makeEnt("影刃", "#ff6b6b", 876, 84, false),
+          makeEnt("雾行", "#4ecdc4", 876, 516, false),
+          makeEnt("夜枭", "#c77dff", 84, 84, false)
+        ];
+        bullets = []; flashes = []; ripples = []; sparks = []; floaters = [];
+        swapT = 0; swapCd = 0; swapTarget = null; pingT = 0; pingCd = 0; matchT = 0;
+        stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
+        feedClear();
+      }
+
+      /* ---------------- DOM / HUD ---------------- */
+      function $(id) { return document.getElementById(id); }
+      var feedBox = $("feed");
+      function feed(msg) {
+        var d = document.createElement("div");
+        d.textContent = msg; feedBox.appendChild(d);
+        requestAnimationFrame(function () { d.classList.add("show"); });
+        setTimeout(function () { d.classList.remove("show"); setTimeout(function () { d.remove(); }, 400); }, 2600);
+        while (feedBox.children.length > 3) feedBox.firstChild.remove();
+      }
+      function feedClear() { feedBox.innerHTML = ""; }
+      var cmT = 0;
+      function centerMsg(t) { $("centermsgT").textContent = t; $("centermsg").classList.add("on"); cmT = 1.1; }
+      function updateHUD() {
+        if (!player) return;
+        $("hpfill").style.width = clamp(player.hp / player.maxHp * 100, 0, 100) + "%";
+        $("hpfill").style.background = player.hp <= 30 ? "#ff6b5e" : "var(--amber-bright)";
+        $("hpnum").textContent = Math.max(0, Math.ceil(player.hp));
+        $("mykills").textContent = player.score;
+        $("scoreMe").textContent = player.score;
+        var best = 0, i; for (i = 0; i < bots.length; i++) best = Math.max(best, bots[i].score);
+        $("scoreFoe").textContent = best;
+        $("clock").textContent = fmtTime(matchT);
+        $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mag;
+        var pc = $("pingcd");
+        if (pingCd > 0) pc.innerHTML = "声纳冷却 · " + pingCd.toFixed(1) + "s";
+        else pc.innerHTML = "声纳 <b>E</b> · 就绪";
+        var bn = $("banner");
+        if (swapT > 0 && swapTarget) {
+          bn.classList.add("on");
+          $("bannerSub").textContent = "你正通过「" + swapTarget.name + "」的眼睛看世界——你的身体还在原地";
+          $("bannerBar").style.width = (swapT / 3 * 100) + "%";
+        } else bn.classList.remove("on");
+        if (cmT > 0) { cmT -= 1 / 60; if (cmT <= 0) $("centermsg").classList.remove("on"); }
+      }
+
+      /* ---------------- input ---------------- */
+      var keys = {}, mouse = { x: W / 2, y: H / 2, down: false };
+      window.addEventListener("keydown", function (e) {
+        keys[e.key.toLowerCase()] = true;
+        if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].indexOf(e.key.toLowerCase()) >= 0) e.preventDefault();
+        if (e.key === "Escape" && state === "playing") pauseGame();
+        if ((e.key.toLowerCase() === "e") && state === "playing") doPing();
+        if (e.key.toLowerCase() === "r" && state === "playing" && player.reloadT <= 0 && player.mag < 12) startReload(player);
+      });
+      window.addEventListener("keyup", function (e) { keys[e.key.toLowerCase()] = false; });
+      function canvasPos(cx, cy) {
+        var r = cv.getBoundingClientRect();
+        return { x: (cx - r.left) / r.width * W, y: (cy - r.top) / r.height * H };
+      }
+      cv.addEventListener("mousemove", function (e) { var p = canvasPos(e.clientX, e.clientY); mouse.x = p.x; mouse.y = p.y; });
+      cv.addEventListener("mousedown", function (e) { if (e.button === 0) { mouse.down = true; ac(); } });
+      window.addEventListener("mouseup", function () { mouse.down = false; });
+
+      /* touch joysticks */
+      var moveJoy = { id: null, ox: 0, oy: 0, dx: 0, dy: 0 };
+      var aimJoy = { id: null, ox: 0, oy: 0, dx: 0, dy: 0 };
+      function setStick(el, joy) {
+        var r = stage.getBoundingClientRect();
+        el.style.left = (joy.ox / W * r.width - 54) + "px";
+        el.style.top = (joy.oy / H * r.height - 54) + "px";
+        var nub = el.firstChild;
+        nub.style.left = (31 + joy.dx * 30) + "px";
+        nub.style.top = (31 + joy.dy * 30) + "px";
+      }
+      function joyVec(joy, tx, ty) {
+        var dx = tx - joy.ox, dy = ty - joy.oy, d = Math.sqrt(dx * dx + dy * dy), max = 62;
+        if (d > max) { dx = dx / d * max; dy = dy / d * max; }
+        joy.dx = dx / max; joy.dy = dy / max;
+      }
+      cv.addEventListener("touchstart", function (e) {
+        e.preventDefault(); document.body.classList.add("touch"); ac();
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          var t = e.changedTouches[i], p = canvasPos(t.clientX, t.clientY);
+          if (p.x < W / 2 && moveJoy.id === null) { moveJoy.id = t.identifier; moveJoy.ox = p.x; moveJoy.oy = p.y; moveJoy.dx = 0; moveJoy.dy = 0; $("stickMove").classList.add("armed"); setStick($("stickMove"), moveJoy); }
+          else if (p.x >= W / 2 && aimJoy.id === null) { aimJoy.id = t.identifier; aimJoy.ox = p.x; aimJoy.oy = p.y; aimJoy.dx = 0; aimJoy.dy = 0; $("stickAim").classList.add("armed"); setStick($("stickAim"), aimJoy); }
+        }
+      }, { passive: false });
+      cv.addEventListener("touchmove", function (e) {
+        e.preventDefault();
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          var t = e.changedTouches[i], p = canvasPos(t.clientX, t.clientY);
+          if (t.identifier === moveJoy.id) { joyVec(moveJoy, p.x, p.y); setStick($("stickMove"), moveJoy); }
+          if (t.identifier === aimJoy.id) { joyVec(aimJoy, p.x, p.y); setStick($("stickAim"), aimJoy); }
+        }
+      }, { passive: false });
+      function touchEnd(e) {
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          var t = e.changedTouches[i];
+          if (t.identifier === moveJoy.id) { moveJoy.id = null; moveJoy.dx = 0; moveJoy.dy = 0; $("stickMove").classList.remove("armed"); }
+          if (t.identifier === aimJoy.id) { aimJoy.id = null; aimJoy.dx = 0; aimJoy.dy = 0; $("stickAim").classList.remove("armed"); }
+        }
+      }
+      cv.addEventListener("touchend", touchEnd); cv.addEventListener("touchcancel", touchEnd);
+      $("btnPingTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); if (state === "playing") doPing(); }, { passive: false });
+      $("btnPingTouch").addEventListener("click", function () { if (state === "playing") doPing(); });
+
+      /* ---------------- combat ---------------- */
+      function startReload(e) { if (e.reloadT <= 0 && e.mag < 12) { e.reloadT = 0.9; if (e.isPlayer) sfx("reload", true); } }
+      function tryFire(e) {
+        if (!e.alive || e.fireCd > 0 || e.reloadT > 0) return;
+        if (e.mag <= 0) { startReload(e); return; }
+        e.mag--; e.fireCd = e.isPlayer ? 0.22 : rand(0.42, 0.62);
+        var mx = e.x + Math.cos(e.angle) * 20, my = e.y + Math.sin(e.angle) * 20;
+        bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * 780, vy: Math.sin(e.angle) * 780, owner: e, life: 1.1 });
+        flashes.push({ x: mx, y: my, r: 215, t: 0.9, max: 0.9 });
+        ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true });
+        if (e.isPlayer) stats.shots++;
+        var nearP = dist(e.x, e.y, player.x, player.y) < 330;
+        sfx("shoot", e.isPlayer || nearP);
+        // everyone nearby with LOS "hears/sees" the shooter
+        var ents = allEnts(), i, o;
+        for (i = 0; i < ents.length; i++) {
+          o = ents[i];
+          if (o === e || !o.alive || o.isPlayer) continue;
+          if (dist(o.x, o.y, e.x, e.y) < 430 && !losBlocked(o.x, o.y, e.x, e.y)) {
+            o.knownX = e.x; o.knownY = e.y; o.knownT = time; o.knownEnt = e;
+          }
+        }
+        if (e.mag === 0) startReload(e);
+      }
+      function startSwap(bot) {
+        swapTarget = bot; swapT = 3; stats.swaps++;
+        feed("借眼触发——你和「" + bot.name + "」互换了视野");
+        sfx("swap", true);
+      }
+      function endSwap(silent) {
+        if (swapTarget && !silent) sfx("unswap", true);
+        swapTarget = null; swapT = 0; swapCd = 5;
+      }
+      function onHit(shooter, victim) {
+        if (shooter.isPlayer) { stats.hits++; sfx("hit", true); }
+        if (victim.isPlayer) sfx("hurt", true);
+        var bot = null;
+        if (shooter.isPlayer && !victim.isPlayer) bot = victim;
+        if (!shooter.isPlayer && victim.isPlayer) bot = shooter;
+        if (bot && swapT <= 0 && swapCd <= 0 && victim.alive) startSwap(bot);
+      }
+      function kill(victim, killer) {
+        victim.alive = false; victim.respawnT = 1.6; victim.hp = 0;
+        killer.score++;
+        flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
+        for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
+        if (swapTarget === victim && swapT > 0) endSwap(true);
+        if (killer.isPlayer) { feed("你击杀了「" + victim.name + "」 · " + killer.score + " / 5"); sfx("kill", true); }
+        else if (victim.isPlayer) { stats.deaths++; feed("你被「" + killer.name + "」击杀"); centerMsg("你 被 击 杀"); }
+        else feed("「" + killer.name + "」击杀了「" + victim.name + "」");
+        if (killer.score >= 5) endMatch(killer.isPlayer, killer);
+      }
+      function doPing() {
+        if (pingCd > 0 || !player.alive) return;
+        pingCd = 6; pingT = 1.0;
+        ripples.push({ x: player.x, y: player.y, r: 10, max: 300, t: 0.9, maxT: 0.9, loud: true, teal: true });
+        sfx("ping", true);
+        for (var i = 0; i < bots.length; i++) {
+          var b = bots[i];
+          b.knownX = player.x; b.knownY = player.y; b.knownT = time; b.knownEnt = player;
+        }
+        feed("声纳已发出——所有人短暂现形，你的位置也暴露了");
+      }
+
+      /* ---------------- bot AI ---------------- */
+      function botThink(b, dt) {
+        b.thinkT -= dt;
+        // perception: close-range proximity only (AI awareness, never drawn as a sound cue)
+        var ents = allEnts(), i, o;
+        for (i = 0; i < ents.length; i++) {
+          o = ents[i];
+          if (o === b || !o.alive) continue;
+          if (dist(b.x, b.y, o.x, o.y) < 95) { b.knownX = o.x; b.knownY = o.y; b.knownT = time; b.knownEnt = o; }
+        }
+        if (b.thinkT > 0) return;
+        b.thinkT = 0.12;
+        var confused = (swapT > 0 && swapTarget === b);
+        var knows = b.knownEnt && b.knownEnt.alive && (time - b.knownT) < 3.0;
+        var speed = difficulty === "easy" ? 158 : 182;
+        var tx, ty;
+        if (knows) {
+          var t = b.knownEnt;
+          var fresh = (time - b.knownT) < 0.4;
+          var gx = fresh ? t.x : b.knownX, gy = fresh ? t.y : b.knownY;
+          var d = dist(b.x, b.y, gx, gy);
+          b.strafeT -= 0.12; if (b.strafeT <= 0) { b.strafe = -b.strafe; b.strafeT = rand(0.9, 2.2); }
+          var want = confused ? 200 : 215;
+          var radial = d > want + 26 ? 1 : (d < want - 46 ? -1 : 0);
+          var ax = (gx - b.x) / (d || 1), ay = (gy - b.y) / (d || 1);
+          tx = (ax * radial + -ay * b.strafe * 0.75) * speed;
+          ty = (ay * radial + ax * b.strafe * 0.75) * speed;
+          b.angle = Math.atan2(t.y - b.y, t.x - b.x);
+          var spread = (difficulty === "easy" ? 0.16 : 0.085) + (confused ? 0.30 : 0) + (fresh ? 0 : 0.08);
+          if (d < 440 && !losBlocked(b.x, b.y, t.x, t.y)) {
+            var realAngle = b.angle;
+            b.angle += rand(-spread, spread);
+            tryFire(b);
+            b.angle = realAngle;
+          }
+          if (confused) { tx *= 0.55; ty *= 0.55; }
+        } else {
+          if (!b.hasWander || dist(b.x, b.y, b.wanderX, b.wanderY) < 24) {
+            for (var tries = 0; tries < 8; tries++) {
+              var wx = rand(50, W - 50), wy = rand(50, H - 50);
+              if (!inWall(wx, wy, 20)) { b.wanderX = wx; b.wanderY = wy; b.hasWander = true; break; }
+            }
+          }
+          var wd = dist(b.x, b.y, b.wanderX, b.wanderY) || 1;
+          tx = (b.wanderX - b.x) / wd * speed * 0.62;
+          ty = (b.wanderY - b.y) / wd * speed * 0.62;
+          if (Math.abs(tx) + Math.abs(ty) > 1) b.angle = Math.atan2(ty, tx);
+        }
+        b._mvx = tx; b._mvy = ty;
+      }
+
+      /* ---------------- update ---------------- */
+      function update(dt) {
+        time += dt; matchT += dt;
+        if (swapT > 0) { swapT -= dt; if (swapT <= 0) endSwap(false); }
+        else if (swapCd > 0) swapCd -= dt;
+        if (pingT > 0) pingT -= dt;
+        if (pingCd > 0) pingCd -= dt;
+
+        // player
+        var p = player, mvx = 0, mvy = 0;
+        if (p.alive) {
+          if (keys["w"] || keys["arrowup"]) mvy -= 1;
+          if (keys["s"] || keys["arrowdown"]) mvy += 1;
+          if (keys["a"] || keys["arrowleft"]) mvx -= 1;
+          if (keys["d"] || keys["arrowright"]) mvx += 1;
+          if (moveJoy.id !== null) { mvx += moveJoy.dx; mvy += moveJoy.dy; }
+          var ml = Math.sqrt(mvx * mvx + mvy * mvy);
+          if (ml > 1) { mvx /= ml; mvy /= ml; }
+          moveEntity(p, mvx * 218 * dt, mvy * 218 * dt);
+          if (aimJoy.id !== null && (Math.abs(aimJoy.dx) > 0.18 || Math.abs(aimJoy.dy) > 0.18)) {
+            p.angle = Math.atan2(aimJoy.dy, aimJoy.dx);
+            tryFire(p);
+          } else if (aimJoy.id === null) {
+            p.angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+            if (mouse.down) tryFire(p);
+          }
+          if (keys[" "]) tryFire(p);
+        }
+        // bots
+        for (var i = 0; i < bots.length; i++) {
+          var b = bots[i];
+          if (!b.alive) continue;
+          botThink(b, dt);
+          moveEntity(b, (b._mvx || 0) * dt, (b._mvy || 0) * dt);
+        }
+        // shared entity timers
+        var ents = allEnts();
+        for (i = 0; i < ents.length; i++) {
+          var e = ents[i];
+          if (e.fireCd > 0) e.fireCd -= dt;
+          if (e.reloadT > 0) { e.reloadT -= dt; if (e.reloadT <= 0) e.mag = 12; }
+          if (!e.alive) {
+            e.respawnT -= dt;
+            if (e.respawnT <= 0) {
+              e.alive = true; e.hp = e.maxHp; e.x = e.spawnX; e.y = e.spawnY; e.mag = 12;
+              flashes.push({ x: e.x, y: e.y, r: 130, t: 0.5, max: 0.5 });
+              if (e.isPlayer) centerMsg("重 新 入 场");
+            }
+          } else if (time - e.lastHurtT > 5 && e.hp < e.maxHp) {
+            e.hp = Math.min(e.maxHp, e.hp + 12 * dt);
+          }
+        }
+        // bullets
+        for (i = bullets.length - 1; i >= 0; i--) {
+          var bl = bullets[i];
+          bl.life -= dt;
+          var steps = 3, dead = false;
+          for (var s = 0; s < steps && !dead; s++) {
+            bl.x += bl.vx * dt / steps; bl.y += bl.vy * dt / steps;
+            if (bl.x < 2 || bl.x > W - 2 || bl.y < 2 || bl.y > H - 2 || inWall(bl.x, bl.y, 0)) {
+              for (var k = 0; k < 3; k++) sparks.push({ x: bl.x, y: bl.y, vx: rand(-90, 90), vy: rand(-90, 90), t: 0.22, color: "#ffd9a0" });
+              dead = true; break;
+            }
+            for (var j = 0; j < ents.length; j++) {
+              var v = ents[j];
+              if (v === bl.owner || !v.alive) continue;
+              if (dist(bl.x, bl.y, v.x, v.y) < v.r + 3) {
+                v.hp -= 34; v.lastHurtT = time;
+                for (k = 0; k < 5; k++) sparks.push({ x: bl.x, y: bl.y, vx: rand(-140, 140), vy: rand(-140, 140), t: 0.3, color: v.color });
+                floaters.push({ x: v.x, y: v.y - 22, t: 0.7, txt: "-34", color: "#ffe9c4" });
+                onHit(bl.owner, v);
+                if (v.hp <= 0) kill(v, bl.owner);
+                dead = true; break;
+              }
+            }
+          }
+          if (dead || bl.life <= 0) bullets.splice(i, 1);
+        }
+        // fx decay
+        for (i = flashes.length - 1; i >= 0; i--) { flashes[i].t -= dt; if (flashes[i].t <= 0) flashes.splice(i, 1); }
+        for (i = ripples.length - 1; i >= 0; i--) { var rp = ripples[i]; rp.t -= dt; rp.r += (rp.max - rp.r) * dt * 5.2; if (rp.t <= 0) ripples.splice(i, 1); }
+        for (i = sparks.length - 1; i >= 0; i--) { var sp = sparks[i]; sp.t -= dt; sp.x += sp.vx * dt; sp.y += sp.vy * dt; sp.vx *= 0.92; sp.vy *= 0.92; if (sp.t <= 0) sparks.splice(i, 1); }
+        for (i = floaters.length - 1; i >= 0; i--) { floaters[i].t -= dt; floaters[i].y -= 26 * dt; if (floaters[i].t <= 0) floaters.splice(i, 1); }
+        updateHUD();
+      }
+      /* ---------------- render ---------------- */
+      function lightHole(x, y, r, strength) {
+        if (r <= 0 || strength <= 0) return;
+        var g = dctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, "rgba(0,0,0," + strength + ")");
+        g.addColorStop(0.62, "rgba(0,0,0," + strength * 0.72 + ")");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        dctx.fillStyle = g;
+        dctx.beginPath(); dctx.arc(x, y, r, 0, 6.2832); dctx.fill();
+      }
+      function render() {
+        // floor
+        ctx.fillStyle = "#10121a"; ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = "rgba(255,255,255,0.035)"; ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (var gx = 0; gx <= W; gx += 48) { ctx.moveTo(gx, 0); ctx.lineTo(gx, H); }
+        for (var gy = 0; gy <= H; gy += 48) { ctx.moveTo(0, gy); ctx.lineTo(W, gy); }
+        ctx.stroke();
+        // spawn pads
+        var ents = allEnts(), i, e;
+        for (i = 0; i < ents.length; i++) {
+          e = ents[i];
+          ctx.strokeStyle = e.color; ctx.globalAlpha = 0.16; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(e.spawnX, e.spawnY, 24, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
+        }
+        // walls
+        for (i = 0; i < WALLS.length; i++) {
+          var w = WALLS[i];
+          ctx.fillStyle = "#262b3a"; ctx.fillRect(w.x, w.y, w.w, w.h);
+          ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(w.x, w.y, w.w, 3);
+        }
+        // bullets (under darkness they'll glow through their own light)
+        for (i = 0; i < bullets.length; i++) {
+          var bl = bullets[i];
+          ctx.strokeStyle = "rgba(255,214,150,0.85)"; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(bl.x - bl.vx * 0.018, bl.y - bl.vy * 0.018); ctx.lineTo(bl.x, bl.y); ctx.stroke();
+          ctx.fillStyle = "#fff3d6"; ctx.beginPath(); ctx.arc(bl.x, bl.y, 2.6, 0, 6.2832); ctx.fill();
+        }
+        // entities
+        for (i = 0; i < ents.length; i++) {
+          e = ents[i];
+          if (!e.alive) continue;
+          ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.angle);
+          ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.arc(2, 3, e.r, 0, 6.2832); ctx.fill();
+          ctx.fillStyle = e.color; ctx.beginPath(); ctx.arc(0, 0, e.r, 0, 6.2832); ctx.fill();
+          ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(6, -3.4, 17, 6.8);
+          ctx.fillStyle = "#e8e2d2"; ctx.fillRect(19, -2.2, 6, 4.4);
+          ctx.restore();
+          ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.arc(e.x - 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.arc(e.x + 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.fill();
+          if (e.hp < e.maxHp) {
+            ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(e.x - 16, e.y - 26, 32, 4);
+            ctx.fillStyle = e.isPlayer ? "#ffb454" : "#ff8f7d"; ctx.fillRect(e.x - 16, e.y - 26, 32 * clamp(e.hp / e.maxHp, 0, 1), 4);
+          }
+          ctx.font = "11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+          ctx.fillStyle = "rgba(240,235,220,0.85)"; ctx.fillText(e.name, e.x, e.y - 32);
+        }
+        // sparks
+        for (i = 0; i < sparks.length; i++) {
+          var sp = sparks[i];
+          ctx.globalAlpha = clamp(sp.t * 3, 0, 1); ctx.fillStyle = sp.color;
+          ctx.fillRect(sp.x - 1.6, sp.y - 1.6, 3.2, 3.2); ctx.globalAlpha = 1;
+        }
+
+        /* darkness */
+        dctx.globalCompositeOperation = "source-over";
+        dctx.clearRect(0, 0, W, H);
+        dctx.fillStyle = "rgba(2,3,7,0.972)"; dctx.fillRect(0, 0, W, H);
+        dctx.globalCompositeOperation = "destination-out";
+        if (player && player.alive) {
+          if (swapT > 0 && swapTarget && swapTarget.alive) {
+            lightHole(swapTarget.x, swapTarget.y, 128, 0.97);
+            lightHole(player.x, player.y, 28, 0.55);
+          } else {
+            lightHole(player.x, player.y, 66, 0.62);
+          }
+        }
+        for (i = 0; i < flashes.length; i++) {
+          var f = flashes[i], k = f.t / f.max;
+          lightHole(f.x, f.y, f.r * (0.55 + 0.45 * k), 0.35 + 0.63 * k);
+        }
+        for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 42, 0.75);
+        if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
+        ctx.drawImage(dark, 0, 0);
+
+        // warm glow of flashes (additive tint)
+        ctx.globalCompositeOperation = "lighter";
+        for (i = 0; i < flashes.length; i++) {
+          var f2 = flashes[i], kk = f2.t / f2.max;
+          var g2 = ctx.createRadialGradient(f2.x, f2.y, 0, f2.x, f2.y, f2.r * 0.8);
+          g2.addColorStop(0, "rgba(255,166,60," + 0.20 * kk + ")");
+          g2.addColorStop(1, "rgba(255,166,60,0)");
+          ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(f2.x, f2.y, f2.r * 0.8, 0, 6.2832); ctx.fill();
+        }
+        ctx.globalCompositeOperation = "source-over";
+
+        // sound ripples — gunshots and sonar only; movement is silent and draws nothing
+        for (i = 0; i < ripples.length; i++) {
+          var rp = ripples[i], a = clamp(rp.t / rp.maxT, 0, 1) * 0.5;
+          ctx.strokeStyle = rp.teal ? "rgba(45,212,191," + a + ")" : "rgba(235,230,215," + a + ")";
+          ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, 6.2832); ctx.stroke();
+        }
+        // ping outlines
+        if (pingT > 0) {
+          for (i = 0; i < ents.length; i++) {
+            e = ents[i]; if (!e.alive) continue;
+            ctx.strokeStyle = "rgba(45,212,191," + 0.75 * pingT + ")"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6 + (1 - pingT) * 10, 0, 6.2832); ctx.stroke();
+          }
+        }
+        // eye-swap link + outlines
+        if (swapT > 0 && swapTarget && swapTarget.alive && player.alive) {
+          ctx.strokeStyle = "rgba(45,212,191,0.30)"; ctx.lineWidth = 1.4; ctx.setLineDash([5, 7]);
+          ctx.beginPath(); ctx.moveTo(player.x, player.y); ctx.lineTo(swapTarget.x, swapTarget.y); ctx.stroke(); ctx.setLineDash([]);
+          ctx.strokeStyle = "#2dd4bf"; ctx.lineWidth = 2.4;
+          ctx.beginPath(); ctx.arc(swapTarget.x, swapTarget.y, swapTarget.r + 5 + Math.sin(time * 9) * 1.6, 0, 6.2832); ctx.stroke();
+          ctx.font = "700 11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+          ctx.fillStyle = "#2dd4bf"; ctx.fillText("借眼中 · 他的视野", swapTarget.x, swapTarget.y - 40);
+        }
+        // self anchor ring: you can always just barely find yourself
+        if (player && player.alive) {
+          ctx.strokeStyle = "rgba(255,180,84," + (swapT > 0 ? 0.85 : 0.4) + ")"; ctx.lineWidth = 1.6;
+          ctx.beginPath(); ctx.arc(player.x, player.y, player.r + 4 + Math.sin(time * 4) * 1.2, 0, 6.2832); ctx.stroke();
+          if (swapT > 0) {
+            ctx.font = "700 11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+            ctx.fillStyle = "rgba(255,180,84,0.95)"; ctx.fillText("你的身体", player.x, player.y - 30);
+          }
+        }
+        // floaters
+        ctx.font = "700 13px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+        for (i = 0; i < floaters.length; i++) {
+          var fl = floaters[i];
+          ctx.globalAlpha = clamp(fl.t * 1.8, 0, 1); ctx.fillStyle = fl.color;
+          ctx.fillText(fl.txt, fl.x, fl.y); ctx.globalAlpha = 1;
+        }
+        // crosshair (desktop)
+        if (aimJoy.id === null && state === "playing") {
+          ctx.strokeStyle = "rgba(255,220,160,0.9)"; ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 9, 0, 6.2832); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(mouse.x - 14, mouse.y); ctx.lineTo(mouse.x - 5, mouse.y);
+          ctx.moveTo(mouse.x + 5, mouse.y); ctx.lineTo(mouse.x + 14, mouse.y);
+          ctx.moveTo(mouse.x, mouse.y - 14); ctx.lineTo(mouse.x, mouse.y - 5);
+          ctx.moveTo(mouse.x, mouse.y + 5); ctx.lineTo(mouse.x, mouse.y + 14);
+          ctx.stroke();
+        }
+        // reload indicator over player
+        if (player && player.alive && player.reloadT > 0) {
+          ctx.strokeStyle = "rgba(255,233,196,0.9)"; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(player.x, player.y, 21, -1.57, -1.57 + 6.2832 * (1 - player.reloadT / 0.9)); ctx.stroke();
+        }
+      }
+
+      /* ---------------- flow ---------------- */
+      function endMatch(won, champ) {
+        if (state !== "playing") return;
+        state = "over"; winnerIsPlayer = won; stage.dataset.state = "over";
+        stats.kills = player.score;
+        $("overTitle").textContent = won ? "胜 利" : "败 北";
+        $("overSub").textContent = won ? "你先拿到了 5 杀" : "「" + champ.name + "」先拿到了 5 杀";
+        $("stKill").textContent = player.score;
+        $("stDeath").textContent = stats.deaths;
+        $("stAcc").textContent = stats.shots ? Math.round(stats.hits / stats.shots * 100) + "%" : "—";
+        $("stSwap").textContent = stats.swaps;
+        $("stTime").textContent = fmtTime(matchT);
+        $("overOverlay").classList.remove("hidden");
+        $("banner").classList.remove("on");
+      }
+      function startGame() {
+        ac(); resetMatch();
+        state = "playing"; stage.dataset.state = "playing";
+        $("menuOverlay").classList.add("hidden");
+        $("overOverlay").classList.add("hidden");
+        $("pauseOverlay").classList.add("hidden");
+        feed("对局开始——先拿 5 杀获胜。黑暗里，开枪即暴露。");
+        updateHUD();
+      }
+      function pauseGame() {
+        if (state !== "playing") return;
+        state = "paused"; $("pauseOverlay").classList.remove("hidden");
+      }
+      function resumeGame() {
+        if (state !== "paused") return;
+        state = "playing"; $("pauseOverlay").classList.add("hidden");
+      }
+      $("btnStart").addEventListener("click", startGame);
+      $("btnAgain").addEventListener("click", startGame);
+      $("btnRestart2").addEventListener("click", startGame);
+      $("btnResume").addEventListener("click", resumeGame);
+      $("btnPause").addEventListener("click", function () { if (state === "playing") pauseGame(); else if (state === "paused") resumeGame(); });
+      $("btnSound").addEventListener("click", function () { muted = !muted; this.textContent = muted ? "声音：关" : "声音：开"; if (!muted) ac(); });
+      $("diffEasy").addEventListener("click", function () { difficulty = "easy"; this.classList.add("sel"); $("diffNorm").classList.remove("sel"); });
+      $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); });
+      document.addEventListener("visibilitychange", function () { if (document.hidden && state === "playing") pauseGame(); });
+
+      /* ---------------- main loop ---------------- */
+      resetMatch();
+      function frame(ts) {
+        requestAnimationFrame(frame);
+        var dt = Math.min(0.033, (ts - lastTs) / 1000 || 0.016);
+        lastTs = ts;
+        if (state === "playing") update(dt);
+        else time += dt;
+        render();
+      }
+      requestAnimationFrame(frame);
+    })();
+    </script>
+  </body>
+</html>
