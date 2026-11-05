@@ -73,13 +73,11 @@
       .ammo { position: absolute; right: 14px; bottom: 12px; text-align: right; color: #f3ead8; }
       .ammo .n { font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; }
       .ammo .l { font-size: 11px; letter-spacing: .14em; opacity: .7; }
-      .pingcd { position: absolute; left: 14px; bottom: 12px; color: #f3ead8; font-size: 12px; opacity: .9; }
-      .pingcd b { color: var(--teal-bright); }
-      .feed { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); text-align: center; width: 70%; }
+      .feed { position: absolute; top: 56px; left: 50%; transform: translateX(-50%); text-align: center; width: 70%; }
       .feed div { color: #ffe9c4; font-size: 13px; text-shadow: 0 1px 8px #000; opacity: 0; transition: opacity .3s; margin-bottom: 3px; }
       .feed div.show { opacity: 1; }
       .banner {
-        position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+        position: absolute; top: 14%; left: 50%; transform: translateX(-50%);
         text-align: center; color: #eafffa; opacity: 0; transition: opacity .18s; width: 92%;
       }
       .banner.on { opacity: 1; }
@@ -87,7 +85,7 @@
       .banner .s { font-size: 13px; margin-top: 5px; opacity: .92; text-shadow: 0 1px 6px #000; }
       .banner .bar { width: 210px; height: 4px; background: rgba(255,255,255,.18); border-radius: 99px; margin: 9px auto 0; overflow: hidden; }
       .banner .bar i { display: block; height: 100%; background: var(--teal-bright); }
-      .centermsg { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); text-align: center; color: #ffe9c4; opacity: 0; transition: opacity .2s; width: 90%; }
+      .centermsg { position: absolute; top: 47%; left: 50%; transform: translate(-50%,-50%); text-align: center; color: #ffe9c4; opacity: 0; transition: opacity .2s; width: 90%; }
       .centermsg.on { opacity: 1; }
       .centermsg .t { font-family: "Noto Serif SC", serif; font-size: clamp(22px, 4vw, 36px); font-weight: 900; letter-spacing: .14em; text-shadow: 0 2px 16px #000; }
       .timer { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); color: #f3ead8; font-size: 30px; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: .06em; text-shadow: 0 2px 10px #000; }
@@ -98,14 +96,48 @@
       .board .row .rk { opacity: .55; margin-right: 6px; }
       .board .row.me { color: var(--amber-bright); font-weight: 700; }
       .board .row.dead { opacity: .45; }
-      .knifebanner { position: absolute; top: 21%; left: 50%; transform: translateX(-50%); text-align: center; width: 92%; opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 3; }
+      .knifebanner { position: absolute; top: 27%; left: 50%; transform: translateX(-50%); text-align: center; width: 92%; opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 3; }
       .knifebanner.on { opacity: 1; }
       .knifebanner .t { font-size: clamp(15px, 2.4vw, 21px); font-weight: 900; letter-spacing: .08em; color: #ffd9d2; text-shadow: 0 0 18px rgba(194,64,46,.85), 0 2px 8px #000; }
       .lowhp { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 3; background: radial-gradient(ellipse at center, rgba(194,30,20,0) 52%, rgba(194,30,20,.6) 100%); }
-      #btnSwapTouch { bottom: 204px; border-color: rgba(255,180,84,.6); color: #ffe9c4; background: rgba(196,123,18,.22); }
+      /* ---------- control bar: every button lives OUTSIDE the game screen,
+         in a bar directly under it — nothing floats over the map ---------- */
+      .stage { border-radius: 14px 14px 0 0; }
+      .controlbar {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center;
+        background: var(--frame); padding: 10px 12px; border-radius: 0 0 14px 14px;
+      }
+      .ctlbtn {
+        pointer-events: auto; cursor: pointer; touch-action: manipulation;
+        border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.07);
+        color: #f3ead8; border-radius: 99px; font-family: inherit; font-size: 13.5px; font-weight: 700;
+        padding: 9px 18px;
+      }
+      .ctlbtn:active { transform: translateY(1px); }
+      .ctlbtn.swap { border-color: rgba(255,180,84,.65); color: #ffe9c4; background: rgba(196,123,18,.28); }
+      .ctlbtn.ping { border-color: rgba(45,212,191,.55); color: #c9fff5; background: rgba(14,128,120,.25); }
+      .ctlbtn.full { border-color: rgba(255,180,84,.65); color: #ffe9c4; }
+      .ctlbtn.cool { opacity: .5; }
+      .ctlsp { flex: 1 1 auto; }
+      /* fullscreen: the shell (stage + control bar) fills the screen; the
+         stage flexes to fill, the bar stays under it, outside the game.
+         No orientation lock — portrait stays portrait, landscape landscape. */
+      #gameShell:fullscreen, #gameShell:-webkit-full-screen {
+        display: flex; flex-direction: column; background: #000; width: 100%; height: 100%;
+      }
+      #gameShell.fakefs {
+        position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; background: #000;
+      }
+      #gameShell:fullscreen .stage, #gameShell:-webkit-full-screen .stage, #gameShell.fakefs .stage {
+        flex: 1 1 auto; width: 100%; height: auto; max-height: none; aspect-ratio: auto; border-radius: 0; margin: 0;
+      }
+      #gameShell:fullscreen .controlbar, #gameShell:-webkit-full-screen .controlbar, #gameShell.fakefs .controlbar { flex: none; border-radius: 0; }
+      body:has(#gameShell.fakefs) { overflow: hidden; }
       /* on touch devices the fixed sticks own the bottom corners: lift the corner HUD clear */
-      body.touch .pingcd { bottom: 142px; }
       body.touch .ammo { bottom: 142px; }
+      /* "按 R 切换武器" is a PC-only hint — never show it on touch devices */
+      body.touch .hud .score-sub { display: none; }
+      @media (pointer: coarse) { .hud .score-sub { display: none; } }
 
       /* overlays */
       .overlay {
@@ -130,27 +162,24 @@
         .overlay .stats .k { font-size: 10px; }
         .hud .hpbar { width: 110px; }
         .hud .score-big { font-size: 17px; }
-        .banner { top: 33%; width: 88%; }
+        .banner { top: 19%; width: 88%; }
         .banner .s { font-size: 11.5px; }
         .banner .bar { width: 150px; }
-        .feed { top: 78px; width: 62%; }
+        .knifebanner { top: 33%; }
+        .centermsg { top: 58%; }
+        .feed { top: 46px; width: 62%; }
         .timer { font-size: 22px; top: 4px; }
         .board { min-width: 118px; padding: 5px 8px; margin-top: 7px; }
         .board .row { font-size: 11px; line-height: 1.55; }
         .feed div { font-size: 11px; }
-        .topbtns { top: 44px; }
         .stick { width: 96px; height: 96px; }
         .stick .nub { width: 40px; height: 40px; left: 28px; top: 28px; }
         #stickMove { left: 12px; bottom: 12px; }
         #stickAim { right: 12px; bottom: 12px; }
-        body.touch .pingcd { bottom: 118px; }
         body.touch .ammo { bottom: 118px; }
-        .touchbtn { bottom: 120px; padding: 8px 13px; font-size: 12px; }
-        #btnSwapTouch { bottom: 166px; }
       }
       /* menu / result states: HUD steps aside so layers never collide */
       .stage[data-state="menu"] .hud, .stage[data-state="over"] .hud { display: none; }
-      .stage[data-state="menu"] .topbtns, .stage[data-state="over"] .topbtns { display: none; }
       .overlay p.hint { font-size: 12.5px; margin-top: 14px; }
       .hint-touch { display: none; }
       @media (pointer: coarse) {
@@ -188,19 +217,7 @@
       #stickMove { left: 18px; bottom: 18px; }
       #stickAim { right: 18px; bottom: 18px; border-color: rgba(45,212,191,.5); }
       #stickAim .nub { background: rgba(45,212,191,.42); }
-      .touchbtn {
-        position: absolute; z-index: 4; display: none; pointer-events: auto; cursor: pointer; touch-action: none;
-        border: 1px solid rgba(45,212,191,.55); color: #c9fff5; background: rgba(14,128,120,.22);
-        font-family: inherit; font-size: 13px; font-weight: 700; border-radius: 99px; padding: 10px 16px;
-        right: 16px; bottom: 150px;
-      }
       body.touch .stick { display: block; }
-      body.touch .touchbtn { display: block; }
-      .topbtns { position: absolute; top: 52px; right: 14px; display: flex; gap: 8px; z-index: 6; }
-      .topbtns button {
-        pointer-events: auto; cursor: pointer; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.35);
-        color: #f3ead8; border-radius: 8px; font-family: inherit; font-size: 12px; padding: 5px 11px;
-      }
 
       /* ---------- below the game ---------- */
       section { margin-top: 34px; }
@@ -237,37 +254,16 @@
         .hpbar i, .feed div, .banner, .centermsg { transition: none; }
       }
 
-      /* portrait on a phone: ask for landscape instead of playing squished.
-         A top banner, not a full-screen cover, so the menu stays operable. */
-      .rotate-hint {
-        position: absolute; left: 0; right: 0; top: 0; z-index: 90; display: none;
-        align-items: center; justify-content: center; gap: 14px;
-        background: rgba(4,5,8,.96); color: #f3ead8; padding: 15px 20px;
-        border-bottom: 1px solid rgba(255,180,84,.35);
-        box-shadow: 0 10px 28px rgba(0,0,0,.55);
-        pointer-events: none;
-      }
-      .rotate-hint .rh-t { font-family: "Noto Serif SC", serif; font-size: 21px; font-weight: 900; letter-spacing: .22em; white-space: nowrap; }
-      .rotate-hint .rh-s { font-size: 12.5px; color: #cfc7b4; line-height: 1.6; margin-top: 3px; }
-      @media (max-width: 860px) and (orientation: portrait) {
-        .rotate-hint { display: flex; }
-      }
-
-      /* ---------- mobile: the game takes the whole screen ----------
-         (the coarse-pointer landscape clause catches big phones whose
-         landscape width passes 860 CSS px, e.g. Pro Max-class devices) */
+      /* ---------- mobile: portrait or landscape, the stage spans the full
+         width and the arena is always contain-fitted whole (see fitView) —
+         never cropped, never stretched, no follow camera, no rotate prompt.
+         Fullscreen comes from the 「全屏」 button in the control bar. ---------- */
       @media (max-width: 860px), (pointer: coarse) and (orientation: landscape) and (max-height: 560px) {
         .wrap { max-width: none; padding: 0; }
         .lede { display: none; }
-        .stage {
-          width: 100vw; height: 100vh; height: 100dvh;
-          max-height: none; aspect-ratio: auto; border-radius: 0; box-shadow: none; margin: 0;
-        }
-        .stage[data-state="playing"], .stage[data-state="paused"], .stage[data-state="over"] {
-          position: fixed; inset: 0; z-index: 80;
-          width: 100vw; height: 100vh; height: 100dvh;
-        }
-        body:has(.stage[data-state="playing"]), body:has(.stage[data-state="paused"]) { overflow: hidden; }
+        .stage { width: 100%; max-height: none; border-radius: 0; box-shadow: none; margin: 0; }
+        .controlbar { border-radius: 0; padding: 8px; }
+        .ctlbtn { padding: 8px 14px; font-size: 13px; }
         #menuOverlay p.intro { display: block; font-size: 12.5px; line-height: 1.65; }
         .wrap section, .wrap footer { margin-left: 16px; margin-right: 16px; }
       }
@@ -277,6 +273,7 @@
     <div class="wrap">
       <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜；被杀后击杀数清零</strong>。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
 
+      <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
         <canvas id="cv" width="960" height="600"></canvas>
 
@@ -300,20 +297,12 @@
           </div>
           <div class="knifebanner" id="knifebanner"><div class="t" id="knifebannerT"></div></div>
           <div class="centermsg" id="centermsg"><div class="t" id="centermsgT"></div></div>
-          <div class="pingcd" id="pingcd">声纳 <b>E</b> · 就绪</div>
           <div class="ammo"><div class="n" id="ammoN">12</div><div class="l" id="ammoL">弹药 · 打空自动换弹</div></div>
         </div>
         <div class="lowhp" id="lowhp"></div>
 
-        <div class="topbtns">
-          <button id="btnSound" type="button">声音：开</button>
-          <button id="btnPause" type="button">暂停</button>
-        </div>
-
         <div class="stick" id="stickMove"><div class="nub"></div><div class="cap">移动</div></div>
         <div class="stick" id="stickAim"><div class="nub"></div><div class="cap">瞄准·开火</div></div>
-        <button class="touchbtn" id="btnPingTouch" type="button">声纳</button>
-        <button class="touchbtn" id="btnSwapTouch" type="button">换武器</button>
 
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
@@ -325,7 +314,7 @@
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
-          <p class="hint hint-touch">手机：请横过手机横屏游玩——整张竞技场会完整显示在屏幕里 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推得越远转得越快，松开停火）· 「换武器」切小刀</p>
+          <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推得越远转得越快，松开停火）· 声纳、换武器、声音、暂停都在画面下方的按钮区，不挡画面</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -346,18 +335,16 @@
           </div>
           <button class="btn" id="btnAgain" type="button">再来一局</button>
         </div>
+      </div>
 
-        <div class="rotate-hint" id="rotateHint" aria-hidden="true">
-          <svg width="42" height="42" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-            <rect x="10" y="17" width="28" height="15" rx="3.5" stroke="#ffb454" stroke-width="2.4" />
-            <path d="M39.5 35.5a12.5 12.5 0 1 1 3.4-8.6" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" />
-            <path d="M43.5 19.5v7h-7" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <div>
-            <div class="rh-t">请 横 过 手 机</div>
-            <div class="rh-s">这游戏是横屏玩的：横过来后画面占满整个屏幕，整张竞技场一览无余。</div>
-          </div>
-        </div>
+      <div class="controlbar" id="controlBar">
+        <button class="ctlbtn ping" id="btnPingTouch" type="button">声纳</button>
+        <button class="ctlbtn swap" id="btnSwapTouch" type="button">换武器</button>
+        <span class="ctlsp"></span>
+        <button class="ctlbtn" id="btnSound" type="button">声音：开</button>
+        <button class="ctlbtn" id="btnPause" type="button">暂停</button>
+        <button class="ctlbtn full" id="btnFull" type="button">全屏</button>
+      </div>
       </div>
 
       <section>
@@ -366,11 +353,11 @@
           <div class="card">
             <h4><span class="dot" style="background:var(--amber-bright)"></span>操作</h4>
             <ul>
-              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机请横屏游玩（竖屏打开会提示「请横过手机」），横屏后整张竞技场完整显示、不裁切，用左下角的固定摇杆移动（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
+              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机竖屏、横屏都行：整张竞技场始终完整显示、四边不裁切（宁可人物小一点、上下留一点黑边，也不放大裁图、不用跟随视角），点画面下方控制区的「全屏」按钮可一键全屏；用左下角的固定摇杆移动（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
               <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆——<b>推的方向就是瞄准方向，推得越远转向越快</b>，小幅推就是慢慢修枪口。手机上<b>瞄准和开火是同一个摇杆</b>：推过死区就一边瞄准一边自动开火，摇杆回正或松手就停火，不再有单独的开火按钮</li>
               <li>认出自己：你的角色头顶始终顶着一个<b>红色倒三角</b>，只有你有、机器人没有；借眼换到对手视角时，靠它一眼找回自己的身体</li>
-              <li>声纳：<kbd>E</kbd> 或点「声纳」按钮，冷却 6 秒</li>
-              <li>切换武器：<kbd>R</kbd> 或手机「换武器」按钮，在手枪和小刀之间切换；换弹是自动的（打空后 0.9 秒）</li>
+              <li>声纳：<kbd>E</kbd> 或点画面下方控制区的「声纳」按钮，冷却 6 秒；按钮上会直接显示冷却读秒</li>
+              <li>切换武器：<kbd>R</kbd> 或点画面下方控制区的「换武器」按钮，在手枪和小刀之间切换；换弹是自动的（打空后 0.9 秒）。声纳、换武器、声音、暂停、全屏都放在画面外的下方控制区，不挡地图</li>
               <li>小刀：近身一击必杀，完全无声；用同样的开火操作挥刀</li>
               <li>暂停：<kbd>Esc</kbd></li>
             </ul>
@@ -420,7 +407,7 @@
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 瞄准夹角约 24° 内 · 轻度吸附不锁死 · 看不见即消失</td></tr>
-            <tr><td>手机操作</td><td>横屏全屏 · 整张地图完整显示不裁切 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过死区自动开火 · 回正/松开停火）</td></tr>
+            <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火 · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
@@ -440,23 +427,25 @@
       var stage = document.getElementById("stage");
 
       /* camera + view mapping: the canvas backing store matches the on-screen
-         size. On desktop the stage keeps the world's aspect and the world is
-         shown with a "cover" fit, the view following the player (or the
-         borrowed eye) if the stage is ever taller than the world. On mobile
-         (<=860px, landscape fullscreen) the fit is "contain": the WHOLE arena
-         is scaled to fit inside the screen — nothing cropped, nothing
-         stretched, camera parked at the world centre. */
+         size. On desktop in normal page flow the stage keeps the world's
+         aspect and the world is shown with a "cover" fit, the view following
+         the player (or the borrowed eye) if the stage is ever taller than
+         the world. On mobile (portrait OR landscape) and whenever the shell
+         is fullscreen, the fit is "contain": the WHOLE arena is scaled to
+         fit inside the screen — nothing cropped, nothing stretched, camera
+         parked at the world centre, letterbox bars instead of cropping. */
       var cam = { x: W / 2, y: H / 2 };
       var view = { scale: 1, ox: 0, oy: 0, cw: W, ch: H, dpr: 1 };
       var mobileMQ = window.matchMedia("(max-width: 860px), (pointer: coarse) and (orientation: landscape) and (max-height: 560px)");
-      var portraitMQ = window.matchMedia("(max-width: 860px) and (orientation: portrait)");
+      var shellEl = document.getElementById("gameShell");
+      function isFsNow() { return !!(document.fullscreenElement || document.webkitFullscreenElement || (shellEl && shellEl.classList.contains("fakefs"))); }
       function fitView() {
         var cw = cv.clientWidth || W, ch = cv.clientHeight || H;
         var dpr = Math.min(2, window.devicePixelRatio || 1);
         var bw = Math.round(cw * dpr), bh = Math.round(ch * dpr);
         if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; dark.width = bw; dark.height = bh; }
         view.dpr = dpr; view.cw = cw; view.ch = ch;
-        if (mobileMQ.matches) {
+        if (mobileMQ.matches || isFsNow()) {
           view.scale = Math.min(cw / W, ch / H);
           cam.x = W / 2; cam.y = H / 2;
         } else {
@@ -639,9 +628,11 @@
         } else $("lowhp").style.opacity = 0;
         if (player.weapon === "knife") { $("ammoN").textContent = "刀"; $("ammoL").textContent = "小刀 · 无声一击"; }
         else { $("ammoN").textContent = player.reloadT > 0 ? "——" : player.mag; $("ammoL").textContent = "弹药 · 打空自动换弹"; }
-        var pc = $("pingcd");
-        if (pingCd > 0) pc.innerHTML = "声纳冷却 · " + pingCd.toFixed(1) + "s";
-        else pc.innerHTML = "声纳 <b>E</b> · 就绪";
+        // sonar status lives on the control-bar button itself (outside the
+        // game screen) — no more floating "声纳就绪" text over the map
+        var pb = $("btnPingTouch");
+        if (pingCd > 0) { pb.textContent = "声纳 · " + pingCd.toFixed(1) + "s"; pb.classList.add("cool"); }
+        else { pb.textContent = "声纳"; pb.classList.remove("cool"); }
         var bn = $("banner");
         if (swapT > 0 && swapTarget) {
           bn.classList.add("on");
@@ -1352,6 +1343,38 @@
       $("btnResume").addEventListener("click", resumeGame);
       $("btnPause").addEventListener("click", function () { if (state === "playing") pauseGame(); else if (state === "paused") resumeGame(); });
       $("btnSound").addEventListener("click", function () { muted = !muted; this.textContent = muted ? "声音：关" : "声音：开"; if (!muted) ac(); });
+      /* fullscreen button (in the control bar, outside the game screen):
+         one tap makes the shell — stage + control bar — fill the screen.
+         Deliberately NO orientation lock: portrait stays portrait and
+         landscape stays landscape; fitView contain-fits the whole arena
+         either way. Where the Fullscreen API is unavailable or refused
+         (some in-app browsers), fall back to a fixed-position fake
+         fullscreen so the tap still does what it promises. */
+      function updateFsBtn() { $("btnFull").textContent = isFsNow() ? "退出全屏" : "全屏"; }
+      $("btnFull").addEventListener("click", function () {
+        if (isFsNow()) {
+          shellEl.classList.remove("fakefs");
+          if (document.fullscreenElement || document.webkitFullscreenElement) {
+            var ex = document.exitFullscreen || document.webkitExitFullscreen;
+            if (ex) ex.call(document);
+          }
+          updateFsBtn();
+        } else {
+          var req = shellEl.requestFullscreen || shellEl.webkitRequestFullscreen;
+          var ok = false;
+          if (req) {
+            try {
+              var rp2 = req.call(shellEl);
+              ok = true;
+              if (rp2 && rp2.catch) rp2.catch(function () { shellEl.classList.add("fakefs"); updateFsBtn(); });
+            } catch (err) { ok = false; }
+          }
+          if (!ok) shellEl.classList.add("fakefs");
+          updateFsBtn();
+        }
+      });
+      document.addEventListener("fullscreenchange", updateFsBtn);
+      document.addEventListener("webkitfullscreenchange", updateFsBtn);
       $("diffEasy").addEventListener("click", function () { difficulty = "easy"; this.classList.add("sel"); $("diffNorm").classList.remove("sel"); });
       $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); });
       document.addEventListener("visibilitychange", function () { if (document.hidden && state === "playing") pauseGame(); });
@@ -1362,9 +1385,6 @@
         requestAnimationFrame(frame);
         var dt = Math.min(0.033, (ts - lastTs) / 1000 || 0.016);
         lastTs = ts;
-        // portrait on a phone: the rotate prompt covers the screen — pause
-        // the match so nobody gets shot while the phone is being turned
-        if (state === "playing" && portraitMQ.matches) pauseGame();
         if (state === "playing") update(dt);
         else time += dt;
         // camera: centre of the world in the menu; in play it follows you —
