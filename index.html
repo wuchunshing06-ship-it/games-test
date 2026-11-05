@@ -206,6 +206,25 @@
       }
       .diff button.sel { background: rgba(45,212,191,.16); border-color: var(--teal-bright); color: #eafffa; }
       .overlay .diffnote { font-size: 12px; color: #9d9687; line-height: 1.6; margin: 9px 0 0; max-width: 32em; }
+      /* rename box on the start screen (outside the game) */
+      .namebox { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+      .namebox label { font-size: 13px; color: #cfc7b4; letter-spacing: .1em; }
+      .namebox input {
+        pointer-events: auto; font-family: inherit; font-size: 15px; font-weight: 700; color: #fff;
+        background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.35); border-radius: 8px;
+        padding: 8px 12px; width: 170px; text-align: center; outline: none;
+      }
+      .namebox input:focus { border-color: var(--amber-bright); }
+      /* career leaderboard (session totals, below the game) */
+      table.career { width: 100%; border-collapse: collapse; font-size: 14px; }
+      table.career th { text-align: left; font-size: 11.5px; letter-spacing: .14em; color: var(--ink-soft); padding: 6px 6px 8px; border-bottom: 1.5px solid var(--line); font-weight: 700; }
+      table.career td { padding: 8px 6px; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+      table.career th.n, table.career td.n { text-align: right; }
+      table.career tr:last-child td { border-bottom: none; }
+      table.career td.nm { color: var(--ink); font-weight: 700; }
+      table.career tr.me td { color: var(--amber); }
+      table.career tr.me td.nm { color: var(--amber); }
+      .career-note { font-size: 12.5px; color: var(--ink-soft); margin: 10px 0 0; line-height: 1.7; }
       .stats { display: flex; gap: 26px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
       .stats div { text-align: center; }
       .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
@@ -273,15 +292,15 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
-        <canvas id="cv" width="960" height="600"></canvas>
+        <canvas id="cv" width="1280" height="800"></canvas>
 
         <div class="hud">
           <div class="tl">
-            <div class="who">你 · 暗行者</div>
+            <div class="who" id="whoName">暗行者</div>
             <div class="hpbar"><i id="hpfill" style="width:100%"></i></div>
             <div class="hp-num"><span id="hpnum">100</span> HP · 击杀 <span id="mykills">0</span></div>
             <div class="board" id="board"></div>
@@ -309,7 +328,11 @@
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
           <div class="tag">开 枪 即 暴 露 · 命 中 即 借 眼</div>
-          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。</p>
+          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。<br />这一版竞技场更大、共 6 人混战，<b>4 张地图每局随机一张</b>；黑暗也更深了，没被照亮的人完全看不见。</p>
+          <div class="namebox">
+            <label for="nameInput">你的名字</label>
+            <input id="nameInput" type="text" maxlength="10" value="暗行者" autocomplete="off" />
+          </div>
           <div class="diff">
             <button type="button" id="diffEasy">简单版</button>
             <button type="button" id="diffNorm" class="sel">困难版</button>
@@ -331,11 +354,13 @@
           <div class="tag" id="overSub">你先拿到了 10 杀</div>
           <div class="stats">
             <div><div class="v" id="stKill">0</div><div class="k">击杀</div></div>
+            <div><div class="v" id="stKnife">0</div><div class="k">刀杀</div></div>
             <div><div class="v" id="stDeath">0</div><div class="k">死亡</div></div>
             <div><div class="v" id="stAcc">0%</div><div class="k">命中率</div></div>
             <div><div class="v" id="stSwap">0</div><div class="k">借眼次数</div></div>
             <div><div class="v" id="stTime">0:00</div><div class="k">用时</div></div>
           </div>
+          <p class="diffnote" id="overCareer" style="text-align:center;"></p>
           <button class="btn" id="btnAgain" type="button">再来一局</button>
         </div>
       </div>
@@ -369,6 +394,8 @@
             <h4><span class="dot" style="background:var(--teal-bright)"></span>核心规则</h4>
             <ul>
               <li><b>限时冲榜 · 两种模式</b>：一局 2 分钟（屏幕正上方倒计时），先到 10 杀直接获胜；时间到则按当前击杀数排名，第一名获胜。模式在开始界面选：<b>困难版</b>被杀后击杀数清零，榜首随时可能易主，机器人是现在的正式难度；<b>简单版</b>被杀后击杀数<b>不清零</b>，榜单只涨不跌，而且机器人反应更迟钝——转向、开火都更慢，记性也更短。左上角击杀榜实时更新。</li>
+              <li><b>随机地图 · 更大竞技场</b>：竞技场扩大到 1280×800，共 6 人混战（你 + 5 个机器人）。一共有 4 张地图——十字堡、回廊、双塔、散点，<b>每局开始随机抽一张</b>，开局播报会告诉你这一局是哪张。墙体布局每张都不同，出生点和掩体位置都要重新摸。</li>
+              <li><b>黑暗加深</b>：这一版底幕接近全黑（不透明度约 99.5%），没被任何光源照到的人——名字、血条、身体——完全看不见，不再有隐约的人影透出来。想确认一个角落有没有人，只能靠闪光、声纳、借眼或者贴近到你自己的微光范围内。</li>
               <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮周围一圈区域——包括开枪者本人。这一版闪光范围已调小，照亮半径约 160 px。远处看到闪光，就等于知道了枪手的位置。</li>
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
@@ -379,6 +406,17 @@
               <li><b>红色倒三角是你的专属标记</b>：它只出现在你自己头顶、始终跟着你走，黑暗里和借眼期间都看得见；机器人头顶没有。它和借眼时指向自己身体的提示可以同时存在，一个是头顶标记、一个是借眼期间的额外指引，不冲突。</li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>生涯排行榜</h3>
+        <div class="card">
+          <table class="career">
+            <thead><tr><th>选手</th><th class="n">胜利</th><th class="n">总击杀</th><th class="n">刀杀</th><th class="n">死亡</th><th class="n">场次</th></tr></thead>
+            <tbody id="careerBody"></tbody>
+          </table>
+          <p class="career-note">每打完一局自动累积，按胜利次数排名（同胜场比总击杀）。关掉页面就清零——想长期保存战绩的话再告诉我，那需要另外存数据。</p>
         </div>
       </section>
 
@@ -400,12 +438,14 @@
           <table class="params">
             <tr><td>借眼持续时间 / 结束后冷却</td><td>3 秒 / 5 秒</td></tr>
             <tr><td>枪口闪光照亮半径 / 衰减</td><td>约 160 px / 0.9 秒</td></tr>
-            <tr><td>自身微光半径（平时 / 借眼时）</td><td>64 px / 26 px</td></tr>
+            <tr><td>自身微光半径（平时 / 借眼时）</td><td>58 px / 28 px</td></tr>
             <tr><td>借眼时对方的视野半径</td><td>120 px</td></tr>
             <tr><td>子弹伤害 / 击杀所需命中</td><td>34 / 3 枪</td></tr>
             <tr><td>弹匣 / 换弹时间 / 射速</td><td>12 发 / 0.9 秒 / 0.22 秒一发</td></tr>
             <tr><td>声纳冷却 / 现形时间</td><td>6 秒 / 1 秒</td></tr>
-            <tr><td>对手数量 / 获胜条件</td><td>3 个 AI / 先到 10 杀，或 2 分钟到时击杀第一</td></tr>
+            <tr><td>对手数量 / 获胜条件</td><td>5 个 AI（共 6 人）/ 先到 10 杀，或 2 分钟到时击杀第一</td></tr>
+            <tr><td>竞技场 / 地图</td><td>1280 × 800 · 4 张地图（十字堡 / 回廊 / 双塔 / 散点），每局随机一张</td></tr>
+            <tr><td>黑暗底幕</td><td>不透明度约 99.5%，未被照亮的人完全不可见</td></tr>
             <tr><td>对局时长</td><td>2 分钟</td></tr>
             <tr><td>简单版（开始界面选）</td><td>死亡后击杀数不清零 · 机器人反应迟钝</td></tr>
             <tr><td>困难版（开始界面选）</td><td>死亡后击杀数清零 · 机器人正式难度</td></tr>
@@ -427,7 +467,7 @@
     <script>
     (function () {
       "use strict";
-      var W = 960, H = 600;
+      var W = 1280, H = 800;
       var cv = document.getElementById("cv");
       var ctx = cv.getContext("2d");
       var dark = document.createElement("canvas"); dark.width = W; dark.height = H;
@@ -472,14 +512,45 @@
       function rand(a, b) { return a + Math.random() * (b - a); }
       function fmtTime(s) { s = Math.floor(s); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
 
-      var WALLS = [
-        { x: 150, y: 118, w: 130, h: 26 }, { x: 680, y: 118, w: 130, h: 26 },
-        { x: 150, y: 456, w: 130, h: 26 }, { x: 680, y: 456, w: 130, h: 26 },
-        { x: 428, y: 254, w: 104, h: 92 },
-        { x: 298, y: 196, w: 26, h: 92 }, { x: 636, y: 312, w: 26, h: 92 },
-        { x: 386, y: 84, w: 188, h: 22 }, { x: 386, y: 494, w: 188, h: 22 },
-        { x: 60, y: 282, w: 84, h: 22 }, { x: 816, y: 296, w: 84, h: 22 }
+      /* 4 maps, one picked at random every match (see resetMatch). Every
+         layout keeps the six spawn points clear: (96,H-96) player, the
+         other three corners, and (W/2,110) / (W/2,H-110). */
+      var MAPS = [
+        { name: "十字堡", walls: [
+          { x: 574, y: 344, w: 132, h: 112 },
+          { x: 220, y: 170, w: 170, h: 26 }, { x: 890, y: 170, w: 170, h: 26 },
+          { x: 220, y: 604, w: 170, h: 26 }, { x: 890, y: 604, w: 170, h: 26 },
+          { x: 430, y: 270, w: 26, h: 110 }, { x: 824, y: 420, w: 26, h: 110 },
+          { x: 520, y: 150, w: 240, h: 22 }, { x: 520, y: 628, w: 240, h: 22 },
+          { x: 80, y: 382, w: 110, h: 22 }, { x: 1090, y: 396, w: 110, h: 22 }
+        ] },
+        { name: "回廊", walls: [
+          { x: 340, y: 190, w: 28, h: 130 }, { x: 912, y: 190, w: 28, h: 130 },
+          { x: 340, y: 480, w: 28, h: 130 }, { x: 912, y: 480, w: 28, h: 130 },
+          { x: 470, y: 134, w: 150, h: 24 }, { x: 660, y: 134, w: 150, h: 24 },
+          { x: 470, y: 642, w: 150, h: 24 }, { x: 660, y: 642, w: 150, h: 24 },
+          { x: 520, y: 360, w: 36, h: 80 }, { x: 724, y: 360, w: 36, h: 80 },
+          { x: 120, y: 382, w: 120, h: 22 }, { x: 1040, y: 396, w: 120, h: 22 }
+        ] },
+        { name: "双塔", walls: [
+          { x: 330, y: 300, w: 150, h: 200 }, { x: 800, y: 300, w: 150, h: 200 },
+          { x: 180, y: 150, w: 26, h: 150 }, { x: 1074, y: 500, w: 26, h: 150 },
+          { x: 180, y: 500, w: 26, h: 150 }, { x: 1074, y: 150, w: 26, h: 150 },
+          { x: 565, y: 170, w: 150, h: 24 }, { x: 565, y: 606, w: 150, h: 24 },
+          { x: 565, y: 388, w: 150, h: 24 },
+          { x: 120, y: 382, w: 90, h: 22 }, { x: 1070, y: 396, w: 90, h: 22 }
+        ] },
+        { name: "散点", walls: [
+          { x: 590, y: 355, w: 100, h: 90 },
+          { x: 300, y: 200, w: 30, h: 30 }, { x: 640, y: 180, w: 30, h: 30 }, { x: 950, y: 200, w: 30, h: 30 },
+          { x: 430, y: 390, w: 30, h: 30 }, { x: 820, y: 390, w: 30, h: 30 },
+          { x: 300, y: 580, w: 30, h: 30 }, { x: 950, y: 580, w: 30, h: 30 }, { x: 625, y: 560, w: 30, h: 30 },
+          { x: 150, y: 390, w: 26, h: 90 }, { x: 1104, y: 330, w: 26, h: 90 },
+          { x: 470, y: 640, w: 110, h: 22 }, { x: 700, y: 138, w: 110, h: 22 }
+        ] }
       ];
+      var WALLS = MAPS[0].walls;
+      var mapName = MAPS[0].name;
       function inWall(x, y, r) {
         if (x < r || x > W - r || y < r || y > H - r) return true;
         for (var i = 0; i < WALLS.length; i++) {
@@ -549,15 +620,38 @@
       var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [], slashes = [];
       var swapT = 0, swapCd = 0, swapTarget = null, pingT = 0, pingCd = 0;
       var assistTarget = null, prevRawAim = null;
-      var stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
+      var stats = { shots: 0, hits: 0, kills: 0, knifeKills: 0, deaths: 0, swaps: 0 };
       var winnerIsPlayer = false;
+
+      /* career leaderboard: session totals for you + all five bots, updated
+         at the end of every match and rendered into the table below the
+         game. In-memory only — nothing is stored anywhere. */
+      var career = {};
+      function careerRow(key, name) {
+        if (!career[key]) career[key] = { name: name, wins: 0, kills: 0, knife: 0, deaths: 0, matches: 0 };
+        career[key].name = name;
+        return career[key];
+      }
+      function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+      function renderCareer() {
+        careerRow("player", playerName);
+        for (var i = 0; i < BOT_DEFS.length; i++) careerRow("bot:" + BOT_DEFS[i].name, BOT_DEFS[i].name);
+        var rows = Object.keys(career).map(function (k) { return { key: k, c: career[k] }; });
+        rows.sort(function (a, b) { return (b.c.wins - a.c.wins) || (b.c.kills - a.c.kills) || (a.c.deaths - b.c.deaths); });
+        var html = "";
+        for (var j = 0; j < rows.length; j++) {
+          var c = rows[j].c;
+          html += "<tr" + (rows[j].key === "player" ? " class='me'" : "") + "><td class='nm'>" + esc(c.name) + "</td><td class='n'>" + c.wins + "</td><td class='n'>" + c.kills + "</td><td class='n'>" + c.knife + "</td><td class='n'>" + c.deaths + "</td><td class='n'>" + c.matches + "</td></tr>";
+        }
+        $("careerBody").innerHTML = html;
+      }
 
       function makeEnt(name, color, x, y, isPlayer) {
         return {
           name: name, color: color, x: x, y: y, spawnX: x, spawnY: y, r: 14,
           angle: 0, hp: 100, maxHp: 100, alive: true, respawnT: 0,
           fireCd: rand(0.2, 0.6), reloadT: 0, mag: 12, lastHurtT: -99,
-          score: 0, deaths: 0, isPlayer: !!isPlayer,
+          score: 0, deaths: 0, matchKills: 0, matchKnife: 0, isPlayer: !!isPlayer,
           weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
           moving: false,
           thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
@@ -565,21 +659,27 @@
         };
       }
       var player, bots = [];
+      var playerName = "暗行者";
+      var BOT_DEFS = [
+        { name: "影刃", color: "#ff6b6b" }, { name: "雾行", color: "#4ecdc4" },
+        { name: "夜枭", color: "#c77dff" }, { name: "霜瞳", color: "#6bb8ff" },
+        { name: "烬羽", color: "#ff9f43" }
+      ];
       function allEnts() { return [player].concat(bots); }
       function resetMatch() {
-        player = makeEnt("你", "#ffb454", 84, 516, true);
-        bots = [
-          makeEnt("影刃", "#ff6b6b", 876, 84, false),
-          makeEnt("雾行", "#4ecdc4", 876, 516, false),
-          makeEnt("夜枭", "#c77dff", 84, 84, false)
-        ];
+        var mi = Math.floor(Math.random() * MAPS.length);
+        WALLS = MAPS[mi].walls; mapName = MAPS[mi].name;
+        player = makeEnt(playerName, "#ffb454", 96, H - 96, true);
+        var spawns = [[W - 96, 96], [W - 96, H - 96], [96, 96], [W / 2, 110], [W / 2, H - 110]];
+        bots = [];
+        for (var bi = 0; bi < BOT_DEFS.length; bi++) bots.push(makeEnt(BOT_DEFS[bi].name, BOT_DEFS[bi].color, spawns[bi][0], spawns[bi][1], false));
         bullets = []; flashes = []; ripples = []; sparks = []; floaters = []; slashes = [];
         swapT = 0; swapCd = 0; swapTarget = null; pingT = 0; pingCd = 0; matchT = 0;
         assistTarget = null; prevRawAim = null;
         boardKey = ""; kbT = 0;
         $("knifebanner").classList.remove("on");
         $("lowhp").style.opacity = 0;
-        stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
+        stats = { shots: 0, hits: 0, kills: 0, knifeKills: 0, deaths: 0, swaps: 0 };
         feedClear();
       }
 
@@ -612,13 +712,14 @@
         var html = "<div class='bt'>击 杀 榜</div>";
         for (i = 0; i < sorted.length; i++) {
           e = sorted[i];
-          html += "<div class='row" + (e.isPlayer ? " me" : "") + (e.alive ? "" : " dead") + "'><span><span class='rk'>" + (i + 1) + "</span>" + e.name + "</span><span>" + e.score + " 杀</span></div>";
+          html += "<div class='row" + (e.isPlayer ? " me" : "") + (e.alive ? "" : " dead") + "'><span><span class='rk'>" + (i + 1) + "</span>" + esc(e.name) + "</span><span>" + e.score + " 杀</span></div>";
         }
         $("board").innerHTML = html;
       }
       function updateHUD() {
         if (!player) return;
         $("hpfill").style.width = clamp(player.hp / player.maxHp * 100, 0, 100) + "%";
+        $("whoName").textContent = playerName;
         $("hpfill").style.background = player.hp <= 30 ? "#ff6b5e" : "var(--amber-bright)";
         $("hpnum").textContent = Math.max(0, Math.ceil(player.hp));
         $("mykills").textContent = player.score;
@@ -815,11 +916,13 @@
         if (difficulty !== "easy") victim.score = 0;
         victim.deaths++;
         killer.score++;
+        killer.matchKills++;
+        if (how === "knife") killer.matchKnife++;
         flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
         for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
         if (swapTarget === victim && swapT > 0) endSwap(true);
         if (how === "knife") showKnifeBanner(killer, victim);
-        if (killer.isPlayer) { stats.kills++; feed("你击杀了「" + victim.name + "」 · 当前 " + killer.score + " 杀"); sfx("kill", true); }
+        if (killer.isPlayer) { stats.kills++; if (how === "knife") stats.knifeKills++; feed("你击杀了「" + victim.name + "」 · 当前 " + killer.score + " 杀"); sfx("kill", true); }
         else if (victim.isPlayer) { stats.deaths++; feed(difficulty === "easy" ? "你被「" + killer.name + "」击杀——简单版击杀数不清零" : "你被「" + killer.name + "」击杀，击杀数已清零"); centerMsg("你 被 击 杀"); }
         else feed("「" + killer.name + "」击杀了「" + victim.name + "」");
         if (killer.score >= WIN_KILLS) endMatch(killer.isPlayer, killer, "kills");
@@ -1228,7 +1331,7 @@
         dctx.setTransform(1, 0, 0, 1, 0, 0);
         dctx.globalCompositeOperation = "source-over";
         dctx.clearRect(0, 0, dark.width, dark.height);
-        dctx.fillStyle = "rgba(2,3,7,0.972)"; dctx.fillRect(0, 0, dark.width, dark.height);
+        dctx.fillStyle = "rgba(2,3,7,0.995)"; dctx.fillRect(0, 0, dark.width, dark.height);
         dctx.globalCompositeOperation = "destination-out";
         dctx.setTransform(vs, 0, 0, vs, vx, vy);
         var blinded = player && player.blindT > 0;
@@ -1239,7 +1342,7 @@
             lightHole(swapTarget.x, swapTarget.y, 128, 0.97);
             lightHole(player.x, player.y, 28, 0.55);
           } else {
-            lightHole(player.x, player.y, 66, 0.62);
+            lightHole(player.x, player.y, 58, 0.55);
           }
         }
         if (!blinded) {
@@ -1247,7 +1350,7 @@
             var f = flashes[i], k = f.t / f.max;
             lightHole(f.x, f.y, f.r * (0.55 + 0.45 * k), 0.35 + 0.63 * k);
           }
-          for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 42, 0.75);
+          for (i = 0; i < bullets.length; i++) lightHole(bullets[i].x, bullets[i].y, 34, 0.6);
           if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
           for (i = 0; i < ents.length; i++) { if (ents[i].alive && !ents[i].isPlayer && ents[i].revealT > 0) lightHole(ents[i].x, ents[i].y, 76, 0.92); }
         }
@@ -1378,6 +1481,19 @@
         if (reason === "time") $("overSub").textContent = "时间到——" + (won ? "你以 " + champ.score + " 杀登顶击杀榜" : "「" + champ.name + "」以 " + champ.score + " 杀登顶击杀榜");
         else $("overSub").textContent = won ? "你先拿到了 10 杀" : "「" + champ.name + "」先拿到了 10 杀";
         $("stKill").textContent = stats.kills;
+        $("stKnife").textContent = stats.knifeKills;
+        // fold this match into the career leaderboard (wins / kills / knife
+        // kills / deaths / matches for you and every bot), then re-render it
+        var cents = allEnts(), ci, ce, crow;
+        for (ci = 0; ci < cents.length; ci++) {
+          ce = cents[ci];
+          crow = careerRow(ce.isPlayer ? "player" : "bot:" + ce.name, ce.name);
+          crow.matches++; crow.kills += ce.matchKills; crow.knife += ce.matchKnife; crow.deaths += ce.deaths;
+          if (ce === champ) crow.wins++;
+        }
+        renderCareer();
+        var pc = careerRow("player", playerName);
+        $("overCareer").textContent = "生涯累计：" + pc.matches + " 场 · " + pc.wins + " 胜 · 总击杀 " + pc.kills + " · 刀杀 " + pc.knife + "（完整榜单在页面下方）";
         $("stDeath").textContent = stats.deaths;
         $("stAcc").textContent = stats.shots ? Math.round(stats.hits / stats.shots * 100) + "%" : "—";
         $("stSwap").textContent = stats.swaps;
@@ -1394,9 +1510,9 @@
         $("menuOverlay").classList.add("hidden");
         $("overOverlay").classList.add("hidden");
         $("pauseOverlay").classList.add("hidden");
-        feed(difficulty === "easy"
+        feed((difficulty === "easy"
           ? "简单版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜；被杀击杀数不清零，机器人反应迟钝。开枪即暴露。"
-          : "困难版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。");
+          : "困难版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。") + " 本局地图：「" + mapName + "」");
         updateHUD();
       }
       function pauseGame() {
@@ -1446,11 +1562,23 @@
       document.addEventListener("fullscreenchange", updateFsBtn);
       document.addEventListener("webkitfullscreenchange", updateFsBtn);
       $("diffEasy").addEventListener("click", function () { difficulty = "easy"; this.classList.add("sel"); $("diffNorm").classList.remove("sel"); $("diffNote").textContent = "简单版：被杀后击杀数不清零，榜单只涨不跌；机器人反应迟钝——转向慢、开火慢、记性也短。"; });
+      /* rename: the start-screen input sets your character's name for the
+         HUD, the in-match kill board, kill banners and the career table.
+         Session-only, like everything else on this page. */
+      $("nameInput").addEventListener("input", function () {
+        var v = this.value.replace(/[<>&"']/g, "").trim().slice(0, 10);
+        playerName = v || "暗行者";
+        if (player) player.name = playerName;
+        $("whoName").textContent = playerName;
+        boardKey = "";
+        renderCareer();
+      });
       $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); $("diffNote").textContent = "困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。"; });
       document.addEventListener("visibilitychange", function () { if (document.hidden && state === "playing") pauseGame(); });
 
       /* ---------------- main loop ---------------- */
       resetMatch();
+      renderCareer();
       function frame(ts) {
         requestAnimationFrame(frame);
         var dt = Math.min(0.033, (ts - lastTs) / 1000 || 0.016);
