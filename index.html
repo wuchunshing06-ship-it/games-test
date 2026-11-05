@@ -114,7 +114,7 @@
         overflow-y: auto;
       }
       .overlay > * { flex: none; }
-      @media (max-width: 720px) {
+      @media (max-width: 720px), (max-height: 520px) {
         .overlay { padding: 10px 14px; }
         .overlay h2 { font-size: 24px !important; letter-spacing: .24em; text-indent: .24em; }
         .overlay .tag { font-size: 9.5px; margin-top: 5px; }
@@ -145,6 +145,8 @@
         #stickAim { right: 12px; bottom: 12px; }
         body.touch .pingcd { bottom: 118px; }
         body.touch .ammo { bottom: 118px; }
+        .touchbtn { bottom: 120px; padding: 8px 13px; font-size: 12px; }
+        #btnSwapTouch { bottom: 166px; }
       }
       /* menu / result states: HUD steps aside so layers never collide */
       .stage[data-state="menu"] .hud, .stage[data-state="over"] .hud { display: none; }
@@ -235,8 +237,26 @@
         .hpbar i, .feed div, .banner, .centermsg { transition: none; }
       }
 
-      /* ---------- mobile: the game takes the whole screen ---------- */
-      @media (max-width: 860px) {
+      /* portrait on a phone: ask for landscape instead of playing squished.
+         A top banner, not a full-screen cover, so the menu stays operable. */
+      .rotate-hint {
+        position: absolute; left: 0; right: 0; top: 0; z-index: 90; display: none;
+        align-items: center; justify-content: center; gap: 14px;
+        background: rgba(4,5,8,.96); color: #f3ead8; padding: 15px 20px;
+        border-bottom: 1px solid rgba(255,180,84,.35);
+        box-shadow: 0 10px 28px rgba(0,0,0,.55);
+        pointer-events: none;
+      }
+      .rotate-hint .rh-t { font-family: "Noto Serif SC", serif; font-size: 21px; font-weight: 900; letter-spacing: .22em; white-space: nowrap; }
+      .rotate-hint .rh-s { font-size: 12.5px; color: #cfc7b4; line-height: 1.6; margin-top: 3px; }
+      @media (max-width: 860px) and (orientation: portrait) {
+        .rotate-hint { display: flex; }
+      }
+
+      /* ---------- mobile: the game takes the whole screen ----------
+         (the coarse-pointer landscape clause catches big phones whose
+         landscape width passes 860 CSS px, e.g. Pro Max-class devices) */
+      @media (max-width: 860px), (pointer: coarse) and (orientation: landscape) and (max-height: 560px) {
         .wrap { max-width: none; padding: 0; }
         .lede { display: none; }
         .stage {
@@ -305,7 +325,7 @@
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
-          <p class="hint hint-touch">手机：左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推得越远转得越快，松开停火）· 「换武器」切小刀 · 游戏画面全屏</p>
+          <p class="hint hint-touch">手机：请横过手机横屏游玩——整张竞技场会完整显示在屏幕里 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推得越远转得越快，松开停火）· 「换武器」切小刀</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -326,6 +346,18 @@
           </div>
           <button class="btn" id="btnAgain" type="button">再来一局</button>
         </div>
+
+        <div class="rotate-hint" id="rotateHint" aria-hidden="true">
+          <svg width="42" height="42" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <rect x="10" y="17" width="28" height="15" rx="3.5" stroke="#ffb454" stroke-width="2.4" />
+            <path d="M39.5 35.5a12.5 12.5 0 1 1 3.4-8.6" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" />
+            <path d="M43.5 19.5v7h-7" stroke="#2dd4bf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div>
+            <div class="rh-t">请 横 过 手 机</div>
+            <div class="rh-s">这游戏是横屏玩的：横过来后画面占满整个屏幕，整张竞技场一览无余。</div>
+          </div>
+        </div>
       </div>
 
       <section>
@@ -334,7 +366,7 @@
           <div class="card">
             <h4><span class="dot" style="background:var(--amber-bright)"></span>操作</h4>
             <ul>
-              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机用左下角的固定摇杆（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
+              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机请横屏游玩（竖屏打开会提示「请横过手机」），横屏后整张竞技场完整显示、不裁切，用左下角的固定摇杆移动（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
               <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆——<b>推的方向就是瞄准方向，推得越远转向越快</b>，小幅推就是慢慢修枪口。手机上<b>瞄准和开火是同一个摇杆</b>：推过死区就一边瞄准一边自动开火，摇杆回正或松手就停火，不再有单独的开火按钮</li>
               <li>认出自己：你的角色头顶始终顶着一个<b>红色倒三角</b>，只有你有、机器人没有；借眼换到对手视角时，靠它一眼找回自己的身体</li>
               <li>声纳：<kbd>E</kbd> 或点「声纳」按钮，冷却 6 秒</li>
@@ -388,7 +420,7 @@
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 瞄准夹角约 24° 内 · 轻度吸附不锁死 · 看不见即消失</td></tr>
-            <tr><td>手机操作</td><td>游戏画面全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过死区自动开火 · 回正/松开停火）</td></tr>
+            <tr><td>手机操作</td><td>横屏全屏 · 整张地图完整显示不裁切 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过死区自动开火 · 回正/松开停火）</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
@@ -408,22 +440,31 @@
       var stage = document.getElementById("stage");
 
       /* camera + view mapping: the canvas backing store matches the on-screen
-         size and the world is shown with a "cover" fit — on a portrait phone
-         the arena fills the whole screen and the view follows the player
-         (or the borrowed eye) instead of shrinking the whole map into a strip.
-         On desktop the stage keeps the world's aspect, so the fit is exact. */
+         size. On desktop the stage keeps the world's aspect and the world is
+         shown with a "cover" fit, the view following the player (or the
+         borrowed eye) if the stage is ever taller than the world. On mobile
+         (<=860px, landscape fullscreen) the fit is "contain": the WHOLE arena
+         is scaled to fit inside the screen — nothing cropped, nothing
+         stretched, camera parked at the world centre. */
       var cam = { x: W / 2, y: H / 2 };
       var view = { scale: 1, ox: 0, oy: 0, cw: W, ch: H, dpr: 1 };
+      var mobileMQ = window.matchMedia("(max-width: 860px), (pointer: coarse) and (orientation: landscape) and (max-height: 560px)");
+      var portraitMQ = window.matchMedia("(max-width: 860px) and (orientation: portrait)");
       function fitView() {
         var cw = cv.clientWidth || W, ch = cv.clientHeight || H;
         var dpr = Math.min(2, window.devicePixelRatio || 1);
         var bw = Math.round(cw * dpr), bh = Math.round(ch * dpr);
         if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; dark.width = bw; dark.height = bh; }
         view.dpr = dpr; view.cw = cw; view.ch = ch;
-        view.scale = Math.max(cw / W, ch / H);
-        var hw = cw / view.scale / 2, hh = ch / view.scale / 2;
-        cam.x = hw >= W / 2 ? W / 2 : clamp(cam.x, hw, W - hw);
-        cam.y = hh >= H / 2 ? H / 2 : clamp(cam.y, hh, H - hh);
+        if (mobileMQ.matches) {
+          view.scale = Math.min(cw / W, ch / H);
+          cam.x = W / 2; cam.y = H / 2;
+        } else {
+          view.scale = Math.max(cw / W, ch / H);
+          var hw = cw / view.scale / 2, hh = ch / view.scale / 2;
+          cam.x = hw >= W / 2 ? W / 2 : clamp(cam.x, hw, W - hw);
+          cam.y = hh >= H / 2 ? H / 2 : clamp(cam.y, hh, H - hh);
+        }
         view.ox = cw / 2 - cam.x * view.scale;
         view.oy = ch / 2 - cam.y * view.scale;
       }
@@ -1321,10 +1362,15 @@
         requestAnimationFrame(frame);
         var dt = Math.min(0.033, (ts - lastTs) / 1000 || 0.016);
         lastTs = ts;
+        // portrait on a phone: the rotate prompt covers the screen — pause
+        // the match so nobody gets shot while the phone is being turned
+        if (state === "playing" && portraitMQ.matches) pauseGame();
         if (state === "playing") update(dt);
         else time += dt;
         // camera: centre of the world in the menu; in play it follows you —
-        // or the borrowed eye while eye-swap is active (that IS your view then)
+        // or the borrowed eye while eye-swap is active (that IS your view then).
+        // On mobile fitView parks the camera at the centre instead: the whole
+        // arena is on screen at once, so there is nothing to follow.
         if (state === "menu" || !player) { cam.x = W / 2; cam.y = H / 2; }
         else {
           var ct = (swapT > 0 && swapTarget && swapTarget.alive) ? swapTarget : player;
