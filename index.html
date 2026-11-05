@@ -154,6 +154,11 @@
         #menuOverlay p.intro { display: none; }
         .overlay .diff { margin-top: 8px; }
         .overlay .diffnote { margin-top: 6px; font-size: 11px; }
+        .overlay .wpicklabel { margin-top: 9px; font-size: 10.5px; }
+        .overlay .wpick { margin-top: 6px; gap: 6px; }
+        .overlay .wpick button { padding: 6px 9px; }
+        .overlay .wpick button .wn { font-size: 12.5px; margin-bottom: 2px; }
+        .overlay .wpick button .wd { font-size: 10.5px; line-height: 1.5; }
         .overlay .diff button { padding: 6px 14px; font-size: 12px; }
         .overlay .btn { margin-top: 10px; padding: 10px 28px; font-size: 14px; }
         .overlay .btn.ghost { padding: 8px 20px; margin-top: 8px; font-size: 13px; }
@@ -206,6 +211,19 @@
       }
       .diff button.sel { background: rgba(45,212,191,.16); border-color: var(--teal-bright); color: #eafffa; }
       .overlay .diffnote { font-size: 12px; color: #9d9687; line-height: 1.6; margin: 9px 0 0; max-width: 32em; }
+      /* starting-weapon picker on the start screen: four cards, each with
+         its own description; the picked one is what you hold at match start */
+      .wpicklabel { font-size: 12px; letter-spacing: .22em; color: #9d9687; margin-top: 16px; }
+      .wpick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; width: 100%; max-width: 560px; }
+      .wpick button {
+        pointer-events: auto; cursor: pointer; font-family: inherit; text-align: left;
+        border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.04); color: #bdb5a3;
+        border-radius: 10px; padding: 9px 12px;
+      }
+      .wpick button .wn { display: block; font-size: 14px; font-weight: 900; color: #f3ead8; margin-bottom: 3px; }
+      .wpick button .wd { display: block; font-size: 11.5px; line-height: 1.55; }
+      .wpick button.sel { border-color: var(--teal-bright); background: rgba(45,212,191,.13); }
+      .wpick button.sel .wn { color: #eafffa; }
       /* rename box on the start screen (outside the game) */
       .namebox { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
       .namebox label { font-size: 13px; color: #cfc7b4; letter-spacing: .1em; }
@@ -292,7 +310,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光，只能听脚步声</strong>找人。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光，只能听脚步声</strong>找人——但持镖时<strong>黑暗里能看清所有障碍物</strong>，不会撞墙迷路。开始前还能在开始界面<strong>选开局武器</strong>，四件武器的说明都写在选择界面上。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
@@ -338,6 +356,13 @@
             <button type="button" id="diffNorm" class="sel">困难版</button>
           </div>
           <p class="diffnote" id="diffNote">困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。</p>
+          <div class="wpicklabel">开 局 武 器</div>
+          <div class="wpick" id="wpick">
+            <button type="button" id="wpGun" class="sel"><span class="wn">手枪</span><span class="wd">均衡可靠：34 点伤害、3 枪带走一人，弹匣 12 发、换弹 0.9 秒。开枪的闪光照亮周围——也把你暴露给所有人。</span></button>
+            <button type="button" id="wpKnife"><span class="wn">小刀</span><span class="wd">无声、一击必杀，但只能贴身挥砍。切出小刀的 0.3 秒里所有人都看得见你、你却看不见任何人；熬过去就能悄悄摸人。</span></button>
+            <button type="button" id="wpPaddle"><span class="wn">乒乓球拍</span><span class="wd">一拍一颗乒乓球，70 点伤害、两拍带走满血。弹匣只有 2 发，但换弹 0.6 秒比手枪快；击发时头顶冒出小字「王之爆冲」，只有你自己看得见。拍声和小闪光仍会暴露位置。</span></button>
+            <button type="button" id="wpDart"><span class="wn">十字飞镖</span><span class="wd">攻速极快（0.13 秒一次），一次扇形甩出 3 枚、每枚 35 点伤害，弹匣 9 枚、换弹 0.55 秒，甩镖无声无光不暴露。代价：持镖时看不见别人开火的光，只能听脚步声；但黑暗里能看清所有障碍物，不会撞墙迷路。</span></button>
+          </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换武器（手枪 / 小刀 / 乒乓球拍 / 十字飞镖）</p>
           <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推向哪边枪口立刻转到哪边——秒转，松开停火）· 声纳、换武器（四件轮换）、声音、暂停都在画面下方的按钮区，不挡画面</p>
@@ -388,7 +413,8 @@
               <li>切换武器：<kbd>R</kbd> 或点画面下方控制区的「换武器」按钮，在手枪、小刀、乒乓球拍、十字飞镖四件之间轮换；换弹是自动的（打空后按各武器自己的速度换，手枪 0.9 秒、乒乓球拍 0.6 秒、十字飞镖 0.55 秒）。声纳、换武器、声音、暂停、全屏都放在画面外的下方控制区，不挡地图</li>
               <li>小刀：近身一击必杀，完全无声；用同样的开火操作挥刀</li>
               <li>乒乓球拍：每次挥拍打出一颗乒乓球，70 点伤害；弹匣只有 2 发；每次击发，你头顶会冒出小字「王之爆冲」，只有你自己看得见</li>
-              <li>十字飞镖：攻速很快，每次攻击扇形甩出 3 枚飞镖，每枚 35 点伤害；持镖时看不见其他人开火的光，只能听附近的脚步声</li>
+              <li>十字飞镖：攻速很快，每次攻击扇形甩出 3 枚飞镖，每枚 35 点伤害；持镖时看不见其他人开火的光，只能听附近的脚步声；但持镖时障碍物在黑暗里始终看得清</li>
+              <li>开局武器：开始界面可以选开局拿哪件武器，界面上每件武器都写了说明；重生后仍回到手枪，局内再按 R /「换武器」轮换</li>
               <li>暂停：<kbd>Esc</kbd></li>
             </ul>
           </div>
@@ -403,7 +429,7 @@
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
               <li><b>乒乓球拍 · 王之爆冲</b>：一拍一颗乒乓球，<b>70 点伤害</b>（两拍带走一个满血对手）；弹匣只有 <b>2 发</b>，但换弹只要 <b>0.6 秒，比手枪快</b>。每次击发，你头顶会飘出小字<b>「王之爆冲」——只有你自己看得见</b>，机器人不会用球拍，也永远看不到这行字。拍子的响声和一圈小闪光仍会暴露你的位置，只是范围比枪小。</li>
-              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖本身无声无光、不会暴露你。唯一的坏处：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在，瞄准吸附也同样把他们当作看不见；你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。想重新用光找人，切回别的武器即可。</li>
+              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖本身无声无光、不会暴露你。唯一的坏处：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在，瞄准吸附也同样把他们当作看不见；你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。作为补偿，<b>持镖时所有障碍物在黑暗里都看得清</b>——整张地图的墙体和边界会淡淡地浮现出来，走位、绕掩体不用摸黑；但这只照亮地形，人和光仍然看不见。想重新用光找人，切回别的武器即可。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
               <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆的秒转，推个大概方向，剩下的交给吸附修。</li>
               <li><b>子弹吸附（仅手机端）</b>：手机上开枪后，子弹在飞行中还会再修一次——如果弹道大致指向一个<b>当前看得见</b>的对手（约 30° 以内、640 以内、中间没墙），子弹会朝他<b>轻轻拐弯</b>，正在拐弯的子弹会泛青光。它只是拐弯、不瞬移、不锁死，偏得太远照样打空；对手变回看不见就立刻不再拐。和上面的瞄准吸附是两层一起生效：开枪前修枪口、开枪后修弹道。电脑端没有子弹吸附，子弹全程笔直；机器人的子弹也没有。</li>
@@ -456,7 +482,8 @@
             <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>乒乓球拍</td><td>伤害 70 · 弹匣 2 发 · 换弹 0.6 秒（比手枪快）· 射速 0.5 秒一拍 · 击发时头顶小字「王之爆冲」（仅自己可见）</td></tr>
-            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 持镖看不见他人开火的光，只能听脚步声</td></tr>
+            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 持镖看不见他人开火的光，只能听脚步声 · 持镖时障碍物在黑暗中可见</td></tr>
+            <tr><td>开局武器</td><td>开始界面可选（界面附四件武器说明）· 重生后回到手枪</td></tr>
             <tr><td>武器切换</td><td>R / 「换武器」在手枪 → 小刀 → 乒乓球拍 → 十字飞镖之间轮换 · 机器人只用手枪和小刀</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
@@ -624,6 +651,7 @@
       /* ---------------- state ---------------- */
       var state = "menu"; // menu | playing | paused | over
       var difficulty = "normal";
+      var startWeapon = "gun"; // picked on the start screen; respawns still return to the gun
       var MATCH_LEN = 120, WIN_KILLS = 10;
       var time = 0, matchT = 0, lastTs = 0;
       var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [], slashes = [];
@@ -880,7 +908,7 @@
         }
         if (e.isPlayer) {
           if (w === "paddle") feed("乒乓球拍在手——一拍 70 伤，只有 2 发，换弹快");
-          else if (w === "dart") feed("十字飞镖在手——看不见别人开火的光了，只能听脚步声");
+          else if (w === "dart") feed("十字飞镖在手——看不见别人开火的光了，只能听脚步声；但障碍物看得清清楚楚");
           updateHUD();
         }
       }
@@ -1505,6 +1533,23 @@
         ctx.drawImage(dark, 0, 0);
         ctx.setTransform(vs, 0, 0, vs, vx, vy);
 
+        // 十字飞镖 compensation: while you hold the darts you cannot see
+        // other people's firing light — but you CAN make out every obstacle.
+        // The static geometry (walls + arena edge) is redrawn dimly over
+        // the darkness, map-wide. People stay hidden: entities were drawn
+        // under the darkness and nothing here lifts it off them.
+        if (player && player.alive && player.weapon === "dart") {
+          for (i = 0; i < WALLS.length; i++) {
+            var dw = WALLS[i];
+            ctx.fillStyle = "rgba(96,110,140,0.5)";
+            ctx.fillRect(dw.x, dw.y, dw.w, dw.h);
+            ctx.fillStyle = "rgba(200,215,240,0.20)";
+            ctx.fillRect(dw.x, dw.y, dw.w, 2.5);
+          }
+          ctx.strokeStyle = "rgba(140,160,195,0.55)"; ctx.lineWidth = 2;
+          ctx.strokeRect(1, 1, W - 2, H - 2);
+        }
+
         // warm glow of flashes (additive tint) — same dart rule: other
         // people's firing light is invisible to the dart holder
         ctx.globalCompositeOperation = "lighter";
@@ -1654,6 +1699,11 @@
       }
       function startGame() {
         ac(); resetMatch();
+        // the weapon picked on the start screen is what you hold when the
+        // match begins (assigned directly: choosing it pre-match costs no
+        // knife-draw reveal — that penalty is for switching mid-match).
+        // Respawns are unchanged: you always come back with the gun.
+        player.weapon = startWeapon;
         cam.x = player.x; cam.y = player.y;
         state = "playing"; stage.dataset.state = "playing";
         $("menuOverlay").classList.add("hidden");
@@ -1661,7 +1711,8 @@
         $("pauseOverlay").classList.add("hidden");
         feed((difficulty === "easy"
           ? "简单版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜；被杀击杀数不清零，机器人反应迟钝。开枪即暴露。"
-          : "困难版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。") + " 本局地图：「" + mapName + "」");
+          : "困难版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。") + " 本局地图：「" + mapName + "」"
+          + (startWeapon !== "gun" ? " · 开局武器：「" + { knife: "小刀", paddle: "乒乓球拍", dart: "十字飞镖" }[startWeapon] + "」（重生后回到手枪）" : ""));
         updateHUD();
       }
       function pauseGame() {
@@ -1723,6 +1774,17 @@
         renderCareer();
       });
       $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); $("diffNote").textContent = "困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。"; });
+      /* starting-weapon picker: clicking a card selects the weapon you hold
+         when the match starts. Descriptions live on the cards themselves. */
+      var wpickBtns = { gun: $("wpGun"), knife: $("wpKnife"), paddle: $("wpPaddle"), dart: $("wpDart") };
+      function selectStartWeapon(w) {
+        startWeapon = w;
+        for (var k in wpickBtns) wpickBtns[k].classList.toggle("sel", k === w);
+      }
+      wpickBtns.gun.addEventListener("click", function () { selectStartWeapon("gun"); });
+      wpickBtns.knife.addEventListener("click", function () { selectStartWeapon("knife"); });
+      wpickBtns.paddle.addEventListener("click", function () { selectStartWeapon("paddle"); });
+      wpickBtns.dart.addEventListener("click", function () { selectStartWeapon("dart"); });
       document.addEventListener("visibilitychange", function () { if (document.hidden && state === "playing") pauseGame(); });
 
       /* ---------------- main loop ---------------- */
