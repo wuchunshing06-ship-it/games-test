@@ -102,7 +102,16 @@
       .knifebanner.on { opacity: 1; }
       .knifebanner .t { font-size: clamp(15px, 2.4vw, 21px); font-weight: 900; letter-spacing: .08em; color: #ffd9d2; text-shadow: 0 0 18px rgba(194,64,46,.85), 0 2px 8px #000; }
       .lowhp { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 3; background: radial-gradient(ellipse at center, rgba(194,30,20,0) 52%, rgba(194,30,20,.6) 100%); }
-      #btnSwapTouch { bottom: 126px; border-color: rgba(255,180,84,.6); color: #ffe9c4; background: rgba(196,123,18,.22); }
+      #btnSwapTouch { bottom: 204px; border-color: rgba(255,180,84,.6); color: #ffe9c4; background: rgba(196,123,18,.22); }
+      #btnFireTouch {
+        width: 78px; height: 78px; border-radius: 50%; padding: 0; right: 148px; bottom: 34px;
+        font-size: 16px; letter-spacing: .08em; border-color: rgba(255,122,107,.7); color: #ffe3de;
+        background: rgba(194,64,46,.30);
+      }
+      #btnFireTouch.held { background: rgba(194,64,46,.55); }
+      /* on touch devices the fixed sticks own the bottom corners: lift the corner HUD clear */
+      body.touch .pingcd { bottom: 142px; }
+      body.touch .ammo { bottom: 142px; }
 
       /* overlays */
       .overlay {
@@ -136,6 +145,13 @@
         .board .row { font-size: 11px; line-height: 1.55; }
         .feed div { font-size: 11px; }
         .topbtns { top: 44px; }
+        .stick { width: 96px; height: 96px; }
+        .stick .nub { width: 40px; height: 40px; left: 28px; top: 28px; }
+        #stickMove { left: 12px; bottom: 12px; }
+        #stickAim { right: 12px; bottom: 12px; }
+        #btnFireTouch { width: 68px; height: 68px; right: 120px; bottom: 26px; font-size: 14px; }
+        body.touch .pingcd { bottom: 118px; }
+        body.touch .ammo { bottom: 118px; }
       }
       /* menu / result states: HUD steps aside so layers never collide */
       .stage[data-state="menu"] .hud, .stage[data-state="over"] .hud { display: none; }
@@ -169,16 +185,21 @@
       .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
       .stats .k { font-size: 11px; letter-spacing: .16em; opacity: .65; margin-top: 2px; }
 
-      /* touch controls */
-      .stick { position: absolute; width: 108px; height: 108px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.28); background: rgba(255,255,255,.05); display: none; z-index: 4; pointer-events: none; }
-      .stick .nub { position: absolute; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.32); left: 31px; top: 31px; }
+      /* touch controls: two FIXED joysticks, always visible at half opacity on touch devices */
+      .stick { position: absolute; width: 110px; height: 110px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.38); background: rgba(255,255,255,.06); display: none; z-index: 4; pointer-events: none; opacity: .55; }
+      .stick .nub { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.40); left: 33px; top: 33px; }
+      .stick .cap { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 10.5px; letter-spacing: .14em; color: rgba(255,255,255,.55); pointer-events: none; }
+      .stick.on { opacity: .92; }
+      #stickMove { left: 18px; bottom: 18px; }
+      #stickAim { right: 18px; bottom: 18px; border-color: rgba(45,212,191,.5); }
+      #stickAim .nub { background: rgba(45,212,191,.42); }
       .touchbtn {
-        position: absolute; z-index: 4; display: none; pointer-events: auto; cursor: pointer;
+        position: absolute; z-index: 4; display: none; pointer-events: auto; cursor: pointer; touch-action: none;
         border: 1px solid rgba(45,212,191,.55); color: #c9fff5; background: rgba(14,128,120,.22);
         font-family: inherit; font-size: 13px; font-weight: 700; border-radius: 99px; padding: 10px 16px;
-        right: 16px; bottom: 74px;
+        right: 16px; bottom: 150px;
       }
-      body.touch .stick.armed { display: block; }
+      body.touch .stick { display: block; }
       body.touch .touchbtn { display: block; }
       .topbtns { position: absolute; top: 52px; right: 14px; display: flex; gap: 8px; z-index: 6; }
       .topbtns button {
@@ -259,10 +280,11 @@
           <button id="btnPause" type="button">暂停</button>
         </div>
 
-        <div class="stick" id="stickMove"><div class="nub"></div></div>
-        <div class="stick" id="stickAim"><div class="nub"></div></div>
+        <div class="stick" id="stickMove"><div class="nub"></div><div class="cap">移动</div></div>
+        <div class="stick" id="stickAim"><div class="nub"></div><div class="cap">瞄准</div></div>
         <button class="touchbtn" id="btnPingTouch" type="button">声纳</button>
         <button class="touchbtn" id="btnSwapTouch" type="button">换武器</button>
+        <button class="touchbtn" id="btnFireTouch" type="button">开火</button>
 
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
@@ -274,7 +296,7 @@
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
-          <p class="hint hint-touch">手机：左摇杆移动 · 右摇杆瞄准开火 · 「换武器」切小刀</p>
+          <p class="hint hint-touch">手机：左下固定摇杆移动 · 右下固定摇杆瞄准（推得越远转得越快）· 红色大按钮开火 · 「换武器」切小刀</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -303,8 +325,9 @@
           <div class="card">
             <h4><span class="dot" style="background:var(--amber-bright)"></span>操作</h4>
             <ul>
-              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机用左摇杆</li>
-              <li>瞄准开火：鼠标指向、点击或按住左键；手机用右摇杆（推出即开火）</li>
+              <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机用左下角的固定摇杆（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
+              <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆定方向——<b>推的方向就是瞄准方向，推得越远转向越快</b>，小幅推就是慢慢修枪口；开火是摇杆旁边的红色大按钮，点按或按住开火</li>
+              <li>认出自己：你的角色头顶始终顶着一个<b>红色倒三角</b>，只有你有、机器人没有；借眼换到对手视角时，靠它一眼找回自己的身体</li>
               <li>声纳：<kbd>E</kbd> 或点「声纳」按钮，冷却 6 秒</li>
               <li>切换武器：<kbd>R</kbd> 或手机「换武器」按钮，在手枪和小刀之间切换；换弹是自动的（打空后 0.9 秒）</li>
               <li>小刀：近身一击必杀，完全无声；用同样的开火操作挥刀</li>
@@ -319,6 +342,9 @@
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
+              <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
+              <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——且他就在你瞄准方向约 24° 以内，瞄准方向会每帧朝他<b>小幅靠拢</b>，准星变青表示正在吸附。力度很轻：不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。手机上同样生效——配上右摇杆的推幅转向，不用拼精确枪法，推个大概方向再靠吸附修就行。</li>
+              <li><b>红色倒三角是你的专属标记</b>：它只出现在你自己头顶、始终跟着你走，黑暗里和借眼期间都看得见；机器人头顶没有。它和借眼时指向自己身体的提示可以同时存在，一个是头顶标记、一个是借眼期间的额外指引，不冲突。</li>
             </ul>
           </div>
         </div>
@@ -351,7 +377,10 @@
             <tr><td>对局时长 / 死亡惩罚</td><td>2 分钟 / 击杀数清零</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
-            <tr><td>脱战回血</td><td>5 秒未受击后 12 HP/秒</td></tr>
+            <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
+            <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 瞄准夹角约 24° 内 · 轻度吸附不锁死 · 看不见即消失</td></tr>
+            <tr><td>手机操作</td><td>左下固定摇杆移动 · 右下固定摇杆瞄准（推幅决定转向速度） · 独立红色开火大按钮</td></tr>
+            <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
       </section>
@@ -451,6 +480,7 @@
       var time = 0, matchT = 0, lastTs = 0;
       var bullets = [], flashes = [], ripples = [], sparks = [], floaters = [], slashes = [];
       var swapT = 0, swapCd = 0, swapTarget = null, pingT = 0, pingCd = 0;
+      var assistTarget = null, prevRawAim = null;
       var stats = { shots: 0, hits: 0, kills: 0, deaths: 0, swaps: 0 };
       var winnerIsPlayer = false;
 
@@ -461,6 +491,7 @@
           fireCd: rand(0.2, 0.6), reloadT: 0, mag: 12, lastHurtT: -99,
           score: 0, deaths: 0, isPlayer: !!isPlayer,
           weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
+          moving: false,
           thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
           knownX: 0, knownY: 0, knownT: -99, knownEnt: null, strafe: Math.random() < 0.5 ? 1 : -1, strafeT: rand(1, 2.4)
         };
@@ -477,6 +508,7 @@
         ];
         bullets = []; flashes = []; ripples = []; sparks = []; floaters = []; slashes = [];
         swapT = 0; swapCd = 0; swapTarget = null; pingT = 0; pingCd = 0; matchT = 0;
+        assistTarget = null; prevRawAim = null;
         boardKey = ""; kbT = 0;
         $("knifebanner").classList.remove("on");
         $("lowhp").style.opacity = 0;
@@ -567,51 +599,76 @@
       cv.addEventListener("mousedown", function (e) { if (e.button === 0) { mouse.down = true; ac(); } });
       window.addEventListener("mouseup", function () { mouse.down = false; });
 
-      /* touch joysticks */
-      var moveJoy = { id: null, ox: 0, oy: 0, dx: 0, dy: 0 };
-      var aimJoy = { id: null, ox: 0, oy: 0, dx: 0, dy: 0 };
-      function setStick(el, joy) {
-        var r = stage.getBoundingClientRect();
-        el.style.left = (joy.ox / W * r.width - 54) + "px";
-        el.style.top = (joy.oy / H * r.height - 54) + "px";
-        var nub = el.firstChild;
-        nub.style.left = (31 + joy.dx * 30) + "px";
-        nub.style.top = (31 + joy.dy * 30) + "px";
+      /* touch controls: two FIXED joysticks (bottom-left move, bottom-right aim)
+         plus a separate fire button. A touch only drives a stick when it starts
+         inside that stick's zone, so sticks and buttons never steal each other. */
+      var touchMode = false;
+      var fireHeld = false;
+      var moveJoy = { id: null, dx: 0, dy: 0 };
+      var aimJoy = { id: null, dx: 0, dy: 0 };
+      var stickMoveEl = $("stickMove"), stickAimEl = $("stickAim");
+      function stickGeom(el) {
+        var r = el.getBoundingClientRect();
+        return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, rad: r.width / 2 };
       }
-      function joyVec(joy, tx, ty) {
-        var dx = tx - joy.ox, dy = ty - joy.oy, d = Math.sqrt(dx * dx + dy * dy), max = 62;
+      function joyVec(joy, el, tx, ty) {
+        var g = stickGeom(el);
+        var dx = tx - g.cx, dy = ty - g.cy, d = Math.sqrt(dx * dx + dy * dy), max = g.rad * 0.92;
         if (d > max) { dx = dx / d * max; dy = dy / d * max; }
         joy.dx = dx / max; joy.dy = dy / max;
+        var nub = el.querySelector(".nub");
+        nub.style.transform = "translate(" + (joy.dx * (g.rad - 22)) + "px," + (joy.dy * (g.rad - 22)) + "px)";
+      }
+      function joyReset(joy, el) {
+        joy.id = null; joy.dx = 0; joy.dy = 0;
+        el.querySelector(".nub").style.transform = "";
+        el.classList.remove("on");
+      }
+      function nearStick(el, tx, ty, pad) {
+        var g = stickGeom(el);
+        return Math.abs(tx - g.cx) <= g.rad + pad && Math.abs(ty - g.cy) <= g.rad + pad;
       }
       cv.addEventListener("touchstart", function (e) {
-        e.preventDefault(); document.body.classList.add("touch"); ac();
+        e.preventDefault(); touchMode = true; document.body.classList.add("touch"); ac();
         for (var i = 0; i < e.changedTouches.length; i++) {
-          var t = e.changedTouches[i], p = canvasPos(t.clientX, t.clientY);
-          if (p.x < W / 2 && moveJoy.id === null) { moveJoy.id = t.identifier; moveJoy.ox = p.x; moveJoy.oy = p.y; moveJoy.dx = 0; moveJoy.dy = 0; $("stickMove").classList.add("armed"); setStick($("stickMove"), moveJoy); }
-          else if (p.x >= W / 2 && aimJoy.id === null) { aimJoy.id = t.identifier; aimJoy.ox = p.x; aimJoy.oy = p.y; aimJoy.dx = 0; aimJoy.dy = 0; $("stickAim").classList.add("armed"); setStick($("stickAim"), aimJoy); }
+          var t = e.changedTouches[i];
+          if (moveJoy.id === null && nearStick(stickMoveEl, t.clientX, t.clientY, 26)) {
+            moveJoy.id = t.identifier; stickMoveEl.classList.add("on"); joyVec(moveJoy, stickMoveEl, t.clientX, t.clientY);
+          } else if (aimJoy.id === null && nearStick(stickAimEl, t.clientX, t.clientY, 26)) {
+            aimJoy.id = t.identifier; stickAimEl.classList.add("on"); joyVec(aimJoy, stickAimEl, t.clientX, t.clientY);
+          }
+          // touches outside both stick zones do nothing — no floating sticks
         }
       }, { passive: false });
       cv.addEventListener("touchmove", function (e) {
         e.preventDefault();
         for (var i = 0; i < e.changedTouches.length; i++) {
-          var t = e.changedTouches[i], p = canvasPos(t.clientX, t.clientY);
-          if (t.identifier === moveJoy.id) { joyVec(moveJoy, p.x, p.y); setStick($("stickMove"), moveJoy); }
-          if (t.identifier === aimJoy.id) { joyVec(aimJoy, p.x, p.y); setStick($("stickAim"), aimJoy); }
+          var t = e.changedTouches[i];
+          if (t.identifier === moveJoy.id) joyVec(moveJoy, stickMoveEl, t.clientX, t.clientY);
+          if (t.identifier === aimJoy.id) joyVec(aimJoy, stickAimEl, t.clientX, t.clientY);
         }
       }, { passive: false });
       function touchEnd(e) {
         for (var i = 0; i < e.changedTouches.length; i++) {
           var t = e.changedTouches[i];
-          if (t.identifier === moveJoy.id) { moveJoy.id = null; moveJoy.dx = 0; moveJoy.dy = 0; $("stickMove").classList.remove("armed"); }
-          if (t.identifier === aimJoy.id) { aimJoy.id = null; aimJoy.dx = 0; aimJoy.dy = 0; $("stickAim").classList.remove("armed"); }
+          if (t.identifier === moveJoy.id) joyReset(moveJoy, stickMoveEl);
+          if (t.identifier === aimJoy.id) joyReset(aimJoy, stickAimEl);
         }
       }
       cv.addEventListener("touchend", touchEnd); cv.addEventListener("touchcancel", touchEnd);
-      $("btnPingTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); if (state === "playing") doPing(); }, { passive: false });
+      $("btnPingTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); touchMode = true; document.body.classList.add("touch"); if (state === "playing") doPing(); }, { passive: false });
       $("btnPingTouch").addEventListener("click", function () { if (state === "playing") doPing(); });
       var lastSwapTouch = 0;
-      $("btnSwapTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); lastSwapTouch = Date.now(); if (state === "playing") switchWeapon(player); }, { passive: false });
+      $("btnSwapTouch").addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); touchMode = true; document.body.classList.add("touch"); lastSwapTouch = Date.now(); if (state === "playing") switchWeapon(player); }, { passive: false });
       $("btnSwapTouch").addEventListener("click", function () { if (Date.now() - lastSwapTouch > 500 && state === "playing") switchWeapon(player); });
+      var btnFire = $("btnFireTouch");
+      btnFire.addEventListener("touchstart", function (e) { e.preventDefault(); e.stopPropagation(); touchMode = true; document.body.classList.add("touch"); ac(); fireHeld = true; btnFire.classList.add("held"); }, { passive: false });
+      function fireRelease(e) { if (e) { e.preventDefault(); e.stopPropagation(); } fireHeld = false; btnFire.classList.remove("held"); }
+      btnFire.addEventListener("touchend", fireRelease, { passive: false });
+      btnFire.addEventListener("touchcancel", fireRelease, { passive: false });
+      btnFire.addEventListener("mousedown", function (e) { e.preventDefault(); fireHeld = true; btnFire.classList.add("held"); });
+      btnFire.addEventListener("mouseup", function () { fireRelease(null); });
+      btnFire.addEventListener("mouseleave", function () { fireRelease(null); });
 
       /* ---------------- combat ---------------- */
       function startReload(e) { if (e.reloadT <= 0 && e.mag < 12) { e.reloadT = 0.9; if (e.isPlayer) sfx("reload", true); } }
@@ -777,6 +834,68 @@
         b._mvx = tx; b._mvy = ty;
       }
 
+      /* ---------------- aim assist (player only) ---------------- */
+      function angDiff(a, b) {
+        var d = a - b;
+        while (d > 3.14159265) d -= 6.2831853;
+        while (d < -3.14159265) d += 6.2831853;
+        return d;
+      }
+      // "Visible right now" mirrors exactly what the darkness render lights up:
+      // muzzle flashes, sonar, the knife-draw reveal, the borrowed eye, the
+      // player's own micro-light, and passing bullets. No memory: the moment
+      // none of these cover a bot, it stops counting as visible.
+      function isVisibleToPlayer(b) {
+        if (!b || !b.alive || !player || !player.alive) return false;
+        if (player.blindT > 0) return false; // while blinded you see no one
+        if (dist(player.x, player.y, b.x, b.y) <= 68) return true;
+        if (pingT > 0) return true;
+        if (b.revealT > 0) return true;
+        if (swapT > 0 && swapTarget && swapTarget.alive) {
+          if (b === swapTarget) return true;
+          if (dist(swapTarget.x, swapTarget.y, b.x, b.y) <= 128) return true;
+        }
+        var i, f, k;
+        for (i = 0; i < flashes.length; i++) {
+          f = flashes[i]; k = f.t / f.max;
+          if (dist(f.x, f.y, b.x, b.y) <= f.r * (0.55 + 0.45 * k)) return true;
+        }
+        for (i = 0; i < bullets.length; i++) {
+          if (dist(bullets[i].x, bullets[i].y, b.x, b.y) <= 44) return true;
+        }
+        return false;
+      }
+      var ASSIST_CONE = 0.42;   // ~24 degrees either side of the current aim
+      var ASSIST_RANGE = 480;
+      function applyAimAssist(raw, dt) {
+        assistTarget = null;
+        var turnRate = prevRawAim === null ? 0 : Math.abs(angDiff(raw, prevRawAim)) / Math.max(dt, 0.001);
+        prevRawAim = raw;
+        if (!player || !player.alive || player.blindT > 0) return raw;
+        var best = null, bestDist = 1e9, i, b, d, ta;
+        for (i = 0; i < bots.length; i++) {
+          b = bots[i];
+          if (!isVisibleToPlayer(b)) continue; // invisible this frame = no pull at all
+          d = dist(player.x, player.y, b.x, b.y);
+          if (d > ASSIST_RANGE || d < 1) continue;
+          ta = Math.atan2(b.y - player.y, b.x - player.x);
+          if (Math.abs(angDiff(ta, raw)) > ASSIST_CONE) continue; // too far off-axis: no pull
+          if (d < bestDist) { bestDist = d; best = b; }
+        }
+        if (!best) return raw;
+        // a deliberate fast swing of the aim overrides the magnet completely
+        var scale = clamp(1 - Math.max(0, turnRate - 1.4) / 2.2, 0, 1);
+        if (scale <= 0) return raw;
+        var diff = angDiff(Math.atan2(best.y - player.y, best.x - player.x), raw);
+        // light magnetism: close only a small fraction of the gap per frame,
+        // with a hard cap on assist turn speed — it never snaps or locks on
+        var step = diff * (1 - Math.exp(-4.2 * dt)) * scale;
+        var maxStep = 1.5 * dt * scale;
+        if (step > maxStep) step = maxStep; else if (step < -maxStep) step = -maxStep;
+        assistTarget = best;
+        return raw + step;
+      }
+
       /* ---------------- update ---------------- */
       function update(dt) {
         time += dt; matchT += dt;
@@ -800,12 +919,25 @@
           if (moveJoy.id !== null) { mvx += moveJoy.dx; mvy += moveJoy.dy; }
           var ml = Math.sqrt(mvx * mvx + mvy * mvy);
           if (ml > 1) { mvx /= ml; mvy /= ml; }
+          p.moving = Math.sqrt(mvx * mvx + mvy * mvy) > 0.08;
           moveEntity(p, mvx * 218 * dt, mvy * 218 * dt);
-          if (aimJoy.id !== null && (Math.abs(aimJoy.dx) > 0.18 || Math.abs(aimJoy.dy) > 0.18)) {
-            p.angle = Math.atan2(aimJoy.dy, aimJoy.dx);
-            attack(p);
-          } else if (aimJoy.id === null) {
-            p.angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+          if (touchMode) {
+            // fixed aim stick: push direction = aim direction; the further you
+            // push, the faster the aim turns (fine adjustments on a light push,
+            // quick swings on a full push). Firing is the separate fire button.
+            var am = Math.sqrt(aimJoy.dx * aimJoy.dx + aimJoy.dy * aimJoy.dy);
+            if (aimJoy.id !== null && am > 0.2) {
+              var ta = Math.atan2(aimJoy.dy, aimJoy.dx);
+              var maxTurn = (2.4 + 8.5 * am) * dt;
+              var df = angDiff(ta, p.angle);
+              var stp = df > maxTurn ? maxTurn : (df < -maxTurn ? -maxTurn : df);
+              p.angle = applyAimAssist(p.angle + stp, dt);
+            } else {
+              assistTarget = null; prevRawAim = p.angle;
+            }
+            if (fireHeld) attack(p);
+          } else {
+            p.angle = applyAimAssist(Math.atan2(mouse.y - p.y, mouse.x - p.x), dt);
             if (mouse.down) attack(p);
           }
           if (keys[" "]) attack(p);
@@ -821,6 +953,7 @@
           var b = bots[i];
           if (!b.alive) continue;
           botThink(b, dt);
+          b.moving = Math.abs(b._mvx || 0) + Math.abs(b._mvy || 0) > 5;
           moveEntity(b, (b._mvx || 0) * dt, (b._mvy || 0) * dt);
         }
         // shared entity timers
@@ -854,7 +987,9 @@
               if (e.isPlayer) centerMsg("重 新 入 场 · 手 枪 在 手");
             }
           } else if (time - e.lastHurtT > 5 && e.hp < e.maxHp) {
-            e.hp = Math.min(e.maxHp, e.hp + 12 * dt);
+            // out-of-combat regen: walking stays at the original 12 HP/s;
+            // standing still (no movement input / near-zero speed) regens 1.5x faster at 18 HP/s
+            e.hp = Math.min(e.maxHp, e.hp + (e.moving ? 12 : 18) * dt);
           }
         }
         // bullets
@@ -1051,6 +1186,20 @@
             ctx.font = "700 11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
             ctx.fillStyle = "rgba(255,180,84,0.95)"; ctx.fillText("你的身体", player.x, player.y - 30);
           }
+          // self marker: a red inverted triangle above YOUR head only — drawn
+          // after the darkness, so it stays visible in the dark and during
+          // eye-swap; bots never get one. Sits above the name / swap label.
+          var bobY = Math.sin(time * 3.2) * 2;
+          var tipY = player.y - 46 + bobY, topY = player.y - 59 + bobY;
+          ctx.beginPath();
+          ctx.moveTo(player.x - 8, topY);
+          ctx.lineTo(player.x + 8, topY);
+          ctx.lineTo(player.x, tipY);
+          ctx.closePath();
+          ctx.fillStyle = "#ff3b30";
+          ctx.fill();
+          ctx.strokeStyle = "rgba(255,235,230,0.85)"; ctx.lineWidth = 1.2;
+          ctx.stroke();
         }
         // floaters
         ctx.font = "700 13px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
@@ -1059,9 +1208,9 @@
           ctx.globalAlpha = clamp(fl.t * 1.8, 0, 1); ctx.fillStyle = fl.color;
           ctx.fillText(fl.txt, fl.x, fl.y); ctx.globalAlpha = 1;
         }
-        // crosshair (desktop)
-        if (aimJoy.id === null && state === "playing") {
-          ctx.strokeStyle = "rgba(255,220,160,0.9)"; ctx.lineWidth = 1.4;
+        // crosshair (desktop) — turns teal while aim assist is gently pulling
+        if (!touchMode && state === "playing") {
+          ctx.strokeStyle = assistTarget ? "rgba(45,212,191,0.95)" : "rgba(255,220,160,0.9)"; ctx.lineWidth = 1.4;
           ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 9, 0, 6.2832); ctx.stroke();
           ctx.beginPath();
           ctx.moveTo(mouse.x - 14, mouse.y); ctx.lineTo(mouse.x - 5, mouse.y);
@@ -1069,6 +1218,15 @@
           ctx.moveTo(mouse.x, mouse.y - 14); ctx.lineTo(mouse.x, mouse.y - 5);
           ctx.moveTo(mouse.x, mouse.y + 5); ctx.lineTo(mouse.x, mouse.y + 14);
           ctx.stroke();
+        }
+        // touch aim reticle: a small ring floating ahead of you in your aim
+        // direction (mobile has no mouse crosshair); teal while assist pulls
+        if (touchMode && state === "playing" && player && player.alive) {
+          var rx2 = player.x + Math.cos(player.angle) * 56, ry2 = player.y + Math.sin(player.angle) * 56;
+          ctx.strokeStyle = assistTarget ? "rgba(45,212,191,0.95)" : "rgba(255,220,160,0.75)"; ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.arc(rx2, ry2, 7, 0, 6.2832); ctx.stroke();
+          ctx.fillStyle = assistTarget ? "rgba(45,212,191,0.95)" : "rgba(255,220,160,0.8)";
+          ctx.beginPath(); ctx.arc(rx2, ry2, 1.6, 0, 6.2832); ctx.fill();
         }
         // reload indicator over player
         if (player && player.alive && player.reloadT > 0) {
