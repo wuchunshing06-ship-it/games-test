@@ -372,6 +372,7 @@
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
               <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆更快的推幅转向，推个大概方向，剩下的交给吸附修。</li>
+              <li><b>子弹吸附（仅手机端）</b>：手机上开枪后，子弹在飞行中还会再修一次——如果弹道大致指向一个<b>当前看得见</b>的对手（约 30° 以内、640 以内、中间没墙），子弹会朝他<b>轻轻拐弯</b>，正在拐弯的子弹会泛青光。它只是拐弯、不瞬移、不锁死，偏得太远照样打空；对手变回看不见就立刻不再拐。和上面的瞄准吸附是两层一起生效：开枪前修枪口、开枪后修弹道。电脑端没有子弹吸附，子弹全程笔直；机器人的子弹也没有。</li>
               <li><b>红色倒三角是你的专属标记</b>：它只出现在你自己头顶、始终跟着你走，黑暗里和借眼期间都看得见；机器人头顶没有。它和借眼时指向自己身体的提示可以同时存在，一个是头顶标记、一个是借眼期间的额外指引，不冲突。</li>
             </ul>
           </div>
@@ -407,6 +408,7 @@
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 不锁死 · 看不见即消失 · 电脑：夹角约 24° 内轻度吸附 · 手机（加强）：夹角约 50° 内、距离更远、吸附更快更强</td></tr>
+            <tr><td>子弹吸附（仅手机端 · 仅玩家子弹）</td><td>飞行中朝当前可见目标轻拐 · 捕获夹角约 30° · 距离 640 内 · 拐弯速率上限约 3.4 rad/s · 电脑端与机器人子弹全程笔直</td></tr>
             <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（转向已加快） · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
@@ -767,7 +769,7 @@
         if (e.mag <= 0) { startReload(e); return; }
         e.mag--; e.fireCd = e.isPlayer ? 0.22 : rand(0.42, 0.62);
         var mx = e.x + Math.cos(e.angle) * 20, my = e.y + Math.sin(e.angle) * 20;
-        bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * 780, vy: Math.sin(e.angle) * 780, owner: e, life: 1.1 });
+        bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * 780, vy: Math.sin(e.angle) * 780, owner: e, life: 1.1, mag: !!(e.isPlayer && touchMode), magOn: false });
         flashes.push({ x: mx, y: my, r: 215, t: 0.9, max: 0.9 });
         ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true });
         if (e.isPlayer) stats.shots++;
@@ -1065,6 +1067,36 @@
         // bullets
         for (i = bullets.length - 1; i >= 0; i--) {
           var bl = bullets[i];
+          // bullet magnetism (mobile only, player's bullets — flagged at
+          // fire time): while the bullet flies, it gently bends toward a
+          // currently-visible bot it is roughly aimed at (same visibility
+          // rules as aim assist: invisible = no bend, no memory). It steers,
+          // never teleports or locks on, and a wide miss stays a miss.
+          // Bots' bullets and all PC bullets fly perfectly straight.
+          bl.magOn = false;
+          if (bl.mag && player && player.alive) {
+            var curA = Math.atan2(bl.vy, bl.vx);
+            var bTar = null, bNear = 1e9, bi2, bb2, bd2, ba2;
+            for (bi2 = 0; bi2 < bots.length; bi2++) {
+              bb2 = bots[bi2];
+              if (!isVisibleToPlayer(bb2)) continue;
+              bd2 = dist(bl.x, bl.y, bb2.x, bb2.y);
+              if (bd2 > 640 || bd2 < 1) continue;
+              ba2 = Math.atan2(bb2.y - bl.y, bb2.x - bl.x);
+              if (Math.abs(angDiff(ba2, curA)) > 0.52) continue; // ~30 deg catch cone
+              if (losBlocked(bl.x, bl.y, bb2.x, bb2.y)) continue;
+              if (bd2 < bNear) { bNear = bd2; bTar = bb2; }
+            }
+            if (bTar) {
+              var bDf = angDiff(Math.atan2(bTar.y - bl.y, bTar.x - bl.x), curA);
+              var bSt = bDf * (1 - Math.exp(-9 * dt));
+              var bMx = 3.4 * dt; // cap on bend rate: curves, never snaps
+              if (bSt > bMx) bSt = bMx; else if (bSt < -bMx) bSt = -bMx;
+              var nA = curA + bSt, spd = Math.sqrt(bl.vx * bl.vx + bl.vy * bl.vy);
+              bl.vx = Math.cos(nA) * spd; bl.vy = Math.sin(nA) * spd;
+              bl.magOn = true;
+            }
+          }
           bl.life -= dt;
           var steps = 3, dead = false;
           for (var s = 0; s < steps && !dead; s++) {
@@ -1134,9 +1166,10 @@
         // bullets (under darkness they'll glow through their own light)
         for (i = 0; i < bullets.length; i++) {
           var bl = bullets[i];
-          ctx.strokeStyle = "rgba(255,214,150,0.85)"; ctx.lineWidth = 2.5;
+          // a magnetised bullet (mobile bullet assist actively bending) glows teal
+          ctx.strokeStyle = bl.magOn ? "rgba(45,212,191,0.9)" : "rgba(255,214,150,0.85)"; ctx.lineWidth = 2.5;
           ctx.beginPath(); ctx.moveTo(bl.x - bl.vx * 0.018, bl.y - bl.vy * 0.018); ctx.lineTo(bl.x, bl.y); ctx.stroke();
-          ctx.fillStyle = "#fff3d6"; ctx.beginPath(); ctx.arc(bl.x, bl.y, 2.6, 0, 6.2832); ctx.fill();
+          ctx.fillStyle = bl.magOn ? "#d9fff8" : "#fff3d6"; ctx.beginPath(); ctx.arc(bl.x, bl.y, 2.6, 0, 6.2832); ctx.fill();
         }
         // entities
         for (i = 0; i < ents.length; i++) {
