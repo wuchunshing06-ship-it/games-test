@@ -153,6 +153,7 @@
         .overlay p { font-size: 12px; line-height: 1.6; margin: 8px 0 2px; }
         #menuOverlay p.intro { display: none; }
         .overlay .diff { margin-top: 8px; }
+        .overlay .diffnote { margin-top: 6px; font-size: 11px; }
         .overlay .diff button { padding: 6px 14px; font-size: 12px; }
         .overlay .btn { margin-top: 10px; padding: 10px 28px; font-size: 14px; }
         .overlay .btn.ghost { padding: 8px 20px; margin-top: 8px; font-size: 13px; }
@@ -204,6 +205,7 @@
         border-radius: 99px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #cfc7b4;
       }
       .diff button.sel { background: rgba(45,212,191,.16); border-color: var(--teal-bright); color: #eafffa; }
+      .overlay .diffnote { font-size: 12px; color: #9d9687; line-height: 1.6; margin: 9px 0 0; max-width: 32em; }
       .stats { display: flex; gap: 26px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
       .stats div { text-align: center; }
       .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
@@ -271,7 +273,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜；被杀后击杀数清零</strong>。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 3 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
@@ -309,9 +311,10 @@
           <div class="tag">开 枪 即 暴 露 · 命 中 即 借 眼</div>
           <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。</p>
           <div class="diff">
-            <button type="button" id="diffEasy">练习难度</button>
-            <button type="button" id="diffNorm" class="sel">正式难度</button>
+            <button type="button" id="diffEasy">简单版</button>
+            <button type="button" id="diffNorm" class="sel">困难版</button>
           </div>
+          <p class="diffnote" id="diffNote">困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。</p>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换小刀</p>
           <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推得越远转得越快，松开停火）· 声纳、换武器、声音、暂停都在画面下方的按钮区，不挡画面</p>
@@ -365,7 +368,7 @@
           <div class="card">
             <h4><span class="dot" style="background:var(--teal-bright)"></span>核心规则</h4>
             <ul>
-              <li><b>限时冲榜</b>：一局 2 分钟（屏幕正上方倒计时），先到 10 杀直接获胜；时间到则按当前击杀数排名，第一名获胜。<b>被杀后击杀数清零</b>，榜首随时可能易主——左上角击杀榜实时更新。</li>
+              <li><b>限时冲榜 · 两种模式</b>：一局 2 分钟（屏幕正上方倒计时），先到 10 杀直接获胜；时间到则按当前击杀数排名，第一名获胜。模式在开始界面选：<b>困难版</b>被杀后击杀数清零，榜首随时可能易主，机器人是现在的正式难度；<b>简单版</b>被杀后击杀数<b>不清零</b>，榜单只涨不跌，而且机器人反应更迟钝——转向、开火都更慢，记性也更短。左上角击杀榜实时更新。</li>
               <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮一大片区域——包括开枪者本人。远处看到闪光，就等于知道了枪手的位置。</li>
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
@@ -403,7 +406,10 @@
             <tr><td>弹匣 / 换弹时间 / 射速</td><td>12 发 / 0.9 秒 / 0.22 秒一发</td></tr>
             <tr><td>声纳冷却 / 现形时间</td><td>6 秒 / 1 秒</td></tr>
             <tr><td>对手数量 / 获胜条件</td><td>3 个 AI / 先到 10 杀，或 2 分钟到时击杀第一</td></tr>
-            <tr><td>对局时长 / 死亡惩罚</td><td>2 分钟 / 击杀数清零</td></tr>
+            <tr><td>对局时长</td><td>2 分钟</td></tr>
+            <tr><td>简单版（开始界面选）</td><td>死亡后击杀数不清零 · 机器人反应迟钝</td></tr>
+            <tr><td>困难版（开始界面选）</td><td>死亡后击杀数清零 · 机器人正式难度</td></tr>
+            <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
@@ -562,7 +568,6 @@
       function allEnts() { return [player].concat(bots); }
       function resetMatch() {
         player = makeEnt("你", "#ffb454", 84, 516, true);
-        if (difficulty === "easy") player.maxHp = player.hp = 120;
         bots = [
           makeEnt("影刃", "#ff6b6b", 876, 84, false),
           makeEnt("雾行", "#4ecdc4", 876, 516, false),
@@ -767,7 +772,7 @@
       function tryFire(e) {
         if (!e.alive || e.weapon !== "gun" || e.fireCd > 0 || e.reloadT > 0) return;
         if (e.mag <= 0) { startReload(e); return; }
-        e.mag--; e.fireCd = e.isPlayer ? 0.22 : rand(0.42, 0.62);
+        e.mag--; e.fireCd = e.isPlayer ? 0.22 : (difficulty === "easy" ? rand(0.72, 1.05) : rand(0.42, 0.62));
         var mx = e.x + Math.cos(e.angle) * 20, my = e.y + Math.sin(e.angle) * 20;
         bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * 780, vy: Math.sin(e.angle) * 780, owner: e, life: 1.1, mag: !!(e.isPlayer && touchMode), magOn: false });
         flashes.push({ x: mx, y: my, r: 215, t: 0.9, max: 0.9 });
@@ -805,14 +810,17 @@
       }
       function kill(victim, killer, how) {
         victim.alive = false; victim.respawnT = 1.6; victim.hp = 0;
-        victim.score = 0; victim.deaths++;
+        // 简单版 (easy): death does NOT reset the killer-board score;
+        // 困难版 (normal): score resets to 0, exactly as before
+        if (difficulty !== "easy") victim.score = 0;
+        victim.deaths++;
         killer.score++;
         flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
         for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
         if (swapTarget === victim && swapT > 0) endSwap(true);
         if (how === "knife") showKnifeBanner(killer, victim);
         if (killer.isPlayer) { stats.kills++; feed("你击杀了「" + victim.name + "」 · 当前 " + killer.score + " 杀"); sfx("kill", true); }
-        else if (victim.isPlayer) { stats.deaths++; feed("你被「" + killer.name + "」击杀，击杀数已清零"); centerMsg("你 被 击 杀"); }
+        else if (victim.isPlayer) { stats.deaths++; feed(difficulty === "easy" ? "你被「" + killer.name + "」击杀——简单版击杀数不清零" : "你被「" + killer.name + "」击杀，击杀数已清零"); centerMsg("你 被 击 杀"); }
         else feed("「" + killer.name + "」击杀了「" + victim.name + "」");
         if (killer.score >= WIN_KILLS) endMatch(killer.isPlayer, killer, "kills");
       }
@@ -831,27 +839,43 @@
       /* ---------------- bot AI ---------------- */
       function botThink(b, dt) {
         b.thinkT -= dt;
+        // 简单版 bots are dull: shorter proximity sense, slower think cycle,
+        // capped aim turn, shorter memory of where a target was last seen.
+        // 困难版 keeps every current value untouched.
+        var easy = difficulty === "easy";
+        var step = easy ? 0.3 : 0.12;
         // perception: close-range proximity only (AI awareness, never drawn as a sound cue)
         var ents = allEnts(), i, o;
         for (i = 0; i < ents.length; i++) {
           o = ents[i];
           if (o === b || !o.alive) continue;
-          if (b.blindT <= 0 && dist(b.x, b.y, o.x, o.y) < 95) { b.knownX = o.x; b.knownY = o.y; b.knownT = time; b.knownEnt = o; }
+          if (b.blindT <= 0 && dist(b.x, b.y, o.x, o.y) < (easy ? 70 : 95)) { b.knownX = o.x; b.knownY = o.y; b.knownT = time; b.knownEnt = o; }
         }
         if (b.thinkT > 0) return;
-        b.thinkT = 0.12;
+        b.thinkT = step;
         var confused = (swapT > 0 && swapTarget === b);
-        var knows = b.knownEnt && b.knownEnt.alive && (time - b.knownT) < 3.0;
-        var speed = difficulty === "easy" ? 158 : 182;
+        var knows = b.knownEnt && b.knownEnt.alive && (time - b.knownT) < (easy ? 1.6 : 3.0);
+        var speed = easy ? 158 : 182;
         var tx, ty;
         if (knows) {
           var t = b.knownEnt;
-          var fresh = (time - b.knownT) < 0.4;
+          var fresh = (time - b.knownT) < (easy ? 0.2 : 0.4);
           var gx = fresh ? t.x : b.knownX, gy = fresh ? t.y : b.knownY;
           var d = dist(b.x, b.y, gx, gy);
-          b.strafeT -= 0.12; if (b.strafeT <= 0) { b.strafe = -b.strafe; b.strafeT = rand(0.9, 2.2); }
+          b.strafeT -= step; if (b.strafeT <= 0) { b.strafe = -b.strafe; b.strafeT = rand(0.9, 2.2); }
           var ax = (gx - b.x) / (d || 1), ay = (gy - b.y) / (d || 1);
-          b.angle = Math.atan2(t.y - b.y, t.x - b.x);
+          if (easy) {
+            // dull aim: the gun eases toward the target at a capped rate
+            // instead of snapping onto it, so tracking visibly lags
+            var wantA = Math.atan2(t.y - b.y, t.x - b.x);
+            var dA = wantA - b.angle;
+            while (dA > 3.1416) dA -= 6.2832;
+            while (dA < -3.1416) dA += 6.2832;
+            var maxTurn = 0.55; // radians per 0.3s think tick
+            b.angle += dA > maxTurn ? maxTurn : (dA < -maxTurn ? -maxTurn : dA);
+          } else {
+            b.angle = Math.atan2(t.y - b.y, t.x - b.x);
+          }
           if (b.weapon === "gun" && b.blindT <= 0 && d < 115 && Math.random() < 0.10) switchWeapon(b);
           if (b.weapon === "knife") {
             b.knifeNoSee = 0;
@@ -873,7 +897,7 @@
           }
         } else {
           if (b.weapon === "knife") {
-            b.knifeNoSee += 0.12;
+            b.knifeNoSee += step;
             if (b.knifeNoSee > 1.2) { b.knifeNoSee = 0; switchWeapon(b); }
           }
           if (!b.hasWander || dist(b.x, b.y, b.wanderX, b.wanderY) < 24) {
@@ -1371,7 +1395,9 @@
         $("menuOverlay").classList.add("hidden");
         $("overOverlay").classList.add("hidden");
         $("pauseOverlay").classList.add("hidden");
-        feed("对局开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。");
+        feed(difficulty === "easy"
+          ? "简单版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜；被杀击杀数不清零，机器人反应迟钝。开枪即暴露。"
+          : "困难版开始——2 分钟限时：先到 10 杀或结束时击杀第一获胜，被杀清零。开枪即暴露。");
         updateHUD();
       }
       function pauseGame() {
@@ -1420,8 +1446,8 @@
       });
       document.addEventListener("fullscreenchange", updateFsBtn);
       document.addEventListener("webkitfullscreenchange", updateFsBtn);
-      $("diffEasy").addEventListener("click", function () { difficulty = "easy"; this.classList.add("sel"); $("diffNorm").classList.remove("sel"); });
-      $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); });
+      $("diffEasy").addEventListener("click", function () { difficulty = "easy"; this.classList.add("sel"); $("diffNorm").classList.remove("sel"); $("diffNote").textContent = "简单版：被杀后击杀数不清零，榜单只涨不跌；机器人反应迟钝——转向慢、开火慢、记性也短。"; });
+      $("diffNorm").addEventListener("click", function () { difficulty = "normal"; this.classList.add("sel"); $("diffEasy").classList.remove("sel"); $("diffNote").textContent = "困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。"; });
       document.addEventListener("visibilitychange", function () { if (document.hidden && state === "playing") pauseGame(); });
 
       /* ---------------- main loop ---------------- */
