@@ -99,6 +99,11 @@
       .knifebanner { position: absolute; top: 27%; left: 50%; transform: translateX(-50%); text-align: center; width: 92%; opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 3; }
       .knifebanner.on { opacity: 1; }
       .knifebanner .t { font-size: clamp(15px, 2.4vw, 21px); font-weight: 900; letter-spacing: .08em; color: #ffd9d2; text-shadow: 0 0 18px rgba(194,64,46,.85), 0 2px 8px #000; }
+      .streakbanner { position: absolute; top: 36%; left: 50%; transform: translateX(-50%); text-align: center; width: 92%; opacity: 0; transition: opacity .18s; pointer-events: none; z-index: 3; }
+      .streakbanner.on { opacity: 1; }
+      .streakbanner .t { font-family: "Noto Serif SC", serif; font-size: clamp(20px, 3.6vw, 32px); font-weight: 900; letter-spacing: .16em; color: #ffd76a; text-shadow: 0 0 22px rgba(255,170,30,.75), 0 2px 10px #000; }
+      .streakbanner .s { font-size: 12.5px; margin-top: 4px; color: #ffeec2; text-shadow: 0 1px 6px #000; }
+      .timer.showdown { color: #ffb03a; text-shadow: 0 0 16px rgba(255,120,40,.8), 0 2px 10px #000; }
       .lowhp { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 3; background: radial-gradient(ellipse at center, rgba(194,30,20,0) 52%, rgba(194,30,20,.6) 100%); }
       /* ---------- control bar: every button lives OUTSIDE the game screen,
          in a bar directly under it — nothing floats over the map ---------- */
@@ -172,6 +177,8 @@
         .banner .s { font-size: 11.5px; }
         .banner .bar { width: 150px; }
         .knifebanner { top: 33%; }
+        .streakbanner { top: 42%; }
+        .streakbanner .s { font-size: 11px; }
         .centermsg { top: 58%; }
         .feed { top: 46px; width: 62%; }
         .timer { font-size: 22px; top: 4px; }
@@ -321,7 +328,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光、连别人切换小刀的显形也看不见，只能听脚步声</strong>找人，持镖时<strong>不能借眼</strong>、也<strong>没有任何辅助瞄准或子弹吸附</strong>；唯一的例外是<strong>用飞镖击杀后，尸体的位置会借眼给你看 1.5 秒</strong>。但持镖时<strong>黑暗里能看清所有障碍物</strong>，不会撞墙迷路。开始前还能在开始界面<strong>选开局武器</strong>，四件武器的说明都写在选择界面上。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光、连别人切换小刀的显形也看不见，只能听脚步声</strong>找人，持镖时<strong>不能借眼</strong>、也<strong>没有任何辅助瞄准或子弹吸附</strong>；唯一的例外是<strong>用飞镖击杀后，尸体的位置会借眼给你看 1.5 秒</strong>。但持镖时<strong>黑暗里能看清所有障碍物</strong>，不会撞墙迷路。开始前还能在开始界面<strong>选开局武器</strong>，四件武器的说明都写在选择界面上。这一版还加了局内目标和奖励：<strong>连杀</strong>——不死连杀 2 次起有横幅，三杀起每次击杀额外多算 1 个人头；<strong>悬赏</strong>——击杀榜第一名头顶有金色悬赏标记、位置被一圈光晕标出，谁击杀他额外多算 1 个人头，悬赏随榜首转移；<strong>决战</strong>——最后 30 秒所有人每 5 秒显形一次，逼大家正面交火，不再躲猫猫。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
@@ -331,7 +338,7 @@
           <div class="tl">
             <div class="who" id="whoName">暗行者</div>
             <div class="hpbar"><i id="hpfill" style="width:100%"></i></div>
-            <div class="hp-num"><span id="hpnum">100</span> HP · 击杀 <span id="mykills">0</span></div>
+            <div class="hp-num"><span id="hpnum">100</span> HP · 击杀 <span id="mykills">0</span> · 连杀 <span id="mystreak">0</span></div>
             <div class="board" id="board"></div>
           </div>
           <div class="tr">
@@ -346,6 +353,7 @@
             <div class="bar"><i id="bannerBar" style="width:100%"></i></div>
           </div>
           <div class="knifebanner" id="knifebanner"><div class="t" id="knifebannerT"></div></div>
+          <div class="streakbanner" id="streakbanner"><div class="t" id="streakbannerT"></div><div class="s" id="streakbannerS"></div></div>
           <div class="centermsg" id="centermsg"><div class="t" id="centermsgT"></div></div>
           <div class="ammo"><div class="n" id="ammoN">12</div><div class="l" id="ammoL">弹药 · 打空自动换弹</div></div>
         </div>
@@ -357,7 +365,7 @@
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
           <div class="tag">开 枪 即 暴 露 · 命 中 即 借 眼</div>
-          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。<br />这一版竞技场更大、共 6 人混战，<b>4 张地图每局随机一张</b>；黑暗也更深了，没被照亮的人完全看不见。</p>
+          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。<br />这一版竞技场更大、共 6 人混战，<b>4 张地图每局随机一张</b>；黑暗也更深了，没被照亮的人完全看不见。<br />局内还有<b>连杀奖励</b>（不死连杀三杀起，每次击杀额外 +1 人头）、<b>悬赏目标</b>（榜一头顶金色标记、位置被光圈标出，击杀他额外 +1 人头）和最后 30 秒的<b>决战</b>（每 5 秒全场显形一次）——杀得越猛，奖励越多，也越容易被全场围猎。</p>
           <div class="namebox">
             <label for="nameInput">你的名字</label>
             <input id="nameInput" type="text" maxlength="10" value="暗行者" autocomplete="off" />
@@ -433,6 +441,9 @@
             <h4><span class="dot" style="background:var(--teal-bright)"></span>核心规则</h4>
             <ul>
               <li><b>限时冲榜 · 两种模式</b>：一局 2 分钟（屏幕正上方倒计时），先到 10 杀直接获胜；时间到则按当前击杀数排名，第一名获胜。模式在开始界面选：<b>困难版</b>被杀后击杀数清零，榜首随时可能易主，机器人是现在的正式难度；<b>简单版</b>被杀后击杀数<b>不清零</b>，榜单只涨不跌，而且机器人反应更迟钝——转向、开火都更慢，记性也更短。左上角击杀榜实时更新。</li>
+              <li><b>连杀奖励</b>：不死连续击杀到 2 次起，屏幕会打出连杀横幅（双杀 / 三杀 / 四杀 / 五杀……）；<b>连杀 3 次及以上，每次击杀额外多算 1 个人头</b>——这个奖励人头和真击杀一样，计入先到 10 的胜负和局末结算。一旦被杀，连杀立刻清零（简单版、困难版都一样，左上角会显示你当前的连杀数）。想冲榜就别死，连杀越长滚得越快。</li>
+              <li><b>悬赏目标</b>：当前击杀榜第一名（至少 1 杀）就是全场悬赏目标——他头顶顶着<b>金色菱形悬赏标记</b>，位置还被一圈淡淡的金色光晕标出来，<b>躲在黑暗里也藏不住</b>，机器人也会时不时摸到他的大概位置去围猎。<b>击杀悬赏目标额外多算 1 个人头</b>（和连杀奖励可以叠加，最多一次 +2）。他一死，悬赏立刻转移到新的第一名头上；你登顶的那一刻，你就是下一个悬赏。</li>
+              <li><b>决战 30 秒</b>：倒计时只剩 30 秒时全场进入决战，屏幕会打出「决战 30 秒」——之后<b>每 5 秒，所有还活着的人都会短暂显形约 0.5 秒</b>（光圈 + 红圈，和声纳现形一样），机器人也会同时知道离自己最近的对手在哪。最后半分钟没有藏身之处，囤的血和位置优势都会被逼出来正面交火。</li>
               <li><b>随机地图 · 更大竞技场</b>：竞技场扩大到 1280×800，共 6 人混战（你 + 5 个机器人）。一共有 4 张地图——十字堡、回廊、双塔、散点，<b>每局开始随机抽一张</b>，开局播报会告诉你这一局是哪张。墙体布局每张都不同，出生点和掩体位置都要重新摸。</li>
               <li><b>黑暗加深</b>：这一版底幕接近全黑（不透明度约 99.5%），没被任何光源照到的人——名字、血条、身体——完全看不见，不再有隐约的人影透出来。想确认一个角落有没有人，只能靠闪光、声纳、借眼或者贴近到你自己的微光范围内。</li>
               <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮周围一圈区域——包括开枪者本人。这一版闪光范围已调小，照亮半径约 160 px。远处看到闪光，就等于知道了枪手的位置。</li>
@@ -488,6 +499,9 @@
             <tr><td>竞技场 / 地图</td><td>1280 × 800 · 4 张地图（十字堡 / 回廊 / 双塔 / 散点），每局随机一张</td></tr>
             <tr><td>黑暗底幕</td><td>不透明度约 99.5%，未被照亮的人完全不可见</td></tr>
             <tr><td>对局时长</td><td>2 分钟</td></tr>
+            <tr><td>连杀奖励（简单 / 困难通用）</td><td>不死连杀 2 次起显示横幅（双杀 / 三杀 / 四杀 / 五杀）· 连杀 ≥3 每次击杀额外 +1 人头 · 死亡清零 · 额外人头计入先到 10 与结算</td></tr>
+            <tr><td>悬赏目标（简单 / 困难通用）</td><td>击杀榜第一名（≥1 杀）头顶金色标记 + 位置光圈全场可见 · 机器人每约 1.5 秒获知其大概位置 · 击杀悬赏额外 +1 人头（可与连杀叠加）· 悬赏随新榜一转移</td></tr>
+            <tr><td>决战（简单 / 困难通用）</td><td>倒计时剩 30 秒触发并全屏提示 · 每 5 秒全场存活者显形约 0.5 秒 · 机器人同时获知最近对手位置</td></tr>
             <tr><td>简单版（开始界面选）</td><td>死亡后击杀数不清零 · 机器人反应迟钝</td></tr>
             <tr><td>困难版（开始界面选）</td><td>死亡后击杀数清零 · 机器人正式难度</td></tr>
             <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
@@ -671,6 +685,13 @@
       var assistTarget = null, prevRawAim = null;
       var stepT = 0; // footstep-audio timer for the dart holder
       var stats = { shots: 0, hits: 0, kills: 0, knifeKills: 0, deaths: 0, swaps: 0 };
+      /* in-match goals & rewards: kill streaks (e.streak on every entity),
+         the bounty on whoever tops the kill board, and the final-30s
+         showdown. All three apply to BOTH difficulties, and every bonus
+         head counts toward the first-to-10 win and the settlement. */
+      var bountyEnt = null, bountyPulseT = 0;
+      var showdown = false, showdownPulseT = 0, showdownRevealT = 0;
+      var skT = 0; // streak-banner timer (ticked in updateHUD like kbT)
       var winnerIsPlayer = false;
 
       /* career leaderboard: session totals for you + all five bots, updated
@@ -701,7 +722,7 @@
           name: name, color: color, x: x, y: y, spawnX: x, spawnY: y, r: 14,
           angle: 0, hp: 100, maxHp: 100, alive: true, respawnT: 0,
           fireCd: rand(0.2, 0.6), reloadT: 0, reloadDur: 0.9, mags: { gun: 12, paddle: 2, dart: 9 }, lastHurtT: -99,
-          score: 0, deaths: 0, matchKills: 0, matchKnife: 0, isPlayer: !!isPlayer,
+          score: 0, deaths: 0, matchKills: 0, matchKnife: 0, streak: 0, isPlayer: !!isPlayer,
           weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
           moving: false,
           thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
@@ -726,8 +747,10 @@
         bullets = []; flashes = []; ripples = []; sparks = []; floaters = []; slashes = [];
         swapT = 0; swapCd = 0; swapTarget = null; swapDur = 3; corpseSwap = false; pingT = 0; pingCd = 0; matchT = 0;
         assistTarget = null; prevRawAim = null;
+        bountyEnt = null; bountyPulseT = 0; showdown = false; showdownPulseT = 0; showdownRevealT = 0; skT = 0;
         boardKey = ""; kbT = 0;
         $("knifebanner").classList.remove("on");
+        $("streakbanner").classList.remove("on");
         $("lowhp").style.opacity = 0;
         stats = { shots: 0, hits: 0, kills: 0, knifeKills: 0, deaths: 0, swaps: 0 };
         feedClear();
@@ -751,18 +774,46 @@
         $("knifebannerT").textContent = "「" + killer.name + "」用小刀击杀了「" + victim.name + "」";
         $("knifebanner").classList.add("on"); kbT = 2.4;
       }
+      var STREAK_NAMES = { 2: "双杀", 3: "三杀", 4: "四杀", 5: "五杀" };
+      function showStreakBanner(killer) {
+        var n = killer.streak;
+        var nm = STREAK_NAMES[n] || (n + " 连杀");
+        $("streakbannerT").textContent = killer.isPlayer ? nm + "！" : "「" + killer.name + "」" + nm + "！";
+        $("streakbannerS").textContent = n >= 3
+          ? "连杀奖励生效：每次击杀额外 +1 人头——被杀就清零"
+          : "再连杀下去，从三杀起每次击杀额外 +1 人头";
+        $("streakbanner").classList.add("on"); skT = 1.9;
+      }
+      /* the bounty is whoever currently tops the kill board (same ranking
+         as the board itself: kills, then fewest deaths) with at least one
+         kill — before anyone scores there is no bounty at all. */
+      function computeBounty() {
+        var sorted = allEnts().slice().sort(cmpRank);
+        var top = sorted[0];
+        return (top && top.score > 0) ? top : null;
+      }
+      function updateBounty() {
+        var nb = computeBounty();
+        if (nb === bountyEnt) return;
+        bountyEnt = nb; boardKey = ""; // board redraws with the ◆悬赏 tag moved
+        if (nb && state === "playing") {
+          if (nb.isPlayer) feed("你登上击杀榜第一——你成了悬赏目标，金色光圈会一直标出你的位置！");
+          else feed("悬赏目标：「" + nb.name + "」——头顶金色标记、位置发光，击杀他额外 +1 人头");
+        }
+      }
       function cmpRank(a, b) { return (b.score - a.score) || (a.deaths - b.deaths); }
       var boardKey = "";
       function updateBoard() {
         var sorted = allEnts().slice().sort(cmpRank);
         var key = "", i, e;
         for (i = 0; i < sorted.length; i++) key += sorted[i].name + ":" + sorted[i].score + (sorted[i].alive ? 1 : 0) + "|";
+        key += "B:" + (bountyEnt ? bountyEnt.name : "-");
         if (key === boardKey) return;
         boardKey = key;
         var html = "<div class='bt'>击 杀 榜</div>";
         for (i = 0; i < sorted.length; i++) {
           e = sorted[i];
-          html += "<div class='row" + (e.isPlayer ? " me" : "") + (e.alive ? "" : " dead") + "'><span><span class='rk'>" + (i + 1) + "</span>" + esc(e.name) + "</span><span>" + e.score + " 杀</span></div>";
+          html += "<div class='row" + (e.isPlayer ? " me" : "") + (e.alive ? "" : " dead") + "'><span><span class='rk'>" + (i + 1) + "</span>" + esc(e.name) + (e === bountyEnt ? "<span style='color:#ffc542;font-weight:700'> ◆悬赏</span>" : "") + "</span><span>" + e.score + " 杀</span></div>";
         }
         $("board").innerHTML = html;
       }
@@ -773,10 +824,12 @@
         $("hpfill").style.background = player.hp <= 30 ? "#ff6b5e" : "var(--amber-bright)";
         $("hpnum").textContent = Math.max(0, Math.ceil(player.hp));
         $("mykills").textContent = player.score;
+        $("mystreak").textContent = player.streak || 0;
         var remain = Math.max(0, MATCH_LEN - matchT);
         var tm = $("timer");
         tm.textContent = fmtTime(remain);
         tm.classList.toggle("low", remain <= 10.5);
+        tm.classList.toggle("showdown", showdown);
         $("weaponName").textContent = { gun: "手 枪", knife: "小 刀", paddle: "乒 乓 球 拍", dart: "十 字 飞 镖" }[player.weapon] || "手 枪";
         updateBoard();
         var pct = player.hp / player.maxHp;
@@ -804,6 +857,7 @@
         } else bn.classList.remove("on");
         if (cmT > 0) { cmT -= 1 / 60; if (cmT <= 0) $("centermsg").classList.remove("on"); }
         if (kbT > 0) { kbT -= 1 / 60; if (kbT <= 0) $("knifebanner").classList.remove("on"); }
+        if (skT > 0) { skT -= 1 / 60; if (skT <= 0) $("streakbanner").classList.remove("on"); }
       }
 
       /* ---------------- input ---------------- */
@@ -1178,13 +1232,21 @@
         if (bot && player.weapon !== "dart" && kind !== "dart" && swapT <= 0 && swapCd <= 0 && victim.alive) startSwap(bot);
       }
       function kill(victim, killer, how) {
+        var wasBounty = !!(bountyEnt && victim === bountyEnt);
         victim.alive = false; victim.respawnT = 1.6; victim.hp = 0;
+        victim.streak = 0; // death ends any kill streak, in BOTH modes
         // 简单版 (easy): death does NOT reset the killer-board score;
         // 困难版 (normal): score resets to 0, exactly as before
         if (difficulty !== "easy") victim.score = 0;
         victim.deaths++;
-        killer.score++;
-        killer.matchKills++;
+        killer.streak++;
+        // bonus heads: a streak of 3+ pays +1 per kill, and killing the
+        // bounty target pays +1 — the two stack (one kill can pay +2), and
+        // bonus heads are real heads: they count toward the first-to-10
+        // win below and toward matchKills / stats, i.e. the settlement.
+        var bonus = (killer.streak >= 3 ? 1 : 0) + (wasBounty ? 1 : 0);
+        killer.score += 1 + bonus;
+        killer.matchKills += 1 + bonus;
         if (how === "knife") killer.matchKnife++;
         flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
         for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
@@ -1196,9 +1258,11 @@
         // (you may have switched weapons while it was still in flight).
         if (killer.isPlayer && (killer.weapon === "dart" || how === "dart")) startCorpseSwap(victim);
         if (how === "knife") showKnifeBanner(killer, victim);
-        if (killer.isPlayer) { stats.kills++; if (how === "knife") stats.knifeKills++; feed("你击杀了「" + victim.name + "」 · 当前 " + killer.score + " 杀"); sfx("kill", true); }
+        if (killer.isPlayer) { stats.kills += 1 + bonus; if (how === "knife") stats.knifeKills++; feed("你击杀了「" + victim.name + "」" + (wasBounty ? "（悬赏目标！）" : "") + (bonus ? " · 奖励 +" + bonus + " 人头" : "") + " · 当前 " + killer.score + " 杀"); sfx("kill", true); }
         else if (victim.isPlayer) { stats.deaths++; feed(difficulty === "easy" ? "你被「" + killer.name + "」击杀——简单版击杀数不清零" : "你被「" + killer.name + "」击杀，击杀数已清零"); centerMsg("你 被 击 杀"); }
-        else feed("「" + killer.name + "」击杀了「" + victim.name + "」");
+        else feed("「" + killer.name + "」击杀了「" + victim.name + "」" + (wasBounty ? "（悬赏目标，+1 人头）" : ""));
+        if (killer.streak >= 2) showStreakBanner(killer);
+        updateBounty(); // the bounty follows the board: it may have just moved
         if (killer.score >= WIN_KILLS) endMatch(killer.isPlayer, killer, "kills");
       }
       function doPing() {
@@ -1307,6 +1371,8 @@
         if (player.blindT > 0) return false; // while blinded you see no one
         if (dist(player.x, player.y, b.x, b.y) <= 68) return true;
         if (pingT > 0) return true;
+        if (showdownRevealT > 0) return true; // a 决战 reveal pulse shows everyone, like sonar
+        if (bountyEnt && b === bountyEnt) return true; // the bounty's glow gives them away at all times
         // the knife-draw reveal does NOT count for the dart holder: while
         // you hold the darts, even someone switching to the knife is
         // invisible to you, exactly like their firing light
@@ -1383,6 +1449,51 @@
           var rk = allEnts().slice().sort(cmpRank);
           endMatch(rk[0] === player, rk[0], "time");
           return;
+        }
+        // 决战: the last 30 seconds force open fights. Announced once,
+        // then every 5s everyone still alive is revealed for ~0.5s (the
+        // render lights them up like sonar) and every bot learns where
+        // its nearest opponent is — no more hiding out the clock.
+        if (!showdown && MATCH_LEN - matchT <= 30) {
+          showdown = true; showdownPulseT = 0;
+          centerMsg("决 战 30 秒");
+          feed("决战开始——最后 30 秒：所有人每 5 秒显形一次，正面交火！");
+          tone(196, 0.45, "sawtooth", 0.10, 392);
+        }
+        if (showdown) {
+          showdownPulseT -= dt;
+          if (showdownPulseT <= 0) {
+            showdownPulseT = 5; showdownRevealT = 0.5;
+            var sEnts = allEnts(), sei, sb3, so3, sne, sBest, sBd, sd3;
+            for (sei = 0; sei < bots.length; sei++) {
+              sb3 = bots[sei]; if (!sb3.alive) continue;
+              sBest = null; sBd = 1e9;
+              for (so3 = 0; so3 < sEnts.length; so3++) {
+                sne = sEnts[so3];
+                if (sne === sb3 || !sne.alive) continue;
+                sd3 = dist(sb3.x, sb3.y, sne.x, sne.y);
+                if (sd3 < sBd) { sBd = sd3; sBest = sne; }
+              }
+              if (sBest) { sb3.knownX = sBest.x; sb3.knownY = sBest.y; sb3.knownT = time; sb3.knownEnt = sBest; }
+            }
+          }
+        }
+        if (showdownRevealT > 0) showdownRevealT -= dt;
+        // 悬赏 pressure: while a bounty is up, every ~1.5s the bots learn
+        // roughly where the leader is — a jittered position, flagged
+        // not-fresh so they converge on the area instead of snapping
+        // their aim onto the exact spot. The leader is hunted, not safe.
+        bountyPulseT -= dt;
+        if (bountyPulseT <= 0) {
+          bountyPulseT = 1.5;
+          if (bountyEnt && bountyEnt.alive) {
+            for (var bpi = 0; bpi < bots.length; bpi++) {
+              var bp = bots[bpi];
+              if (!bp.alive || bp === bountyEnt) continue;
+              bp.knownX = bountyEnt.x + rand(-70, 70); bp.knownY = bountyEnt.y + rand(-70, 70);
+              bp.knownT = time - 0.5; bp.knownEnt = bountyEnt;
+            }
+          }
         }
         if (swapT > 0) { swapT -= dt; if (swapT <= 0) endSwap(false); }
         else if (swapCd > 0) swapCd -= dt;
@@ -1706,6 +1817,13 @@
             lightHole(bl3.x, bl3.y, bl3.kind === "bullet" ? 34 : 24, 0.6);
           }
           if (pingT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 62, 0.8 * pingT); }
+          // 悬赏 glow: the leader's position leaks a soft lit circle at
+          // all times — everyone can see roughly where they are, even in
+          // total darkness. It is a game marker, not firing light, so the
+          // dart holder sees it too (same treatment as sonar above).
+          if (bountyEnt && bountyEnt.alive) lightHole(bountyEnt.x, bountyEnt.y, 72, 0.85);
+          // 决战 reveal pulses: everyone lit for ~0.5s every 5 seconds
+          if (showdownRevealT > 0) for (i = 0; i < ents.length; i++) { if (ents[i].alive) lightHole(ents[i].x, ents[i].y, 66, 0.9 * (showdownRevealT / 0.5)); }
           // knife-draw reveal light — hidden from the dart holder too:
           // someone switching to the knife makes no picture for them at all
           for (i = 0; i < ents.length; i++) { if (!noForeignLight && ents[i].alive && !ents[i].isPlayer && ents[i].revealT > 0) lightHole(ents[i].x, ents[i].y, 76, 0.92); }
@@ -1758,6 +1876,29 @@
             ctx.strokeStyle = "rgba(45,212,191," + 0.75 * pingT + ")"; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6 + (1 - pingT) * 10, 0, 6.2832); ctx.stroke();
           }
+        }
+        // 决战 reveal outlines: red rings on everyone while a pulse is up
+        if (showdownRevealT > 0) {
+          for (i = 0; i < ents.length; i++) {
+            e = ents[i]; if (!e.alive) continue;
+            ctx.strokeStyle = "rgba(255,92,72," + 0.85 * (showdownRevealT / 0.5) + ")"; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 6, 0, 6.2832); ctx.stroke();
+          }
+        }
+        // 悬赏 marker: a gold diamond + 「悬赏」 label over the leader's
+        // head and a pulsing gold ring — drawn over the darkness, so it
+        // shows no matter where they hide. If YOU are the bounty it sits
+        // above your own red triangle; everyone can hunt the leader.
+        if (bountyEnt && bountyEnt.alive) {
+          var bx = bountyEnt.x, by = bountyEnt.y - 74 + Math.sin(time * 3.2) * 2;
+          ctx.save(); ctx.translate(bx, by); ctx.rotate(Math.PI / 4);
+          ctx.fillStyle = "#ffc542"; ctx.fillRect(-6, -6, 12, 12);
+          ctx.strokeStyle = "rgba(255,246,220,0.9)"; ctx.lineWidth = 1.2; ctx.strokeRect(-6, -6, 12, 12);
+          ctx.restore();
+          ctx.font = "700 11px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+          ctx.fillStyle = "#ffc542"; ctx.fillText("悬赏", bx, by - 13);
+          ctx.strokeStyle = "rgba(255,197,66," + (0.55 + 0.3 * Math.sin(time * 5)) + ")"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(bountyEnt.x, bountyEnt.y, bountyEnt.r + 11, 0, 6.2832); ctx.stroke();
         }
         // knife-draw reveal outlines + spawn shield
         for (i = 0; i < ents.length; i++) {
@@ -1879,6 +2020,7 @@
         $("banner").classList.remove("on");
         $("lowhp").style.opacity = 0;
         $("knifebanner").classList.remove("on");
+        $("streakbanner").classList.remove("on");
       }
       function startGame() {
         ac(); resetMatch();
