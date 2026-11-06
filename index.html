@@ -248,11 +248,15 @@
       .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
       .stats .k { font-size: 11px; letter-spacing: .16em; opacity: .65; margin-top: 2px; }
 
-      /* touch controls: two FIXED joysticks, always visible at half opacity on touch devices */
+      /* touch controls: two joysticks, always visible at half opacity on touch
+         devices. The move stick is fixed bottom-left; the AIM stick's base can
+         be long-press dragged to a new spot, where it then stays (.drag) */
       .stick { position: absolute; width: 110px; height: 110px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.38); background: rgba(255,255,255,.06); display: none; z-index: 4; pointer-events: none; opacity: .55; }
       .stick .nub { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.40); left: 33px; top: 33px; }
       .stick .cap { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 10.5px; letter-spacing: .14em; color: rgba(255,255,255,.55); pointer-events: none; }
       .stick.on { opacity: .92; }
+      .stick.drag { opacity: 1; border-style: dashed; border-color: var(--amber-bright); background: rgba(255,180,84,.13); }
+      #stickAim.drag .cap { color: rgba(255,224,170,.95); }
       #stickMove { left: 18px; bottom: 18px; }
       #stickAim { right: 18px; bottom: 18px; border-color: rgba(45,212,191,.5); }
       #stickAim .nub { background: rgba(45,212,191,.42); }
@@ -372,7 +376,7 @@
           </div>
           <button class="btn" id="btnStart" type="button">开始试玩</button>
           <p class="hint hint-pc">电脑：WASD 移动 · 鼠标瞄准 · 点击开火 · E 声纳 · R 切换武器（手枪 / 小刀 / 乒乓球拍 / 十字飞镖）</p>
-          <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推向哪边枪口立刻转到哪边——秒转，松开停火）· 声纳、换武器（四件轮换）、声音、暂停都在画面下方的按钮区，不挡画面</p>
+          <p class="hint hint-touch">手机：竖着拿就行，整张竞技场会完整显示在屏幕里、不裁切 · 点画面下方「全屏」按钮一键全屏 · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（推过一点就一边瞄准一边开火，推向哪边枪口立刻转到哪边——秒转，松开停火）；瞄准摇杆的位置可以改：手指按住摇杆别推、长按约半秒，等它变成虚线圈就能把整个摇杆拖到顺手的位置，松开就固定在那里，之后一直留在新位置——关掉页面、下次再打开也还在那里，不会回到右下角 · 声纳、换武器（四件轮换）、声音、暂停都在画面下方的按钮区，不挡画面</p>
         </div>
 
         <div class="overlay hidden" id="pauseOverlay">
@@ -414,7 +418,7 @@
             <h4><span class="dot" style="background:var(--amber-bright)"></span>操作</h4>
             <ul>
               <li>移动：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向键；手机竖屏、横屏都行：整张竞技场始终完整显示、四边不裁切（宁可人物小一点、上下留一点黑边，也不放大裁图、不用跟随视角），点画面下方控制区的「全屏」按钮可一键全屏；用左下角的固定摇杆移动（一直显示在原地，手指按上去拖动才走，松开回正停下）</li>
-              <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆——<b>推的方向就是瞄准方向，枪口立刻转过去（秒转）</b>，不再按推幅慢慢转、也不看推多远。手机上<b>瞄准和开火是同一个摇杆</b>：推过死区就一边瞄准一边自动开火，摇杆回正或松手就停火，不再有单独的开火按钮</li>
+              <li>瞄准开火：鼠标指向、点击或按住左键；手机用右下角的固定摇杆——<b>推的方向就是瞄准方向，枪口立刻转过去（秒转）</b>，不再按推幅慢慢转、也不看推多远。手机上<b>瞄准和开火是同一个摇杆</b>：推过死区就一边瞄准一边自动开火，摇杆回正或松手就停火，不再有单独的开火按钮。瞄准摇杆的<b>位置可以自己改</b>：手指按住摇杆、不要推，长按约 0.45 秒，等摇杆变成虚线圈（中间显示「拖动中」）后，拖动手指就能把整个摇杆挪到顺手的位置，松开手指就固定在那里——之后每一局都留在新位置，关掉页面、下次再打开也照样在新位置（位置会存进浏览器），旋转屏幕、切全屏也会按相对位置贴合；想再换位置，同样长按再拖一次。注意：只有「按住不推」才进拖动，推过死区就是正常瞄准开火，不会误触拖动；拖动过程中不会开火</li>
               <li>认出自己：你的角色头顶始终顶着一个<b>红色倒三角</b>，只有你有、机器人没有；借眼换到对手视角时，靠它一眼找回自己的身体</li>
               <li>声纳：<kbd>E</kbd> 或点画面下方控制区的「声纳」按钮，冷却 6 秒；按钮上会直接显示冷却读秒</li>
               <li>切换武器：<kbd>R</kbd> 或点画面下方控制区的「换武器」按钮，在手枪、小刀、乒乓球拍、十字飞镖四件之间轮换；换弹是自动的（打空后按各武器自己的速度换，手枪 0.9 秒、乒乓球拍 0.6 秒、十字飞镖 0.55 秒）。声纳、换武器、声音、暂停、全屏都放在画面外的下方控制区，不挡地图</li>
@@ -496,7 +500,7 @@
             <tr><td>脱战回血</td><td>5 秒未受击后，走路 12 HP/秒 · 站着不动 18 HP/秒（1.5 倍）</td></tr>
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 不锁死 · 看不见即消失 · 电脑：夹角约 24° 内轻度吸附 · 手机（加强）：夹角约 50° 内、距离更远、吸附更快更强 · 持飞镖时完全关闭</td></tr>
             <tr><td>子弹吸附（仅手机端 · 仅玩家子弹）</td><td>飞行中朝当前可见目标轻拐 · 捕获夹角约 30° · 距离 640 内 · 拐弯速率上限约 3.4 rad/s · 电脑端与机器人子弹全程笔直 · 飞镖不吸附</td></tr>
-            <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（秒转：推向哪边立刻转到哪边） · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
+            <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（秒转：推向哪边立刻转到哪边） · 瞄准摇杆可长按（约 0.45 秒、不推过死区）拖动底座换位置，松开固定、跨局保留、关掉页面再打开也保留（存浏览器本地；存不了时退回本次打开期间保留） · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
@@ -820,11 +824,20 @@
       cv.addEventListener("mousedown", function (e) { if (e.button === 0) { mouse.down = true; ac(); } });
       window.addEventListener("mouseup", function () { mouse.down = false; });
 
-      /* touch controls: two FIXED joysticks (bottom-left move, bottom-right
+      /* touch controls: two joysticks (bottom-left move, bottom-right
          aim-and-fire: pushing the aim stick past its dead zone aims AND fires,
          centring or releasing it stops firing — there is no separate fire
          button). A touch only drives a stick when it starts inside that
-         stick's zone, so sticks and buttons never steal each other. */
+         stick's zone, so sticks and buttons never steal each other.
+         The AIM stick is also DRAGGABLE (option A): hold a finger on it
+         WITHOUT pushing past the dead zone for ~0.45s and the touch turns
+         into a drag of the whole base; let go and the base stays in its new
+         spot — saved to localStorage so it survives closing and reopening
+         the page (falling back to session-only if storage is unavailable),
+         later matches included — and is re-fitted whenever the stage
+         resizes, rotates or goes fullscreen.
+         A push that starts aiming/firing cancels the long-press for that
+         touch, so repositioning can never interrupt a fight by accident. */
       var touchMode = false;
       var moveJoy = { id: null, dx: 0, dy: 0 };
       var aimJoy = { id: null, dx: 0, dy: 0 };
@@ -850,6 +863,88 @@
         var g = stickGeom(el);
         return Math.abs(tx - g.cx) <= g.rad + pad && Math.abs(ty - g.cy) <= g.rad + pad;
       }
+      /* ---- draggable aim-stick base: position kept as fractions of the
+         stage size, so the same relative spot survives rotation, resize
+         and fullscreen; applied as inline left/top over the CSS default */
+      var aimPos = null; // {fx, fy} centre of the aim stick, stage fractions
+      /* the dragged position also persists across page opens: on drag-end
+         it is written to localStorage and read back here at boot. If
+         localStorage is unavailable (private mode, blocked storage) every
+         access is wrapped in try/catch and the position simply falls back
+         to living in memory for this session only. */
+      var AIM_POS_KEY = "anyan.aimStickPos";
+      try {
+        var savedAimPos = window.localStorage.getItem(AIM_POS_KEY);
+        if (savedAimPos) {
+          var parsedAimPos = JSON.parse(savedAimPos);
+          if (parsedAimPos && isFinite(parsedAimPos.fx) && isFinite(parsedAimPos.fy) &&
+              parsedAimPos.fx > 0 && parsedAimPos.fx < 1 && parsedAimPos.fy > 0 && parsedAimPos.fy < 1) {
+            aimPos = { fx: parsedAimPos.fx, fy: parsedAimPos.fy };
+          }
+        }
+      } catch (err) { /* storage unavailable: session-only position */ }
+      function saveAimStickPos() {
+        if (!aimPos) return;
+        try { window.localStorage.setItem(AIM_POS_KEY, JSON.stringify(aimPos)); } catch (err) {}
+      }
+      var aimDrag = { timer: null, armed: false, offX: 0, offY: 0 };
+      var aimTouchPos = { x: 0, y: 0 };
+      var aimCapEl = stickAimEl.querySelector(".cap");
+      var aimCapText = aimCapEl.textContent;
+      function applyAimStickPos() {
+        if (!aimPos) return;
+        var sr = stage.getBoundingClientRect();
+        var rad = stickAimEl.offsetWidth / 2;
+        if (!sr.width || !sr.height || !rad) return;
+        var cx = clamp(aimPos.fx * sr.width, rad, Math.max(rad, sr.width - rad));
+        var cy = clamp(aimPos.fy * sr.height, rad, Math.max(rad, sr.height - rad));
+        stickAimEl.style.left = (cx - rad) + "px";
+        stickAimEl.style.top = (cy - rad) + "px";
+        stickAimEl.style.right = "auto";
+        stickAimEl.style.bottom = "auto";
+      }
+      var lastStageW = 0, lastStageH = 0;
+      function keepAimStickPos() {
+        if (!aimPos) return;
+        var sr = stage.getBoundingClientRect();
+        if (sr.width !== lastStageW || sr.height !== lastStageH) {
+          lastStageW = sr.width; lastStageH = sr.height;
+          applyAimStickPos();
+        }
+      }
+      function aimStickDisarm() {
+        if (aimDrag.timer) { clearTimeout(aimDrag.timer); aimDrag.timer = null; }
+        aimDrag.armed = false;
+      }
+      function aimDragBegin() {
+        aimDrag.armed = true;
+        var g = stickGeom(stickAimEl);
+        aimDrag.offX = aimTouchPos.x - g.cx; aimDrag.offY = aimTouchPos.y - g.cy;
+        aimJoy.dx = 0; aimJoy.dy = 0; // dragging the base never aims or fires
+        stickAimEl.querySelector(".nub").style.transform = "";
+        stickAimEl.classList.add("drag");
+        aimCapEl.textContent = "拖动中";
+        if (navigator.vibrate) { try { navigator.vibrate(15); } catch (err) {} }
+      }
+      function aimDragMove(tx, ty) {
+        var sr = stage.getBoundingClientRect();
+        var rad = stickAimEl.offsetWidth / 2;
+        if (!sr.width || !sr.height || !rad) return;
+        var cx = clamp(tx - aimDrag.offX - sr.left, rad, Math.max(rad, sr.width - rad));
+        var cy = clamp(ty - aimDrag.offY - sr.top, rad, Math.max(rad, sr.height - rad));
+        aimPos = { fx: cx / sr.width, fy: cy / sr.height };
+        lastStageW = sr.width; lastStageH = sr.height;
+        applyAimStickPos();
+      }
+      function aimDragEnd() {
+        var wasDragging = aimDrag.armed;
+        aimStickDisarm();
+        stickAimEl.classList.remove("drag");
+        aimCapEl.textContent = aimCapText;
+        // a real drag just ended: persist the new spot so the next page
+        // open restores it instead of the default bottom-right corner
+        if (wasDragging) saveAimStickPos();
+      }
       cv.addEventListener("touchstart", function (e) {
         e.preventDefault(); touchMode = true; document.body.classList.add("touch"); ac();
         for (var i = 0; i < e.changedTouches.length; i++) {
@@ -858,6 +953,19 @@
             moveJoy.id = t.identifier; stickMoveEl.classList.add("on"); joyVec(moveJoy, stickMoveEl, t.clientX, t.clientY);
           } else if (aimJoy.id === null && nearStick(stickAimEl, t.clientX, t.clientY, 26)) {
             aimJoy.id = t.identifier; stickAimEl.classList.add("on"); joyVec(aimJoy, stickAimEl, t.clientX, t.clientY);
+            aimTouchPos.x = t.clientX; aimTouchPos.y = t.clientY;
+            // arm the long-press base drag for THIS touch; it only fires if
+            // the stick is still inside the dead zone when the timer runs —
+            // any real push (aim + fire) disarms it in touchmove instead
+            aimStickDisarm();
+            (function (tid) {
+              aimDrag.timer = setTimeout(function () {
+                aimDrag.timer = null;
+                if (aimJoy.id !== tid) return;
+                if (Math.sqrt(aimJoy.dx * aimJoy.dx + aimJoy.dy * aimJoy.dy) > 0.2) return;
+                aimDragBegin();
+              }, 450);
+            })(t.identifier);
           }
           // touches outside both stick zones do nothing — no floating sticks
         }
@@ -867,14 +975,27 @@
         for (var i = 0; i < e.changedTouches.length; i++) {
           var t = e.changedTouches[i];
           if (t.identifier === moveJoy.id) joyVec(moveJoy, stickMoveEl, t.clientX, t.clientY);
-          if (t.identifier === aimJoy.id) joyVec(aimJoy, stickAimEl, t.clientX, t.clientY);
+          if (t.identifier === aimJoy.id) {
+            aimTouchPos.x = t.clientX; aimTouchPos.y = t.clientY;
+            if (aimDrag.armed) aimDragMove(t.clientX, t.clientY);
+            else {
+              joyVec(aimJoy, stickAimEl, t.clientX, t.clientY);
+              // pushed past the fire dead zone = a real aim push: the
+              // long-press drag for this touch is cancelled for good
+              if (aimDrag.timer && Math.sqrt(aimJoy.dx * aimJoy.dx + aimJoy.dy * aimJoy.dy) > 0.2) aimStickDisarm();
+            }
+          }
         }
       }, { passive: false });
       function touchEnd(e) {
         for (var i = 0; i < e.changedTouches.length; i++) {
           var t = e.changedTouches[i];
           if (t.identifier === moveJoy.id) joyReset(moveJoy, stickMoveEl);
-          if (t.identifier === aimJoy.id) joyReset(aimJoy, stickAimEl);
+          if (t.identifier === aimJoy.id) {
+            // releasing mid-drag leaves aimPos where it is: the base stays
+            aimDragEnd();
+            joyReset(aimJoy, stickAimEl);
+          }
         }
       }
       cv.addEventListener("touchend", touchEnd); cv.addEventListener("touchcancel", touchEnd);
@@ -1869,6 +1990,7 @@
           cam.x += (ct.x - cam.x) * ck; cam.y += (ct.y - cam.y) * ck;
         }
         fitView();
+        keepAimStickPos();
         render();
       }
       requestAnimationFrame(frame);
