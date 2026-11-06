@@ -171,6 +171,9 @@
         .overlay .stats { gap: 12px; margin-top: 6px; }
         .overlay .stats .v { font-size: 17px; }
         .overlay .stats .k { font-size: 10px; }
+        .overlay .over-career { margin-top: 10px; padding-top: 9px; }
+        .overlay .over-career .stats { gap: 14px; margin-top: 5px; }
+        .overlay .over-career .stats .v { font-size: 15px; }
         .hud .hpbar { width: 110px; }
         .hud .score-big { font-size: 17px; }
         .banner { top: 19%; width: 88%; }
@@ -250,10 +253,23 @@
       table.career tr.me td { color: var(--amber); }
       table.career tr.me td.nm { color: var(--amber); }
       .career-note { font-size: 12.5px; color: var(--ink-soft); margin: 10px 0 0; line-height: 1.7; }
+      .career-actions { margin-top: 12px; }
+      .clearcareer {
+        pointer-events: auto; cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 700;
+        border: 1px solid var(--line); background: transparent; color: var(--ink-soft); border-radius: 99px; padding: 7px 16px;
+      }
+      .clearcareer.armed { border-color: var(--danger); color: var(--danger); background: rgba(194,64,46,.08); }
       .stats { display: flex; gap: 26px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
       .stats div { text-align: center; }
       .stats .v { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
       .stats .k { font-size: 11px; letter-spacing: .16em; opacity: .65; margin-top: 2px; }
+      /* settlement: your long-term career block, directly under this
+         match's stats — same saved record as the start screen and the
+         career table below the game */
+      .over-career { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.18); width: 100%; max-width: 520px; }
+      .over-career .oc-label { font-size: 11px; letter-spacing: .22em; color: var(--amber-bright); text-align: center; }
+      .over-career .stats { margin-top: 8px; gap: 22px; }
+      .over-career .stats .v { font-size: 20px; color: #ffe9c4; }
 
       /* touch controls: two joysticks, always visible at half opacity on touch
          devices. The move stick is fixed bottom-left; the AIM stick's base can
@@ -328,7 +344,7 @@
   </head>
   <body>
     <div class="wrap">
-      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光、连别人切换小刀的显形也看不见，只能听脚步声</strong>找人，持镖时<strong>不能借眼</strong>、也<strong>没有任何辅助瞄准或子弹吸附</strong>；唯一的例外是<strong>用飞镖击杀后，尸体的位置会借眼给你看 1.5 秒</strong>。但持镖时<strong>黑暗里能看清所有障碍物</strong>，不会撞墙迷路。开始前还能在开始界面<strong>选开局武器</strong>，四件武器的说明都写在选择界面上。这一版还加了局内目标和奖励：<strong>连杀</strong>——不死连杀 2 次起有横幅，三杀起每次击杀额外多算 1 个人头；<strong>悬赏</strong>——击杀榜第一名头顶有金色悬赏标记、位置被一圈光晕标出，谁击杀他额外多算 1 个人头，悬赏随榜首转移；<strong>决战</strong>——最后 30 秒所有人每 5 秒显形一次，逼大家正面交火，不再躲猫猫。</p>
+      <p class="lede">《一瞬》的黑暗闪光 × 《借眼对决》的视角互换，融合成的这一版叫《暗眼》。下面就是能直接玩的原型：<strong>单人对 5 个 AI 机器人，2 分钟限时冲榜：先到 10 杀直接获胜，倒计时结束时击杀第一也获胜</strong>。竞技场比以前更大，<strong>一共有 4 张地图，每局随机抽一张</strong>；黑暗也加深了——没有光照到的地方真的一片漆黑，看不见任何人。开始前可以在开始界面<strong>给自己的角色改名</strong>，页面下方还有<strong>生涯排行榜</strong>：胜利次数、总击杀、刀杀数都会一局一局累积。开始界面可选<strong>简单版 / 困难版</strong>：困难版被杀后击杀数清零、机器人是现在的正式难度；简单版被杀后击杀数<b>不清零</b>，机器人反应也更迟钝。竞技场全黑，开枪的闪光会照亮周围、也暴露开枪的人；你的子弹命中对手，就会<strong>借走他的眼睛 3 秒</strong>——你看到的变成他眼中的世界，而你的身体还在原地。这一版还多了<strong>小刀</strong>：按 R（手机点「换武器」）切换，无声、一击必杀，但拔刀瞬间你会被所有人看见、自己却看不见任何人，持续 0.3 秒。武器现在一共四件，R 轮换切换：新加的<strong>乒乓球拍</strong>一拍打出一颗乒乓球、70 点伤害，弹匣只有 2 发，但换弹比手枪快，击发时你头顶会冒出小字<strong>「王之爆冲」——只有你自己看得见</strong>；<strong>十字飞镖</strong>攻速极快、一次扇形甩出 3 枚、每枚 35 点伤害，换弹也快，代价是<strong>持镖时看不见其他人开火产生的光、连别人切换小刀的显形也看不见，只能听脚步声</strong>找人，持镖时<strong>不能借眼</strong>、也<strong>没有任何辅助瞄准或子弹吸附</strong>；唯一的例外是<strong>用飞镖击杀后，尸体的位置会借眼给你看 1.5 秒</strong>。但持镖时<strong>黑暗里能看清所有障碍物</strong>，不会撞墙迷路。开始前还能在开始界面<strong>选开局武器</strong>，四件武器的说明都写在选择界面上。这一版还加了局内目标和奖励：<strong>连杀</strong>——不死连杀 2 次起有横幅，三杀起每次击杀额外多算 1 个人头；<strong>悬赏</strong>——击杀榜第一名头顶有金色悬赏标记、位置被一圈光晕标出，谁击杀他额外多算 1 个人头，悬赏随榜首转移；<strong>决战</strong>——最后 30 秒所有人每 5 秒显形一次，逼大家正面交火，不再躲猫猫。命中反馈也做强了：<b>你打中对手会跳出伤害数字，爆击是金色大字加一声高音脆响，被打中的人会全身闪白约 0.12 秒</b>。</p>
 
       <div id="gameShell">
       <div class="stage" id="stage" data-state="menu">
@@ -365,7 +381,7 @@
         <div class="overlay" id="menuOverlay">
           <h2>暗 眼</h2>
           <div class="tag">开 枪 即 暴 露 · 命 中 即 借 眼</div>
-          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。<br />这一版竞技场更大、共 6 人混战，<b>4 张地图每局随机一张</b>；黑暗也更深了，没被照亮的人完全看不见。<br />局内还有<b>连杀奖励</b>（不死连杀三杀起，每次击杀额外 +1 人头）、<b>悬赏目标</b>（榜一头顶金色标记、位置被光圈标出，击杀他额外 +1 人头）和最后 30 秒的<b>决战</b>（每 5 秒全场显形一次）——杀得越猛，奖励越多，也越容易被全场围猎。</p>
+          <p class="intro">整张地图一片漆黑，只有<b>枪口闪光</b>和<b>声纳</b>能给你信息——走动不会留下任何声纹，想找人只能冒险开枪或放声纳。开枪前先想清楚：这一枪照亮敌人的同时，也把你钉在所有人眼里。<br />命中对手后触发<b>借眼</b>：接下来 3 秒，你的视野中心会跳到他身上——看得见他周围的一切，却看不见自己脚下。<br />这一版竞技场更大、共 6 人混战，<b>4 张地图每局随机一张</b>；黑暗也更深了，没被照亮的人完全看不见。<br />局内还有<b>连杀奖励</b>（不死连杀三杀起，每次击杀额外 +1 人头）、<b>悬赏目标</b>（榜一头顶金色标记、位置被光圈标出，击杀他额外 +1 人头）和最后 30 秒的<b>决战</b>（每 5 秒全场显形一次）——杀得越猛，奖励越多，也越容易被全场围猎。<br />命中反馈也做强了：<b>你打中人会跳出伤害数字</b>，爆击是金色大字加一声高音脆响，被打中的人还会<b>全身闪白</b>一下——每一枪有没有打中，一眼一耳就知道。</p>
           <div class="namebox">
             <label for="nameInput">你的名字</label>
             <input id="nameInput" type="text" maxlength="10" value="暗行者" autocomplete="off" />
@@ -375,6 +391,8 @@
             <button type="button" id="diffNorm" class="sel">困难版</button>
           </div>
           <p class="diffnote" id="diffNote">困难版：现在的正式难度——被杀后击杀数清零，机器人反应敏捷。</p>
+          <p class="diffnote" id="menuCareer"></p>
+          <p class="diffnote">地图每局随机一张，各有各的样子：<b>十字堡</b>——中央石堡、四角塔楼，地面铺十字石砖；<b>回廊</b>——环形长廊、拱门石柱，地面刻同心圆环；<b>双塔</b>——左右双塔夹着中央开阔广场，塔身竖纹、塔顶有标记；<b>散点</b>——残墙碎石、地面裂纹与草丛的废墟。这些细节平时藏在黑暗里，被闪光、声纳照到才看得见。</p>
           <div class="wpicklabel">开 局 武 器</div>
           <div class="wpick" id="wpick">
             <button type="button" id="wpGun" class="sel"><span class="wn">手枪</span><span class="wd">均衡可靠：34 点伤害、3 枪带走一人，弹匣 12 发、换弹 0.9 秒。开枪的闪光照亮周围——也把你暴露给所有人。</span></button>
@@ -404,7 +422,16 @@
             <div><div class="v" id="stSwap">0</div><div class="k">借眼次数</div></div>
             <div><div class="v" id="stTime">0:00</div><div class="k">用时</div></div>
           </div>
-          <p class="diffnote" id="overCareer" style="text-align:center;"></p>
+          <div class="over-career" id="overCareer">
+            <div class="oc-label">长 期 战 绩 · 已 保 存</div>
+            <div class="stats">
+              <div><div class="v" id="ocWins">0</div><div class="k">胜利</div></div>
+              <div><div class="v" id="ocKills">0</div><div class="k">总击杀</div></div>
+              <div><div class="v" id="ocKnife">0</div><div class="k">刀杀</div></div>
+              <div><div class="v" id="ocDeaths">0</div><div class="k">死亡</div></div>
+              <div><div class="v" id="ocMatches">0</div><div class="k">场次</div></div>
+            </div>
+          </div>
           <button class="btn" id="btnAgain" type="button">再来一局</button>
         </div>
       </div>
@@ -444,17 +471,18 @@
               <li><b>连杀奖励</b>：不死连续击杀到 2 次起，屏幕会打出连杀横幅（双杀 / 三杀 / 四杀 / 五杀……）；<b>连杀 3 次及以上，每次击杀额外多算 1 个人头</b>——这个奖励人头和真击杀一样，计入先到 10 的胜负和局末结算。一旦被杀，连杀立刻清零（简单版、困难版都一样，左上角会显示你当前的连杀数）。想冲榜就别死，连杀越长滚得越快。</li>
               <li><b>悬赏目标</b>：当前击杀榜第一名（至少 1 杀）就是全场悬赏目标——他头顶顶着<b>金色菱形悬赏标记</b>，位置还被一圈淡淡的金色光晕标出来，<b>躲在黑暗里也藏不住</b>，机器人也会时不时摸到他的大概位置去围猎。<b>击杀悬赏目标额外多算 1 个人头</b>（和连杀奖励可以叠加，最多一次 +2）。他一死，悬赏立刻转移到新的第一名头上；你登顶的那一刻，你就是下一个悬赏。</li>
               <li><b>决战 30 秒</b>：倒计时只剩 30 秒时全场进入决战，屏幕会打出「决战 30 秒」——之后<b>每 5 秒，所有还活着的人都会短暂显形约 0.5 秒</b>（光圈 + 红圈，和声纳现形一样），机器人也会同时知道离自己最近的对手在哪。最后半分钟没有藏身之处，囤的血和位置优势都会被逼出来正面交火。</li>
-              <li><b>随机地图 · 更大竞技场</b>：竞技场扩大到 1280×800，共 6 人混战（你 + 5 个机器人）。一共有 4 张地图——十字堡、回廊、双塔、散点，<b>每局开始随机抽一张</b>，开局播报会告诉你这一局是哪张。墙体布局每张都不同，出生点和掩体位置都要重新摸。</li>
+              <li><b>随机地图 · 更大竞技场</b>：竞技场扩大到 1280×800，共 6 人混战（你 + 5 个机器人）。一共有 4 张地图——十字堡、回廊、双塔、散点，<b>每局开始随机抽一张</b>，开局播报会告诉你这一局是哪张。墙体布局每张都不同，出生点和掩体位置都要重新摸。四张图还各有自己的样子：<b>十字堡</b>是厚石墙、四角塔楼，地面铺着十字石砖、中央有堡垒顶边高光；<b>回廊</b>是环形回廊、拱门石柱，地面刻着同心圆环；<b>双塔</b>是左右两座带竖纹和塔顶标记的高塔，中间一片开阔广场；<b>散点</b>是散落碎石、残墙、地面裂纹和草丛点缀的废墟。细节都画在地面和墙上，平时藏在黑暗里、被光照到才看得见（持飞镖时障碍物可见的规则不变），墙的碰撞位置和以前完全一样。</li>
               <li><b>黑暗加深</b>：这一版底幕接近全黑（不透明度约 99.5%），没被任何光源照到的人——名字、血条、身体——完全看不见，不再有隐约的人影透出来。想确认一个角落有没有人，只能靠闪光、声纳、借眼或者贴近到你自己的微光范围内。</li>
               <li><b>闪光即暴露</b>：任何人开枪，枪口闪光都会照亮周围一圈区域——包括开枪者本人。这一版闪光范围已调小，照亮半径约 160 px。远处看到闪光，就等于知道了枪手的位置。</li>
               <li><b>借眼 3 秒</b>：你和某个对手互相命中对方时触发（谁打中谁都算），你的视野中心跳到他身上 3 秒，结束后冷却 5 秒。借眼期间被借眼的对手会陷入混乱、枪法变差。例外：<b>持十字飞镖时不触发借眼</b>，只有用飞镖击杀后能借眼看尸体位置 1.5 秒。</li>
               <li><b>声纳是双刃剑</b>：走动不产生声纹，声纳是你不开枪时唯一的找人手段。它会让所有人短暂现形，但也会把你自己的位置广播给全部对手。</li>
               <li><b>小刀与重生</b>：切出小刀的 0.3 秒里，所有人都看得见你、你却看不见任何人；熬过去，小刀无声且一击必杀，但击杀会全场播报。重生位置随机，带 0.2 秒无敌，重生时一律先拿手枪。血量低于 40% 时屏幕边缘会泛红警告。</li>
               <li><b>乒乓球拍 · 王之爆冲</b>：一拍一颗乒乓球，<b>70 点伤害</b>（两拍带走一个满血对手）；弹匣只有 <b>2 发</b>，但换弹只要 <b>0.6 秒，比手枪快</b>。每次击发，你头顶会飘出小字<b>「王之爆冲」——只有你自己看得见</b>，机器人不会用球拍，也永远看不到这行字。拍子的响声和一圈小闪光仍会暴露你的位置，只是范围比枪小。</li>
-              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖时<b>有枪口闪光，和开枪一样</b>：闪光照亮你周围一圈（约 160 px、0.9 秒），也把你的位置暴露给所有人——镖本身在飞行中不发光、不留光轨，只有穿过已经被照亮的区域时才看得见。坏处一串：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光，在你眼里统统不存在；<b>连别人切换小刀时的显形也看不见</b>，拔刀的红圈和亮光对你都不存在；<b>持镖时不能借眼</b>——你命中别人、或别人命中你，都不会触发视野互换（局内切到飞镖，也会立刻结束正在进行的借眼）；而且<b>飞镖没有任何辅助</b>：瞄准吸附和手机端的子弹吸附对飞镖全部关闭，全靠你自己的手感。你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。唯一的例外：<b>用飞镖击杀对手后，尸体的位置会借眼给你看 1.5 秒</b>——视野跳到他倒下的地方，确认击杀点、看清尸体周围，再切回你自己的身体。作为补偿，<b>持镖时所有障碍物在黑暗里都看得清</b>——整张地图的墙体和边界会淡淡地浮现出来，走位、绕掩体不用摸黑；但这只照亮地形，人和光仍然看不见。想重新用光找人，切回别的武器即可。</li>
+              <li><b>十字飞镖 · 快而盲</b>：攻速极快（0.13 秒一次），每次扇形甩出 <b>3 枚飞镖、每枚 35 点伤害</b>，弹匣 9 枚、换弹 0.55 秒，甩镖时<b>有枪口闪光，和开枪一样</b>：闪光照亮你周围一圈（约 160 px、0.9 秒），也把你的位置暴露给所有人——镖本身在飞行中不发光、不留光轨，只有穿过已经被照亮的区域时才看得见。坏处一串：<b>持镖时你看不见其他人发射弹药产生的光</b>——他们的枪口闪光、子弹的光、开火的声纹圈，乃至击杀、重生时的闪光、别人挥刀的弧光和与你无关的伤害数字，在你眼里统统不存在；<b>连别人切换小刀时的显形也看不见</b>，拔刀的红圈和亮光对你都不存在；<b>持镖时不能借眼</b>——你命中别人、或别人命中你，都不会触发视野互换（局内切到飞镖，也会立刻结束正在进行的借眼）；而且<b>飞镖没有任何辅助</b>：瞄准吸附和手机端的子弹吸附对飞镖全部关闭，全靠你自己的手感。你只能<b>听脚步声</b>：附近有人走动时会有轻轻的脚步声，越近越响（只是声音，不画任何声纹）。唯一的例外：<b>用飞镖击杀对手后，尸体的位置会借眼给你看 1.5 秒</b>——视野跳到他倒下的地方，确认击杀点、看清尸体周围，再切回你自己的身体。作为补偿，<b>持镖时所有障碍物在黑暗里都看得清</b>——整张地图的墙体和边界会淡淡地浮现出来，走位、绕掩体不用摸黑；但这只照亮地形，人和光仍然看不见。想重新用光找人，切回别的武器即可。</li>
               <li><b>脱战回血</b>：5 秒没挨打后开始回血。走路时和以前一样 12 HP/秒；<b>站着不动回得更快——18 HP/秒，是走路的 1.5 倍</b>。想快速回满就得停下来赌一把：不动更难被发现，但也更容易被贴脸。玩家和机器人同一规则。</li>
               <li><b>辅助瞄准（只对你生效）</b>：对手<b>当前看得见</b>时——被枪口闪光、声纳、拔刀显形或借眼照亮——瞄准方向会每帧朝他<b>靠拢</b>，准星变青表示正在吸附。不会瞬间吸正、不会锁死，你自己大幅甩动瞄准时它完全让路；他一旦重新变回看不见，吸附<b>立刻消失</b>，不记位置、不追记忆。机器人没有这个辅助。<b>电脑端</b>是轻度版：只吸约 24° 以内的目标，力度很轻。<b>手机端</b>是加强版（测试简化）：约 50° 以内、更远距离就能吸，靠拢速度也快得多——配上右摇杆的秒转，推个大概方向，剩下的交给吸附修。<b>持十字飞镖时例外：飞镖没有任何辅助瞄准，电脑和手机都一样。</b></li>
               <li><b>子弹吸附（仅手机端）</b>：手机上开枪后，子弹在飞行中还会再修一次——如果弹道大致指向一个<b>当前看得见</b>的对手（约 30° 以内、640 以内、中间没墙），子弹会朝他<b>轻轻拐弯</b>，正在拐弯的子弹会泛青光。它只是拐弯、不瞬移、不锁死，偏得太远照样打空；对手变回看不见就立刻不再拐。和上面的瞄准吸附是两层一起生效：开枪前修枪口、开枪后修弹道。电脑端没有子弹吸附，子弹全程笔直；机器人的子弹也没有。<b>飞镖不吸附：甩出的镖全程笔直，持镖时两层辅助都关闭。</b></li>
+              <li><b>命中反馈（伤害数字 · 爆击 · 闪白）</b>：你用远程武器打中对手，他头顶会跳出<b>伤害数字</b>——普通命中是约 16 px 的米白粗字，0.7 秒内上浮约 20 px 并淡出；只有<b>你自己打中时</b>才跳，你挨打时、机器人互殴时都不跳数字（小刀是一击必杀，没有伤害数字）。<b>爆击</b>的判定全场只有一条：<b>单次伤害 ≥70（乒乓球拍一拍）、飞镖扇形三枚全中同一个人（第三枚），或者这一击正好完成击杀</b>——爆击的数字是 <b>22 px 金色大字</b>，同时响一声明显不同于普通命中（880 Hz）的<b>高音脆响</b>（1568 Hz 起音、接 2093 Hz 的清脆双音，就是这一版的「爆头音」；击杀时它和击杀音会一起响）。俯视角没有单独的爆头部位，所以不设随机爆率，爆击只来自上面三种打法。被远程打中的人还会<b>全身闪白约 0.12 秒</b>再淡出——你打中机器人、机器人打中你都一样；闪白画在黑暗层之下，<b>只在他本来就被照亮、看得见的时候才看得到</b>，不会让躲在黑暗里的人凭空发光、暴露位置。</li>
               <li><b>红色倒三角是你的专属标记</b>：它只出现在你自己头顶、始终跟着你走，黑暗里和借眼期间都看得见；机器人头顶没有。它和借眼时指向自己身体的提示可以同时存在，一个是头顶标记、一个是借眼期间的额外指引，不冲突。</li>
             </ul>
           </div>
@@ -468,7 +496,8 @@
             <thead><tr><th>选手</th><th class="n">胜利</th><th class="n">总击杀</th><th class="n">刀杀</th><th class="n">死亡</th><th class="n">场次</th></tr></thead>
             <tbody id="careerBody"></tbody>
           </table>
-          <p class="career-note">每打完一局自动累积，按胜利次数排名（同胜场比总击杀）。关掉页面就清零——想长期保存战绩的话再告诉我，那需要另外存数据。</p>
+          <div class="career-actions"><button type="button" class="clearcareer" id="btnClearCareer">清空战绩</button></div>
+          <p class="career-note">你的战绩每打完一局自动累积，并保存在这台设备的浏览器里——关掉页面、隔天再打开都还在（浏览器存储不可用时，退回只在本次打开期间累积）。按胜利次数排名（同胜场比总击杀）。机器人每局都是新的对手，不累计：它们的行只显示最近一局的数据。「清空战绩」只清你自己的长期记录，点一次后需要再点一次确认。</p>
         </div>
       </section>
 
@@ -507,7 +536,7 @@
             <tr><td>简单版机器人</td><td>思考间隔 0.3 秒 · 转向限速 · 开火间隔 0.72–1.05 秒 · 记忆 1.6 秒 · 移动更慢 · 枪法更散</td></tr>
             <tr><td>小刀</td><td>一击必杀 · 无声 · 拔刀暴露+致盲 0.3 秒</td></tr>
             <tr><td>乒乓球拍</td><td>伤害 70 · 弹匣 2 发 · 换弹 0.6 秒（比手枪快）· 射速 0.5 秒一拍 · 击发时头顶小字「王之爆冲」（仅自己可见）</td></tr>
-            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 甩镖有枪口闪光（同手枪：约 160 px / 0.9 秒，会暴露位置）、无声纹 · 镖飞行中不发光不留光轨（只在已被照亮处可见）· 持镖看不见他人开火的光、也看不见他人拔刀显形，只能听脚步声 · 持镖时不能借眼，击杀后尸体借眼 1.5 秒 · 无辅助瞄准、无子弹吸附 · 持镖时障碍物在黑暗中可见</td></tr>
+            <tr><td>十字飞镖</td><td>一次 3 枚扇形 · 每枚 35 伤害 · 射速 0.13 秒 · 弹匣 9 枚 · 换弹 0.55 秒 · 甩镖有枪口闪光（同手枪：约 160 px / 0.9 秒，会暴露位置）、无声纹 · 镖飞行中不发光不留光轨（只在已被照亮处可见）· 持镖看不见他人开火的光、声纹圈、击杀/重生闪光、挥刀弧光与无关伤害数字，也看不见他人拔刀显形，只能听脚步声 · 持镖时不能借眼，击杀后尸体借眼 1.5 秒 · 无辅助瞄准、无子弹吸附 · 持镖时障碍物在黑暗中可见</td></tr>
             <tr><td>开局武器</td><td>开始界面可选（界面附四件武器说明）· 重生后回到手枪</td></tr>
             <tr><td>武器切换</td><td>R / 「换武器」在手枪 → 小刀 → 乒乓球拍 → 十字飞镖之间轮换 · 机器人只用手枪和小刀</td></tr>
             <tr><td>重生</td><td>随机位置 · 0.2 秒无敌 · 一律先持手枪</td></tr>
@@ -515,6 +544,7 @@
             <tr><td>辅助瞄准（仅玩家）</td><td>只对当前可见目标 · 不锁死 · 看不见即消失 · 电脑：夹角约 24° 内轻度吸附 · 手机（加强）：夹角约 50° 内、距离更远、吸附更快更强 · 持飞镖时完全关闭</td></tr>
             <tr><td>子弹吸附（仅手机端 · 仅玩家子弹）</td><td>飞行中朝当前可见目标轻拐 · 捕获夹角约 30° · 距离 640 内 · 拐弯速率上限约 3.4 rad/s · 电脑端与机器人子弹全程笔直 · 飞镖不吸附</td></tr>
             <tr><td>手机操作</td><td>竖屏 / 横屏均可 · 整张地图完整显示不裁切 · 「全屏」按钮一键全屏（不锁方向） · 左下固定摇杆移动 · 右下摇杆瞄准兼开火（秒转：推向哪边立刻转到哪边） · 瞄准摇杆可长按（约 0.45 秒、不推过死区）拖动底座换位置，松开固定、跨局保留、关掉页面再打开也保留（存浏览器本地；存不了时退回本次打开期间保留） · 声纳 / 换武器 / 声音 / 暂停在画面外下方控制区</td></tr>
+            <tr><td>命中反馈（伤害数字 / 爆击 / 闪白）</td><td>仅自己远程命中时跳数字（自己挨打、机器人互殴不跳；小刀无数字）· 普通 16 px 米白粗字 / 0.7 秒上浮淡出 · 爆击 = 单次 ≥70 伤（球拍）、飞镖三连全中第三枚、或击杀一击：22 px 金色大字 + 高音脆响（1568→2093 Hz，与普通命中 880 Hz 明显不同）· 被命中全身闪白约 0.12 秒，画在黑暗层之下、只在本来可见时可见，不暴露位置</td></tr>
             <tr><td>自身标记（仅玩家）</td><td>头顶红色倒三角 · 始终跟随 · 黑暗与借眼期间可见</td></tr>
           </table>
         </div>
@@ -575,7 +605,7 @@
          layout keeps the six spawn points clear: (96,H-96) player, the
          other three corners, and (W/2,110) / (W/2,H-110). */
       var MAPS = [
-        { name: "十字堡", walls: [
+        { name: "十字堡", theme: "fortress", walls: [
           { x: 574, y: 344, w: 132, h: 112 },
           { x: 220, y: 170, w: 170, h: 26 }, { x: 890, y: 170, w: 170, h: 26 },
           { x: 220, y: 604, w: 170, h: 26 }, { x: 890, y: 604, w: 170, h: 26 },
@@ -583,7 +613,7 @@
           { x: 520, y: 150, w: 240, h: 22 }, { x: 520, y: 628, w: 240, h: 22 },
           { x: 80, y: 382, w: 110, h: 22 }, { x: 1090, y: 396, w: 110, h: 22 }
         ] },
-        { name: "回廊", walls: [
+        { name: "回廊", theme: "corridor", walls: [
           { x: 340, y: 190, w: 28, h: 130 }, { x: 912, y: 190, w: 28, h: 130 },
           { x: 340, y: 480, w: 28, h: 130 }, { x: 912, y: 480, w: 28, h: 130 },
           { x: 470, y: 134, w: 150, h: 24 }, { x: 660, y: 134, w: 150, h: 24 },
@@ -591,7 +621,7 @@
           { x: 520, y: 360, w: 36, h: 80 }, { x: 724, y: 360, w: 36, h: 80 },
           { x: 120, y: 382, w: 120, h: 22 }, { x: 1040, y: 396, w: 120, h: 22 }
         ] },
-        { name: "双塔", walls: [
+        { name: "双塔", theme: "towers", walls: [
           { x: 330, y: 300, w: 150, h: 200 }, { x: 800, y: 300, w: 150, h: 200 },
           { x: 180, y: 150, w: 26, h: 150 }, { x: 1074, y: 500, w: 26, h: 150 },
           { x: 180, y: 500, w: 26, h: 150 }, { x: 1074, y: 150, w: 26, h: 150 },
@@ -599,7 +629,7 @@
           { x: 565, y: 388, w: 150, h: 24 },
           { x: 120, y: 382, w: 90, h: 22 }, { x: 1070, y: 396, w: 90, h: 22 }
         ] },
-        { name: "散点", walls: [
+        { name: "散点", theme: "ruins", walls: [
           { x: 590, y: 355, w: 100, h: 90 },
           { x: 300, y: 200, w: 30, h: 30 }, { x: 640, y: 180, w: 30, h: 30 }, { x: 950, y: 200, w: 30, h: 30 },
           { x: 430, y: 390, w: 30, h: 30 }, { x: 820, y: 390, w: 30, h: 30 },
@@ -610,6 +640,7 @@
       ];
       var WALLS = MAPS[0].walls;
       var mapName = MAPS[0].name;
+      var mapTheme = MAPS[0].theme; // visual theme only — collision always comes from WALLS, unchanged
       function inWall(x, y, r) {
         if (x < r || x > W - r || y < r || y > H - r) return true;
         for (var i = 0; i < WALLS.length; i++) {
@@ -663,6 +694,7 @@
       function sfx(name, near) {
         if (name === "shoot") { noiseBurst(0.09, near ? 0.20 : 0.07); tone(190, 0.07, "square", near ? 0.05 : 0.015, 60); }
         else if (name === "hit") tone(880, 0.08, "sine", 0.12);
+        else if (name === "crit") { tone(1568, 0.055, "square", 0.09); setTimeout(function () { tone(2093, 0.11, "sine", 0.15); }, 30); }
         else if (name === "hurt") tone(220, 0.12, "sawtooth", 0.08, 110);
         else if (name === "kill") { tone(660, 0.1, "sine", 0.12); setTimeout(function () { tone(990, 0.14, "sine", 0.12); }, 80); }
         else if (name === "swap") tone(320, 0.35, "sine", 0.13, 1180);
@@ -694,20 +726,36 @@
       var skT = 0; // streak-banner timer (ticked in updateHUD like kbT)
       var winnerIsPlayer = false;
 
-      /* career leaderboard: session totals for you + all five bots, updated
-         at the end of every match and rendered into the table below the
-         game. In-memory only — nothing is stored anywhere. */
-      var career = {};
-      function careerRow(key, name) {
-        if (!career[key]) career[key] = { name: name, wins: 0, kills: 0, knife: 0, deaths: 0, matches: 0 };
-        career[key].name = name;
-        return career[key];
+      /* career leaderboard: YOUR long-term record (wins / total kills /
+         knife kills / deaths / matches) is folded in at the end of every
+         match and saved to localStorage, so it survives closing the page
+         and coming back another day. If localStorage is unavailable
+         (private mode, blocked storage) every read/write is skipped and
+         the record simply accumulates in memory for this visit only —
+         same pattern as the aim-stick position. The bots are fresh
+         opponents every match and never accumulate: their rows show only
+         the most recently finished match. */
+      var CAREER_KEY = "anyan.career";
+      var playerCareer = { wins: 0, kills: 0, knife: 0, deaths: 0, matches: 0 };
+      (function loadCareer() {
+        try {
+          var raw = window.localStorage.getItem(CAREER_KEY);
+          if (!raw) return;
+          var d = JSON.parse(raw), keys = ["wins", "kills", "knife", "deaths", "matches"], i2, n;
+          for (i2 = 0; i2 < keys.length; i2++) { n = Math.floor(Number(d[keys[i2]])); if (isFinite(n) && n >= 0) playerCareer[keys[i2]] = n; }
+        } catch (err) {}
+      })();
+      function saveCareer() {
+        try { window.localStorage.setItem(CAREER_KEY, JSON.stringify(playerCareer)); } catch (err) {}
       }
+      var lastBots = {}; // bot name -> that bot's line from the latest finished match (never accumulated)
       function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
       function renderCareer() {
-        careerRow("player", playerName);
-        for (var i = 0; i < BOT_DEFS.length; i++) careerRow("bot:" + BOT_DEFS[i].name, BOT_DEFS[i].name);
-        var rows = Object.keys(career).map(function (k) { return { key: k, c: career[k] }; });
+        var rows = [{ key: "player", c: { name: playerName, wins: playerCareer.wins, kills: playerCareer.kills, knife: playerCareer.knife, deaths: playerCareer.deaths, matches: playerCareer.matches } }];
+        for (var i = 0; i < BOT_DEFS.length; i++) {
+          var lb = lastBots[BOT_DEFS[i].name];
+          rows.push({ key: "bot:" + BOT_DEFS[i].name, c: { name: BOT_DEFS[i].name, wins: lb ? lb.wins : 0, kills: lb ? lb.kills : 0, knife: lb ? lb.knife : 0, deaths: lb ? lb.deaths : 0, matches: lb ? lb.matches : 0 } });
+        }
         rows.sort(function (a, b) { return (b.c.wins - a.c.wins) || (b.c.kills - a.c.kills) || (a.c.deaths - b.c.deaths); });
         var html = "";
         for (var j = 0; j < rows.length; j++) {
@@ -715,6 +763,22 @@
           html += "<tr" + (rows[j].key === "player" ? " class='me'" : "") + "><td class='nm'>" + esc(c.name) + "</td><td class='n'>" + c.wins + "</td><td class='n'>" + c.kills + "</td><td class='n'>" + c.knife + "</td><td class='n'>" + c.deaths + "</td><td class='n'>" + c.matches + "</td></tr>";
         }
         $("careerBody").innerHTML = html;
+        // the start screen shows your long-term record too
+        var mc = $("menuCareer");
+        if (mc) mc.textContent = playerCareer.matches > 0
+          ? "长期战绩：" + playerCareer.matches + " 场 · " + playerCareer.wins + " 胜 · 总击杀 " + playerCareer.kills + " · 刀杀 " + playerCareer.knife + " · 死亡 " + playerCareer.deaths + "（保存在这台设备上，关掉页面也不会丢）"
+          : "长期战绩：还没有记录——打完一局就会记下来，保存在这台设备上，关掉页面也不会丢。";
+        // the settlement screen shows the SAME saved record (all five
+        // numbers: wins / total kills / knife kills / deaths / matches);
+        // endMatch folds and saves the finished match BEFORE calling
+        // renderCareer, so what shows there already includes this match
+        if ($("ocWins")) {
+          $("ocWins").textContent = playerCareer.wins;
+          $("ocKills").textContent = playerCareer.kills;
+          $("ocKnife").textContent = playerCareer.knife;
+          $("ocDeaths").textContent = playerCareer.deaths;
+          $("ocMatches").textContent = playerCareer.matches;
+        }
       }
 
       function makeEnt(name, color, x, y, isPlayer) {
@@ -724,6 +788,7 @@
           fireCd: rand(0.2, 0.6), reloadT: 0, reloadDur: 0.9, mags: { gun: 12, paddle: 2, dart: 9 }, lastHurtT: -99,
           score: 0, deaths: 0, matchKills: 0, matchKnife: 0, streak: 0, isPlayer: !!isPlayer,
           weapon: "gun", revealT: 0, blindT: 0, invulnT: 0, swingCd: 0, knifeNoSee: 0,
+          flashT: 0, dartHitN: 0, dartHitT: -99, dartHitBy: null,
           moving: false,
           thinkT: rand(0, 0.2), wanderX: x, wanderY: y, hasWander: false,
           knownX: 0, knownY: 0, knownT: -99, knownEnt: null, strafe: Math.random() < 0.5 ? 1 : -1, strafeT: rand(1, 2.4)
@@ -739,7 +804,7 @@
       function allEnts() { return [player].concat(bots); }
       function resetMatch() {
         var mi = Math.floor(Math.random() * MAPS.length);
-        WALLS = MAPS[mi].walls; mapName = MAPS[mi].name;
+        WALLS = MAPS[mi].walls; mapName = MAPS[mi].name; mapTheme = MAPS[mi].theme;
         player = makeEnt(playerName, "#ffb454", 96, H - 96, true);
         var spawns = [[W - 96, 96], [W - 96, H - 96], [96, 96], [W / 2, 110], [W / 2, H - 110]];
         bots = [];
@@ -1127,7 +1192,7 @@
       function tryKnife(e) {
         if (!e.alive || e.swingCd > 0) return;
         e.swingCd = 0.45;
-        slashes.push({ x: e.x, y: e.y, angle: e.angle, t: 0.18, max: 0.18 });
+        slashes.push({ x: e.x, y: e.y, angle: e.angle, t: 0.18, max: 0.18, owner: e });
         // silent: no flash, no ripple, no sound — but a kill is announced to everyone
         var ents = allEnts(), i, v;
         for (i = 0; i < ents.length; i++) {
@@ -1177,13 +1242,13 @@
           e.fireCd = 0.5;
           bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * ws.speed, vy: Math.sin(e.angle) * ws.speed, owner: e, life: 1.3, dmg: ws.dmg, kind: "ball", mag: magFlag, magOn: false });
           flashes.push({ x: mx, y: my, r: 110, t: 0.55, max: 0.55, owner: e });
-          ripples.push({ x: e.x, y: e.y, r: 8, max: 44, t: 0.35, maxT: 0.35, loud: true });
+          ripples.push({ x: e.x, y: e.y, r: 8, max: 44, t: 0.35, maxT: 0.35, loud: true, owner: e });
           if (e.isPlayer) {
             stats.shots++;
             // 「王之爆冲」: a small flourish only the player ever sees — it is
             // pushed only for the player's own swings, and bots never hold
             // the paddle, so nobody else's screen could ever show it.
-            floaters.push({ x: e.x, y: e.y - 36, t: 0.8, txt: "王之爆冲", color: "#ffd166", small: true });
+            floaters.push({ x: e.x, y: e.y - 36, t: 0.8, txt: "王之爆冲", color: "#ffd166", small: true, own: true });
             sfx("paddle", true);
           }
           alertOthers(e, 380);
@@ -1193,7 +1258,7 @@
           e.fireCd = e.isPlayer ? 0.22 : (difficulty === "easy" ? rand(0.72, 1.05) : rand(0.42, 0.62));
           bullets.push({ x: mx, y: my, vx: Math.cos(e.angle) * ws.speed, vy: Math.sin(e.angle) * ws.speed, owner: e, life: 1.1, dmg: ws.dmg, kind: "bullet", mag: magFlag, magOn: false });
           flashes.push({ x: mx, y: my, r: 160, t: 0.9, max: 0.9, owner: e });
-          ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true });
+          ripples.push({ x: e.x, y: e.y, r: 8, max: 60, t: 0.4, maxT: 0.4, loud: true, owner: e });
           if (e.isPlayer) stats.shots++;
           var nearP = dist(e.x, e.y, player.x, player.y) < 330;
           sfx("shoot", e.isPlayer || nearP);
@@ -1221,8 +1286,8 @@
         swapTarget = null; swapT = 0; swapCd = corpseSwap ? 0 : 5;
         corpseSwap = false; swapDur = 3;
       }
-      function onHit(shooter, victim, kind) {
-        if (shooter.isPlayer) { stats.hits++; sfx("hit", true); }
+      function onHit(shooter, victim, kind, crit) {
+        if (shooter.isPlayer) { stats.hits++; sfx(crit ? "crit" : "hit", true); }
         if (victim.isPlayer) sfx("hurt", true);
         var bot = null;
         if (shooter.isPlayer && !victim.isPlayer) bot = victim;
@@ -1248,7 +1313,7 @@
         killer.score += 1 + bonus;
         killer.matchKills += 1 + bonus;
         if (how === "knife") killer.matchKnife++;
-        flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9 });
+        flashes.push({ x: victim.x, y: victim.y, r: 250, t: 0.9, max: 0.9, owner: killer });
         for (var i = 0; i < 14; i++) sparks.push({ x: victim.x, y: victim.y, vx: rand(-170, 170), vy: rand(-170, 170), t: rand(0.25, 0.55), color: victim.color });
         if (swapTarget === victim && swapT > 0) endSwap(true);
         if (victim.isPlayer && swapT > 0) endSwap(true);
@@ -1268,7 +1333,7 @@
       function doPing() {
         if (pingCd > 0 || !player.alive) return;
         pingCd = 6; pingT = 1.0;
-        ripples.push({ x: player.x, y: player.y, r: 10, max: 300, t: 0.9, maxT: 0.9, loud: true, teal: true });
+        ripples.push({ x: player.x, y: player.y, r: 10, max: 300, t: 0.9, maxT: 0.9, loud: true, teal: true, owner: player });
         sfx("ping", true);
         for (var i = 0; i < bots.length; i++) {
           var b = bots[i];
@@ -1578,12 +1643,13 @@
           if (e.blindT > 0) e.blindT -= dt;
           if (e.invulnT > 0) e.invulnT -= dt;
           if (e.swingCd > 0) e.swingCd -= dt;
+          if (e.flashT > 0) e.flashT -= dt;
           if (e.reloadT > 0) { e.reloadT -= dt; if (e.reloadT <= 0 && WEAPONS[e.weapon]) e.mags[e.weapon] = WEAPONS[e.weapon].magSize; }
           if (!e.alive) {
             e.respawnT -= dt;
             if (e.respawnT <= 0) {
               e.alive = true; e.hp = e.maxHp; e.mags = { gun: 12, paddle: 2, dart: 9 };
-              e.weapon = "gun"; e.invulnT = 0.2; e.revealT = 0; e.blindT = 0; e.swingCd = 0;
+              e.weapon = "gun"; e.invulnT = 0.2; e.revealT = 0; e.blindT = 0; e.swingCd = 0; e.flashT = 0;
               var placed = false, rt, rx, ry, oi, oe;
               for (rt = 0; rt < 24 && !placed; rt++) {
                 rx = rand(40, W - 40); ry = rand(40, H - 40);
@@ -1596,7 +1662,7 @@
                 if (placed) { e.x = rx; e.y = ry; }
               }
               if (!placed) { e.x = e.spawnX; e.y = e.spawnY; }
-              flashes.push({ x: e.x, y: e.y, r: 130, t: 0.5, max: 0.5 });
+              flashes.push({ x: e.x, y: e.y, r: 130, t: 0.5, max: 0.5, owner: e });
               if (e.isPlayer) centerMsg("重 新 入 场 · 手 枪 在 手");
             }
           } else if (time - e.lastHurtT > 5 && e.hp < e.maxHp) {
@@ -1652,9 +1718,24 @@
               if (dist(bl.x, bl.y, v.x, v.y) < v.r + 3) {
                 var dmg = bl.dmg || 34;
                 v.hp -= dmg; v.lastHurtT = time;
+                v.flashT = 0.12; // white hit-flash on the victim — drawn under the darkness in render(), so it only shows where the victim is already visible
+                // 爆击 (crit) — ONE definition, used for the gold number and
+                // the crit sound alike: a single hit of 70+ damage (the
+                // ping-pong paddle), the third dart of one fan landing on
+                // the same target in quick succession, or the killing blow.
+                var isCrit = dmg >= 70 || v.hp <= 0;
+                if (bl.kind === "dart") {
+                  if (v.dartHitBy === bl.owner && time - v.dartHitT < 0.6) v.dartHitN++; else v.dartHitN = 1;
+                  v.dartHitBy = bl.owner; v.dartHitT = time;
+                  if (v.dartHitN >= 3) { isCrit = true; v.dartHitN = 0; }
+                }
                 for (k = 0; k < 5; k++) sparks.push({ x: bl.x, y: bl.y, vx: rand(-140, 140), vy: rand(-140, 140), t: 0.3, color: v.color });
-                floaters.push({ x: v.x, y: v.y - 22, t: 0.7, txt: "-" + dmg, color: "#ffe9c4" });
-                onHit(bl.owner, v, bl.kind);
+                // damage numbers are the SHOOTER's feedback only: they pop
+                // for your own ranged hits — never when you are the victim
+                // and never for bot-vs-bot fights. (The knife is melee and
+                // one-hit-kills, so it never makes a damage number.)
+                if (bl.owner && bl.owner.isPlayer) floaters.push({ x: v.x, y: v.y - 22, t: 0.7, txt: "-" + dmg, color: isCrit ? "#ffd23e" : "#ffe9c4", own: true, crit: isCrit });
+                onHit(bl.owner, v, bl.kind, isCrit);
                 if (v.hp <= 0) kill(v, bl.owner, bl.kind);
                 dead = true; break;
               }
@@ -1671,6 +1752,202 @@
         updateHUD();
       }
       /* ---------------- render ---------------- */
+      /* per-map visual themes: every map dresses its floor and walls its
+         own way, drawn UNDER the darkness exactly like the plain floor
+         was — details only appear where light falls (a flash, sonar, your
+         micro-light), and the dart holder's "obstacles redrawn over the
+         darkness" pass is untouched. Collision never reads any of this:
+         it comes from WALLS alone, and no wall box has moved. Decoration
+         placement uses a deterministic hash, never Math.random, so the
+         pattern is identical every frame. */
+      function hash2(a, b) { var s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return s - Math.floor(s); }
+      var FLOOR_BASE = { fortress: "#11131b", corridor: "#101318", towers: "#121119", ruins: "#12130e" };
+      function drawFloorTheme() {
+        var cx = W / 2, cy = H / 2, i, j, a;
+        if (mapTheme === "fortress") {
+          // 十字堡: big stone tile seams, a cross of lighter paving running
+          // through the central fort, tower bases in the four corners
+          ctx.strokeStyle = "rgba(200,205,225,0.05)"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (i = 0; i <= W; i += 64) { ctx.moveTo(i, 0); ctx.lineTo(i, H); }
+          for (j = 0; j <= H; j += 64) { ctx.moveTo(0, j); ctx.lineTo(W, j); }
+          ctx.stroke();
+          ctx.fillStyle = "rgba(190,198,220,0.05)";
+          ctx.fillRect(cx - 33, 0, 66, H); ctx.fillRect(0, cy - 33, W, 66);
+          ctx.strokeStyle = "rgba(210,216,235,0.10)"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - 33, 0); ctx.lineTo(cx - 33, H); ctx.moveTo(cx + 33, 0); ctx.lineTo(cx + 33, H);
+          ctx.moveTo(0, cy - 33); ctx.lineTo(W, cy - 33); ctx.moveTo(0, cy + 33); ctx.lineTo(W, cy + 33);
+          ctx.stroke();
+          var corners = [[72, 72], [W - 72, 72], [72, H - 72], [W - 72, H - 72]];
+          for (i = 0; i < 4; i++) {
+            ctx.fillStyle = "rgba(160,170,200,0.05)";
+            ctx.beginPath(); ctx.arc(corners[i][0], corners[i][1], 27, 0, 6.2832); ctx.fill();
+            ctx.strokeStyle = "rgba(205,212,232,0.13)"; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(corners[i][0], corners[i][1], 36, 0, 6.2832); ctx.stroke();
+            ctx.strokeStyle = "rgba(205,212,232,0.08)"; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(corners[i][0], corners[i][1], 18, 0, 6.2832); ctx.stroke();
+          }
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(Math.PI / 4);
+          ctx.strokeStyle = "rgba(210,216,235,0.08)"; ctx.lineWidth = 2; ctx.strokeRect(-88, -88, 176, 176);
+          ctx.restore();
+        } else if (mapTheme === "corridor") {
+          // 回廊: concentric rings around the centre, like a circular
+          // cloister, with faint radial spokes
+          for (i = 0; i < 5; i++) {
+            var rr = 95 + i * 75;
+            ctx.strokeStyle = "rgba(180,200,220,0.055)"; ctx.lineWidth = 9;
+            ctx.beginPath(); ctx.arc(cx, cy, rr, 0, 6.2832); ctx.stroke();
+            ctx.strokeStyle = "rgba(200,218,238,0.08)"; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(cx, cy, rr - 5, 0, 6.2832); ctx.stroke();
+          }
+          ctx.strokeStyle = "rgba(190,205,225,0.05)"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (i = 0; i < 8; i++) {
+            a = i * Math.PI / 4;
+            ctx.moveTo(cx + Math.cos(a) * 55, cy + Math.sin(a) * 55);
+            ctx.lineTo(cx + Math.cos(a) * 415, cy + Math.sin(a) * 415);
+          }
+          ctx.stroke();
+        } else if (mapTheme === "towers") {
+          // 双塔: a faint large-tile floor and an open plaza between the
+          // towers — double ring, radial paving, a centre diamond
+          ctx.strokeStyle = "rgba(255,255,255,0.03)"; ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (i = 0; i <= W; i += 80) { ctx.moveTo(i, 0); ctx.lineTo(i, H); }
+          for (j = 0; j <= H; j += 80) { ctx.moveTo(0, j); ctx.lineTo(W, j); }
+          ctx.stroke();
+          ctx.strokeStyle = "rgba(220,212,245,0.13)"; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(cx, cy, 118, 0, 6.2832); ctx.stroke();
+          ctx.strokeStyle = "rgba(220,212,245,0.08)"; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(cx, cy, 148, 0, 6.2832); ctx.stroke();
+          ctx.strokeStyle = "rgba(220,212,245,0.06)"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (i = 0; i < 8; i++) {
+            a = i * Math.PI / 4 + Math.PI / 8;
+            ctx.moveTo(cx + Math.cos(a) * 30, cy + Math.sin(a) * 30);
+            ctx.lineTo(cx + Math.cos(a) * 148, cy + Math.sin(a) * 148);
+          }
+          ctx.stroke();
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(Math.PI / 4);
+          ctx.fillStyle = "rgba(226,218,250,0.06)"; ctx.fillRect(-25, -25, 50, 50);
+          ctx.strokeStyle = "rgba(226,218,250,0.12)"; ctx.lineWidth = 1.5; ctx.strokeRect(-25, -25, 50, 50);
+          ctx.restore();
+        } else if (mapTheme === "ruins") {
+          // 散点: floor cracks, scattered rubble and grass tufts — all
+          // placed by the deterministic hash, so they never flicker
+          ctx.strokeStyle = "rgba(0,0,0,0.42)"; ctx.lineWidth = 1.6;
+          for (i = 0; i < 7; i++) {
+            var px = 130 + hash2(i, 21) * (W - 260), py = 120 + hash2(i, 23) * (H - 240);
+            ctx.beginPath(); ctx.moveTo(px, py);
+            for (j = 1; j <= 5; j++) {
+              px += (hash2(i * 9 + j, 27) - 0.35) * 64;
+              py += (hash2(i * 9 + j, 29) - 0.5) * 52;
+              ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+          }
+          for (i = 0; i < 13; i++) {
+            for (j = 0; j < 9; j++) {
+              if (hash2(i * 3 + j, 31) < 0.55) continue;
+              var rx2 = i * 100 + 22 + hash2(i, j) * 56, ry2 = j * 92 + 18 + hash2(j, i) * 50;
+              ctx.fillStyle = "rgba(190,195,205,0.10)";
+              ctx.fillRect(rx2, ry2, 4 + hash2(i * 7, j) * 6, 3 + hash2(i, j * 7) * 3);
+              ctx.fillRect(rx2 + 7, ry2 + 3, 3, 2.4);
+            }
+          }
+          ctx.strokeStyle = "rgba(116,164,92,0.22)"; ctx.lineWidth = 1.6;
+          for (i = 0; i < 11; i++) {
+            for (j = 0; j < 7; j++) {
+              if (hash2(i * 5 + j, 37) < 0.62) continue;
+              var gx2 = i * 118 + 30 + hash2(i, j * 3) * 60, gy2 = j * 114 + 30 + hash2(j * 3, i) * 56;
+              ctx.beginPath();
+              ctx.moveTo(gx2, gy2); ctx.lineTo(gx2 - 3, gy2 - 8);
+              ctx.moveTo(gx2 + 3, gy2); ctx.lineTo(gx2 + 3.5, gy2 - 9);
+              ctx.moveTo(gx2 + 6, gy2); ctx.lineTo(gx2 + 9, gy2 - 7);
+              ctx.stroke();
+            }
+          }
+        } else {
+          ctx.strokeStyle = "rgba(255,255,255,0.035)"; ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (i = 0; i <= W; i += 48) { ctx.moveTo(i, 0); ctx.lineTo(i, H); }
+          for (j = 0; j <= H; j += 48) { ctx.moveTo(0, j); ctx.lineTo(W, j); }
+          ctx.stroke();
+        }
+      }
+      function drawWallTheme(w, idx) {
+        // the SAME collision box, dressed per map theme
+        var base = "#262b3a", i, x;
+        if (mapTheme === "fortress") base = "#2e3247";
+        else if (mapTheme === "corridor") base = "#27333e";
+        else if (mapTheme === "towers") base = "#2c2939";
+        else if (mapTheme === "ruins") base = idx % 2 ? "#252a33" : "#2b2d29";
+        ctx.fillStyle = base; ctx.fillRect(w.x, w.y, w.w, w.h);
+        if (mapTheme === "fortress") {
+          // thick stone: a heavy battlements lip, a shadowed base and
+          // stone-block seams
+          ctx.fillStyle = "rgba(226,231,246,0.13)"; ctx.fillRect(w.x, w.y, w.w, 5);
+          ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.fillRect(w.x, w.y + w.h - 4, w.w, 4);
+          ctx.strokeStyle = "rgba(0,0,0,0.22)"; ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          for (x = w.x + 42; x < w.x + w.w - 6; x += 42) { ctx.moveTo(x, w.y + 5); ctx.lineTo(x, w.y + w.h - 4); }
+          if (w.h > 60) { ctx.moveTo(w.x, w.y + w.h / 2); ctx.lineTo(w.x + w.w, w.y + w.h / 2); }
+          ctx.stroke();
+        } else if (mapTheme === "corridor") {
+          // arched corridor: a cap band plus a round pillar capital at
+          // both short ends of every wall
+          ctx.fillStyle = "rgba(231,239,246,0.10)"; ctx.fillRect(w.x, w.y, w.w, 4);
+          var capR = Math.min(w.w, w.h) / 2;
+          ctx.fillStyle = "rgba(216,229,242,0.17)";
+          if (w.h >= w.w) {
+            ctx.beginPath(); ctx.arc(w.x + w.w / 2, w.y + capR, capR * 0.92, 0, 6.2832); ctx.fill();
+            ctx.beginPath(); ctx.arc(w.x + w.w / 2, w.y + w.h - capR, capR * 0.92, 0, 6.2832); ctx.fill();
+          } else {
+            ctx.beginPath(); ctx.arc(w.x + capR, w.y + w.h / 2, capR * 0.92, 0, 6.2832); ctx.fill();
+            ctx.beginPath(); ctx.arc(w.x + w.w - capR, w.y + w.h / 2, capR * 0.92, 0, 6.2832); ctx.fill();
+          }
+          ctx.strokeStyle = "rgba(0,0,0,0.20)"; ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          if (w.h >= w.w) { ctx.moveTo(w.x + w.w / 2, w.y + capR + 4); ctx.lineTo(w.x + w.w / 2, w.y + w.h - capR - 4); }
+          else { ctx.moveTo(w.x + capR + 4, w.y + w.h / 2); ctx.lineTo(w.x + w.w - capR - 4, w.y + w.h / 2); }
+          ctx.stroke();
+        } else if (mapTheme === "towers") {
+          // towers: vertical fluting on every face; the two big tower
+          // blocks also get an inset frame and a gold top marker
+          ctx.fillStyle = "rgba(255,255,255,0.08)"; ctx.fillRect(w.x, w.y, w.w, 3);
+          ctx.strokeStyle = "rgba(0,0,0,0.20)"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (x = w.x + 20; x < w.x + w.w - 8; x += 24) { ctx.moveTo(x, w.y + 4); ctx.lineTo(x, w.y + w.h - 3); }
+          ctx.stroke();
+          if (w.w >= 120 && w.h >= 120) {
+            ctx.strokeStyle = "rgba(221,211,255,0.14)"; ctx.lineWidth = 2;
+            ctx.strokeRect(w.x + 9, w.y + 9, w.w - 18, w.h - 18);
+            var tx = w.x + w.w / 2, ty = w.y + 30;
+            ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.PI / 4);
+            ctx.fillStyle = "rgba(255,197,66,0.30)"; ctx.fillRect(-6, -6, 12, 12);
+            ctx.restore();
+            ctx.strokeStyle = "rgba(255,220,150,0.28)"; ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.arc(tx, ty, 12, 0, 6.2832); ctx.stroke();
+          }
+        } else if (mapTheme === "ruins") {
+          // broken walls: a gappy, crumbling top edge, a crack down the
+          // face and rubble spilled at the base
+          ctx.fillStyle = "rgba(255,255,255,0.08)";
+          for (x = w.x; x < w.x + w.w; x += 16) { if (hash2(idx * 3 + x, 7) > 0.35) ctx.fillRect(x, w.y, Math.min(11, w.x + w.w - x), 3); }
+          ctx.strokeStyle = "rgba(0,0,0,0.30)"; ctx.lineWidth = 1.4;
+          var cxk = w.x + w.w * (0.3 + 0.4 * hash2(idx, 3));
+          ctx.beginPath();
+          ctx.moveTo(cxk, w.y + 3);
+          ctx.lineTo(cxk + (hash2(idx, 4) - 0.5) * 14, w.y + w.h * 0.55);
+          ctx.lineTo(cxk + (hash2(idx, 5) - 0.5) * 18, w.y + w.h - 2);
+          ctx.stroke();
+          ctx.fillStyle = "rgba(190,195,205,0.13)";
+          for (i = 0; i < 3; i++) ctx.fillRect(w.x + hash2(idx * 7 + i, 11) * Math.max(1, w.w - 8), w.y + w.h + 2 + hash2(idx * 7 + i, 13) * 5, 4 + hash2(idx, i) * 5, 3);
+        } else {
+          ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(w.x, w.y, w.w, 3);
+        }
+      }
       function lightHole(x, y, r, strength) {
         if (r <= 0 || strength <= 0) return;
         var g = dctx.createRadialGradient(x, y, 0, x, y, r);
@@ -1682,16 +1959,20 @@
       }
       function render() {
         var vs = view.dpr * view.scale, vx = view.dpr * view.ox, vy = view.dpr * view.oy;
+        // holding the 十字飞镖: EVERY visual another player emits — not just
+        // their muzzle-flash light holes, but also the fx drawn over the
+        // darkness (shot ripples, knife slash arcs, respawn shield rings,
+        // damage numbers from fights you are not part of) — is hidden from
+        // you. Your own fx and the designed exceptions (sonar outlines, the
+        // bounty marker, 决战 reveal rings) still show. Bots unaffected.
+        var dartHold = !!(player && player.alive && player.weapon === "dart");
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.fillStyle = "#07080c"; ctx.fillRect(0, 0, cv.width, cv.height);
         ctx.setTransform(vs, 0, 0, vs, vx, vy);
-        // floor
-        ctx.fillStyle = "#10121a"; ctx.fillRect(0, 0, W, H);
-        ctx.strokeStyle = "rgba(255,255,255,0.035)"; ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (var gx = 0; gx <= W; gx += 48) { ctx.moveTo(gx, 0); ctx.lineTo(gx, H); }
-        for (var gy = 0; gy <= H; gy += 48) { ctx.moveTo(0, gy); ctx.lineTo(W, gy); }
-        ctx.stroke();
+        // floor, in this map's theme (ground detail lives under the
+        // darkness like everything else: it shows only where light falls)
+        ctx.fillStyle = FLOOR_BASE[mapTheme] || "#10121a"; ctx.fillRect(0, 0, W, H);
+        drawFloorTheme();
         // spawn pads
         var ents = allEnts(), i, e;
         for (i = 0; i < ents.length; i++) {
@@ -1699,12 +1980,8 @@
           ctx.strokeStyle = e.color; ctx.globalAlpha = 0.16; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.arc(e.spawnX, e.spawnY, 24, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
         }
-        // walls
-        for (i = 0; i < WALLS.length; i++) {
-          var w = WALLS[i];
-          ctx.fillStyle = "#262b3a"; ctx.fillRect(w.x, w.y, w.w, w.h);
-          ctx.fillStyle = "rgba(255,255,255,0.07)"; ctx.fillRect(w.x, w.y, w.w, 3);
-        }
+        // walls (themed dressing, same boxes)
+        for (i = 0; i < WALLS.length; i++) drawWallTheme(WALLS[i], i);
         // projectiles (under darkness they'll glow through their own light)
         for (i = 0; i < bullets.length; i++) {
           var bl = bullets[i];
@@ -1756,6 +2033,17 @@
             ctx.fillStyle = "#e8e2d2"; ctx.fillRect(19, -2.2, 6, 4.4);
           }
           ctx.restore();
+          // hit flash: a white wash over the body for ~0.12s after a ranged
+          // hit (any shooter, any victim). It is drawn HERE — in the world
+          // pass, UNDER the darkness layer — so it only ever appears where
+          // the character is already lit and visible; it punches no hole
+          // in the dark and never gives a hidden character away.
+          if (e.flashT > 0) {
+            ctx.globalAlpha = clamp(e.flashT / 0.12, 0, 1) * 0.85;
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 1, 0, 6.2832); ctx.fill();
+            ctx.globalAlpha = 1;
+          }
           ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.arc(e.x - 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.arc(e.x + 3.5, e.y - 3.5, 2.4, 0, 6.2832); ctx.fill();
           if (e.hp < e.maxHp) {
             ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(e.x - 16, e.y - 26, 32, 4);
@@ -1794,9 +2082,12 @@
         if (!blinded) {
           // 十字飞镖 downside: while the player holds the darts, the light
           // from OTHER people's shots — their muzzle flashes and the glow of
-          // their projectiles — never reaches the player's eyes. Event light
-          // with no shooter attached (kills, respawns) and the player's own
-          // shots still show. Bots are unaffected: this is the player's view.
+          // their projectiles — never reaches the player's eyes. Kill and
+          // respawn flashes carry an owner too (the killer / the respawning
+          // entity), so someone else's kill flash or respawn flash is
+          // filtered exactly the same way; only the player's own shots,
+          // kills and respawn still light up. Bots are unaffected: this is
+          // the player's view.
           var noForeignLight = player && player.alive && player.weapon === "dart";
           for (i = 0; i < flashes.length; i++) {
             var f = flashes[i], k = f.t / f.max;
@@ -1864,7 +2155,13 @@
 
         // sound ripples — gunshots and sonar only; movement is silent and draws nothing
         for (i = 0; i < ripples.length; i++) {
-          var rp = ripples[i], a = clamp(rp.t / rp.maxT, 0, 1) * 0.5;
+          var rp = ripples[i];
+          // someone else's gunshot / paddle ripple is drawn over the
+          // darkness, so it counts as their firing light: the dart holder
+          // never sees it. Your own shots' ripples and your sonar ripple
+          // (owner = you) still show.
+          if (dartHold && rp.owner && rp.owner !== player) continue;
+          var a = clamp(rp.t / rp.maxT, 0, 1) * 0.5;
           ctx.strokeStyle = rp.teal ? "rgba(45,212,191," + a + ")" : "rgba(235,230,215," + a + ")";
           ctx.lineWidth = 2;
           ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, 6.2832); ctx.stroke();
@@ -1912,14 +2209,22 @@
               ctx.fillStyle = "rgba(255,120,100,0.95)"; ctx.fillText("已暴露！", e.x, e.y - 32);
             }
           }
-          if (e.invulnT > 0) {
+          if (e.invulnT > 0 && !(dartHold && !e.isPlayer)) {
+            // (the respawn shield ring is drawn over the darkness, so a
+            // bot's ring would give its respawn away — hidden from the
+            // dart holder; your own ring still shows)
             ctx.strokeStyle = "rgba(240,248,255,0.8)"; ctx.lineWidth = 1.6;
             ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 9, 0, 6.2832); ctx.stroke();
           }
         }
         // knife slash arcs
         for (i = 0; i < slashes.length; i++) {
-          var sl = slashes[i], sa = clamp(sl.t / sl.max, 0, 1);
+          var sl = slashes[i];
+          // someone else's knife swing arc is drawn over the darkness too:
+          // invisible to the dart holder, exactly like their knife-draw
+          // reveal. Your own swing still shows.
+          if (dartHold && sl.owner && sl.owner !== player) continue;
+          var sa = clamp(sl.t / sl.max, 0, 1);
           ctx.strokeStyle = "rgba(235,242,250," + 0.85 * sa + ")"; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.arc(sl.x, sl.y, 40, sl.angle - 0.9, sl.angle + 0.9); ctx.stroke();
         }
@@ -1959,7 +2264,12 @@
         // floaters (damage numbers, and the paddle's small 「王之爆冲」)
         for (i = 0; i < floaters.length; i++) {
           var fl = floaters[i];
-          ctx.font = "700 " + (fl.small ? 10.5 : 13) + "px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
+          // damage numbers float over the darkness: a fight between two
+          // bots on the far side of the map must not leak to the dart
+          // holder. Numbers from your own hits, or hits on you, still show
+          // (fl.own is stamped where the number is created).
+          if (dartHold && fl.own === false) continue;
+          ctx.font = "900 " + (fl.small ? 10.5 : (fl.crit ? 22 : 16)) + "px 'Noto Sans SC', sans-serif"; ctx.textAlign = "center";
           ctx.globalAlpha = clamp(fl.t * 1.8, 0, 1); ctx.fillStyle = fl.color;
           ctx.fillText(fl.txt, fl.x, fl.y); ctx.globalAlpha = 1;
         }
@@ -2000,18 +2310,26 @@
         else $("overSub").textContent = won ? "你先拿到了 10 杀" : "「" + champ.name + "」先拿到了 10 杀";
         $("stKill").textContent = stats.kills;
         $("stKnife").textContent = stats.knifeKills;
-        // fold this match into the career leaderboard (wins / kills / knife
-        // kills / deaths / matches for you and every bot), then re-render it
-        var cents = allEnts(), ci, ce, crow;
+        // fold this match into the career leaderboard: YOUR line folds
+        // into the long-term record and is saved to localStorage right
+        // away; each bot's line is replaced (never added to) — the bots
+        // are new opponents every match, so only their latest match shows
+        var cents = allEnts(), ci, ce;
         for (ci = 0; ci < cents.length; ci++) {
           ce = cents[ci];
-          crow = careerRow(ce.isPlayer ? "player" : "bot:" + ce.name, ce.name);
-          crow.matches++; crow.kills += ce.matchKills; crow.knife += ce.matchKnife; crow.deaths += ce.deaths;
-          if (ce === champ) crow.wins++;
+          if (ce.isPlayer) {
+            playerCareer.matches++; playerCareer.kills += ce.matchKills; playerCareer.knife += ce.matchKnife; playerCareer.deaths += ce.deaths;
+            if (ce === champ) playerCareer.wins++;
+          } else {
+            lastBots[ce.name] = { wins: ce === champ ? 1 : 0, kills: ce.matchKills, knife: ce.matchKnife, deaths: ce.deaths, matches: 1 };
+          }
         }
+        saveCareer();
+        // renderCareer() also refreshes the settlement screen's career
+        // block (ocWins / ocKills / ocKnife / ocDeaths / ocMatches) from
+        // the just-saved record, so the block below already includes
+        // this match's numbers
         renderCareer();
-        var pc = careerRow("player", playerName);
-        $("overCareer").textContent = "生涯累计：" + pc.matches + " 场 · " + pc.wins + " 胜 · 总击杀 " + pc.kills + " · 刀杀 " + pc.knife + "（完整榜单在页面下方）";
         $("stDeath").textContent = stats.deaths;
         $("stAcc").textContent = stats.shots ? Math.round(stats.hits / stats.shots * 100) + "%" : "—";
         $("stSwap").textContent = stats.swaps;
@@ -2054,6 +2372,25 @@
       $("btnResume").addEventListener("click", resumeGame);
       $("btnPause").addEventListener("click", function () { if (state === "playing") pauseGame(); else if (state === "paused") resumeGame(); });
       $("btnSound").addEventListener("click", function () { muted = !muted; this.textContent = muted ? "声音：关" : "声音：开"; if (!muted) ac(); });
+      /* 清空战绩: two-step confirmation — the first click only ARMS the
+         button (label changes, reverts after ~3.5s); a second click while
+         armed actually wipes your long-term record, both the saved copy
+         and the in-memory one. The bots' last-match rows are not yours to
+         clear and simply refresh with the next match anyway. */
+      var clearCareerArmT = null;
+      $("btnClearCareer").addEventListener("click", function () {
+        var btn = this;
+        if (!btn.classList.contains("armed")) {
+          btn.classList.add("armed"); btn.textContent = "再点一次确认清空";
+          clearCareerArmT = setTimeout(function () { btn.classList.remove("armed"); btn.textContent = "清空战绩"; }, 3500);
+          return;
+        }
+        clearTimeout(clearCareerArmT);
+        btn.classList.remove("armed"); btn.textContent = "清空战绩";
+        playerCareer = { wins: 0, kills: 0, knife: 0, deaths: 0, matches: 0 };
+        saveCareer();
+        renderCareer();
+      });
       /* fullscreen button (in the control bar, outside the game screen):
          one tap makes the shell — stage + control bar — fill the screen.
          Deliberately NO orientation lock: portrait stays portrait and
